@@ -1,20 +1,19 @@
-// functions/api/menu-items/[...path].js
 export async function onRequest({ request, env, params }) {
   const { path } = params;
   const db = env.DB;
 
-  try {
-    // 处理 OPTIONS 请求（CORS 预检）
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      });
-    }
+  // 处理 OPTIONS 请求（CORS 预检）
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  }
 
+  try {
     // 提取ID（如果存在）
     const id = path && path.length > 0 ? path[0] : null;
     
@@ -106,9 +105,6 @@ export async function onRequest({ request, env, params }) {
 
     // 添加 CORS 头
     response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    
     return response;
     
   } catch (error) {
