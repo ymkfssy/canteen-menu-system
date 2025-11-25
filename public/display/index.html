@@ -38,12 +38,27 @@
             background: var(--header-gradient, linear-gradient(to right, #ff6b6b, #ff8e53));
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             color: white;
             font-size: 26px;
             font-weight: bold;
             letter-spacing: 2px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 0 20px;
+        }
+        
+        .header-title {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .datetime {
+            font-size: 18px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            min-width: 380px;
+            text-align: right;
         }
         
         .menu-content {
@@ -151,27 +166,6 @@
             background: var(--fruit-bg, rgba(255, 255, 245, 0.7));
         }
         
-        .datetime {
-            position: absolute;
-            top: 8px;
-            right: 20px;
-            font-size: 16px;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            text-align: right;
-            line-height: 1.2;
-        }
-        
-        .date {
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
-        
-        .time {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
         .special-tag {
             background: var(--tag-bg, #ff6b6b);
             color: white;
@@ -243,11 +237,8 @@
 <body>
     <div class="container">
         <div class="header">
-            今日食堂菜单
-            <div class="datetime">
-                <div class="date" id="date">2023年11月15日 星期三</div>
-                <div class="time" id="time">14:30:45</div>
-            </div>
+            <div class="header-title">今日食堂菜单</div>
+            <div class="datetime" id="datetime">2023年11月15日 星期三 14:30:45</div>
         </div>
         
         <div class="menu-content">
@@ -416,13 +407,16 @@
                 day: 'numeric',
                 weekday: 'long'
             };
-            document.getElementById('date').textContent = now.toLocaleDateString('zh-CN', dateOptions);
+            const dateString = now.toLocaleDateString('zh-CN', dateOptions);
             
             // 格式化时间
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            
+            // 合并为单行显示
+            document.getElementById('datetime').textContent = `${dateString} ${timeString}`;
         }
         
         // 初始化
