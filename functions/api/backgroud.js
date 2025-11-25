@@ -1,4 +1,3 @@
-// functions/api/background.js
 export async function onRequest({ request, env }) {
   const db = env.DB;
 
@@ -37,7 +36,7 @@ export async function onRequest({ request, env }) {
         await db.prepare('UPDATE background_settings SET is_active = 0').run();
         
         if (imageData) {
-          // 检查是否已存在记录
+          // 插入新记录或更新现有记录
           const existing = await db.prepare('SELECT id FROM background_settings LIMIT 1').first();
           
           if (existing) {
