@@ -205,123 +205,50 @@
     </style>
 </head>
 <body>
-    <div class="display-screen spring-theme" id="displayScreen">
+    <div class="container">
         <div class="header">
-            <div class="date-display" id="currentDate">2023年11月15日 星期三</div>
-            <div class="canteen-name">员工食堂</div>
+            <div>今日食堂菜单</div>
+            <div class="datetime" id="datetime"></div>
         </div>
         
-        <div class="menu-container">
-            <!-- 凉菜区 -->
-            <div class="menu-category">
-                <div class="category-title">凉菜</div>
-                <div class="menu-items" id="coldDishes">
-                    <div class="menu-item">
-                        <span class="item-name">凉拌黄瓜</span>
-                        <span class="item-price">¥8.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">拍黄瓜</span>
-                        <span class="item-price">¥8.00</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 热菜区 -->
-            <div class="menu-category">
-                <div class="category-title">热菜</div>
-                <div class="menu-items" id="hotDishes">
-                    <div class="menu-item">
-                        <span class="item-name">红烧肉</span>
-                        <span class="item-price">¥28.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">宫保鸡丁</span>
-                        <span class="item-price">¥22.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">麻婆豆腐</span>
-                        <span class="item-price">¥18.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">清蒸鲈鱼</span>
-                        <span class="item-price">¥35.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">西红柿炒蛋</span>
-                        <span class="item-price">¥15.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">地三鲜</span>
-                        <span class="item-price">¥16.00</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 主食区 -->
-            <div class="menu-category">
-                <div class="category-title">主食</div>
-                <div class="menu-items" id="staples">
-                    <div class="menu-item">
-                        <span class="item-name">米饭</span>
-                        <span class="item-price">¥2.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">馒头</span>
-                        <span class="item-price">¥1.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">面条</span>
-                        <span class="item-price">¥10.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">水饺</span>
-                        <span class="item-price">¥15.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">包子</span>
-                        <span class="item-price">¥2.50</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">煎饼</span>
-                        <span class="item-price">¥5.00</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 汤品区 -->
-            <div class="menu-category">
-                <div class="category-title">汤品</div>
-                <div class="menu-items" id="soups">
-                    <div class="menu-item">
-                        <span class="item-name">西红柿蛋汤</span>
-                        <span class="item-price">¥6.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">紫菜汤</span>
-                        <span class="item-price">¥5.00</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 水果区 -->
-            <div class="menu-category">
-                <div class="category-title">水果</div>
-                <div class="menu-items" id="fruits">
-                    <div class="menu-item">
-                        <span class="item-name">苹果</span>
-                        <span class="item-price">¥5.00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">香蕉</span>
-                        <span class="item-price">¥4.00</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- 错误信息显示区域 -->
+        <div id="error-message" class="error-message"></div>
         
-        <div class="footer">
-            <div class="update-time">最后更新: <span id="lastUpdateTime">2023-11-15 10:30:00</span></div>
+        <div class="menu-content">
+            <div class="menu-section cold-dishes">
+                <div class="section-title">凉菜</div>
+                <div class="dishes" id="cold-dishes-list">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <div class="menu-section hot-dishes">
+                <div class="section-title">热菜</div>
+                <div class="dishes" id="hot-dishes-list">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <div class="menu-section staple-food">
+                <div class="section-title">主食</div>
+                <div class="dishes" id="staple-food-list">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <div class="menu-section soup">
+                <div class="section-title">汤品</div>
+                <div class="dishes" id="soup-list">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <div class="menu-section fruit">
+                <div class="section-title">水果</div>
+                <div class="dishes" id="fruit-list">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -558,4 +485,5 @@
     </script>
 </body>
 </html>
+
 
