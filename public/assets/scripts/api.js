@@ -7,6 +7,8 @@ class CanteenAPI {
     const url = `${this.baseURL}${endpoint}`;
     
     try {
+      console.log(`API请求: ${options.method || 'GET'} ${url}`);
+      
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -15,25 +17,32 @@ class CanteenAPI {
         ...options
       };
       
-      // 如果是POST请求，确保body是JSON字符串
+      // 如果是POST/PUT请求，确保body是JSON字符串
       if (options.body && typeof options.body !== 'string') {
         config.body = JSON.stringify(options.body);
       }
       
       const response = await fetch(url, config);
+      console.log(`API响应: ${response.status} ${response.statusText}`);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        let errorData;
+        let errorText;
         try {
-          errorData = JSON.parse(errorText);
+          const errorData = await response.json();
+          errorText = errorData.error || errorData.detail || `HTTP错误: ${response.status}`;
+          console.error('API错误详情:', errorData);
         } catch {
-          errorData = { error: errorText || `HTTP错误: ${response.status}` };
+          errorText = await response.text() || `HTTP错误: ${response.status}`;
         }
-        throw new Error(errorData.error || errorData.detail || `API请求失败: ${response.status}`);
+        
+        const error = new Error(errorText);
+        error.status = response.status;
+        throw error;
       }
 
-      return response.json();
+      const data = await response.json();
+      console.log('API响应数据:', data);
+      return data;
     } catch (error) {
       console.error('API请求错误:', error);
       throw error;
