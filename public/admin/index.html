@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>食堂菜单管理系统</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 引入 SheetJS 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -540,52 +542,109 @@
         }
         
         // 下载模板
-// 下载模板 - Excel 版本（需要 SheetJS）
-function downloadTemplate() {
-    // 检查 SheetJS 是否加载
-    if (typeof XLSX === 'undefined') {
-        showMessage('Excel 库加载失败，请刷新页面重试', 'error');
-        return;
-    }
+// 下载模板 - Excel 版本
+        function downloadTemplate() {
+            try {
+                // 检查 SheetJS 是否加载
+                if (typeof XLSX === 'undefined') {
+                    showMessage('Excel 库加载失败，请刷新页面重试', 'error');
+                    return;
+                }
 
-    // 创建示例数据
-    const templateData = [
-        { '类别': '凉菜', '菜品名称': '凉拌黄瓜', '价格': 8, '标签': '' },
-        { '类别': '凉菜', '菜品名称': '麻辣口水鸡', '价格': 15, '标签': '招牌' },
-        { '类别': '热菜', '菜品名称': '红烧狮子头', '价格': 18, '标签': '推荐' },
-        { '类别': '热菜', '菜品名称': '宫保鸡丁', '价格': 16, '标签': '' },
-        { '类别': '热菜', '菜品名称': '鱼香肉丝', '价格': 16, '标签': '' },
-        { '类别': '热菜', '菜品名称': '麻婆豆腐', '价格': 12, '标签': '' },
-        { '类别': '热菜', '菜品名称': '酸辣土豆丝', '价格': 10, '标签': '推荐' },
-        { '类别': '热菜', '菜品名称': '清炒时蔬', '价格': 10, '标签': '' },
-        { '类别': '主食', '菜品名称': '米饭', '价格': 2, '标签': '' },
-        { '类别': '主食', '菜品名称': '馒头', '价格': 1, '标签': '' },
-        { '类别': '主食', '菜品名称': '葱油饼', '价格': 5, '标签': '' },
-        { '类别': '主食', '菜品名称': '水饺(10个)', '价格': 12, '标签': '' },
-        { '类别': '主食', '菜品名称': '牛肉面', '价格': 15, '标签': '热销' },
-        { '类别': '主食', '菜品名称': '炒饭', '价格': 10, '标签': '' },
-        { '类别': '汤品', '菜品名称': '西红柿蛋汤', '价格': 5, '标签': '' },
-        { '类别': '汤品', '菜品名称': '紫菜蛋花汤', '价格': 5, '标签': '' },
-        { '类别': '水果', '菜品名称': '时令水果拼盘', '价格': 8, '标签': '' }
-    ];
+                // 创建示例数据
+                const templateData = [
+                    { '类别': '凉菜', '菜品名称': '凉拌黄瓜', '价格': 8, '标签': '' },
+                    { '类别': '凉菜', '菜品名称': '麻辣口水鸡', '价格': 15, '标签': '招牌' },
+                    { '类别': '热菜', '菜品名称': '红烧狮子头', '价格': 18, '标签': '推荐' },
+                    { '类别': '热菜', '菜品名称': '宫保鸡丁', '价格': 16, '标签': '' },
+                    { '类别': '热菜', '菜品名称': '鱼香肉丝', '价格': 16, '标签': '' },
+                    { '类别': '热菜', '菜品名称': '麻婆豆腐', '价格': 12, '标签': '' },
+                    { '类别': '热菜', '菜品名称': '酸辣土豆丝', '价格': 10, '标签': '推荐' },
+                    { '类别': '热菜', '菜品名称': '清炒时蔬', '价格': 10, '标签': '' },
+                    { '类别': '主食', '菜品名称': '米饭', '价格': 2, '标签': '' },
+                    { '类别': '主食', '菜品名称': '馒头', '价格': 1, '标签': '' },
+                    { '类别': '主食', '菜品名称': '葱油饼', '价格': 5, '标签': '' },
+                    { '类别': '主食', '菜品名称': '水饺(10个)', '价格': 12, '标签': '' },
+                    { '类别': '主食', '菜品名称': '牛肉面', '价格': 15, '标签': '热销' },
+                    { '类别': '主食', '菜品名称': '炒饭', '价格': 10, '标签': '' },
+                    { '类别': '汤品', '菜品名称': '西红柿蛋汤', '价格': 5, '标签': '' },
+                    { '类别': '汤品', '菜品名称': '紫菜蛋花汤', '价格': 5, '标签': '' },
+                    { '类别': '水果', '菜品名称': '时令水果拼盘', '价格': 8, '标签': '' }
+                ];
 
-    try {
-        // 创建工作簿和工作表
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(templateData);
-        
-        // 添加工作表到工作簿
-        XLSX.utils.book_append_sheet(wb, ws, "菜单数据");
-        
-        // 生成 Excel 文件并下载
-        XLSX.writeFile(wb, "食堂菜单模板.xlsx");
-        
-        showMessage('Excel 模板下载成功！', 'success');
-    } catch (error) {
-        console.error('生成 Excel 文件时出错:', error);
-        showMessage('生成 Excel 文件失败: ' + error.message, 'error');
-    }
-}
+                // 创建工作簿和工作表
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(templateData);
+                
+                // 设置列宽
+                const colWidths = [
+                    { wch: 10 }, // 类别
+                    { wch: 20 }, // 菜品名称
+                    { wch: 10 }, // 价格
+                    { wch: 10 }  // 标签
+                ];
+                ws['!cols'] = colWidths;
+                
+                // 添加工作表到工作簿
+                XLSX.utils.book_append_sheet(wb, ws, "菜单数据");
+                
+                // 生成 Excel 文件并下载
+                XLSX.writeFile(wb, "食堂菜单模板.xlsx");
+                
+                showMessage('Excel 模板下载成功！', 'success');
+            } catch (error) {
+                console.error('生成 Excel 文件时出错:', error);
+                showMessage('生成 Excel 文件失败，请尝试使用 CSV 格式', 'error');
+                // 如果 Excel 生成失败，自动降级到 CSV 格式
+                downloadCSVTemplate();
+            }
+        }
+
+        // 备用 CSV 下载函数
+        function downloadCSVTemplate() {
+            // 创建示例数据
+            const templateData = [
+                ['类别', '菜品名称', '价格', '标签'],
+                ['凉菜', '凉拌黄瓜', '8', ''],
+                ['凉菜', '麻辣口水鸡', '15', '招牌'],
+                ['热菜', '红烧狮子头', '18', '推荐'],
+                ['热菜', '宫保鸡丁', '16', ''],
+                ['热菜', '鱼香肉丝', '16', ''],
+                ['热菜', '麻婆豆腐', '12', ''],
+                ['热菜', '酸辣土豆丝', '10', '推荐'],
+                ['热菜', '清炒时蔬', '10', ''],
+                ['主食', '米饭', '2', ''],
+                ['主食', '馒头', '1', ''],
+                ['主食', '葱油饼', '5', ''],
+                ['主食', '水饺(10个)', '12', ''],
+                ['主食', '牛肉面', '15', '热销'],
+                ['主食', '炒饭', '10', ''],
+                ['汤品', '西红柿蛋汤', '5', ''],
+                ['汤品', '紫菜蛋花汤', '5', ''],
+                ['水果', '时令水果拼盘', '8', '']
+            ];
+
+            // 将数据转换为 CSV 格式
+            const csvContent = templateData.map(row => 
+                row.map(cell => `"${cell}"`).join(',')
+            ).join('\n');
+
+            // 创建 Blob 并下载
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', '食堂菜单模板.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showMessage('已下载 CSV 格式模板！', 'success');
+        }
         
         // 保存所有设置
         async function saveAllSettings() {
