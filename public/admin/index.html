@@ -167,9 +167,482 @@
     </div>
 
     <script>
-        // 管理后台的JavaScript代码保持不变
-        // 这里放置原有的所有JavaScript代码
-        // ...
+              // 全局变量
+        let currentMenuItems = [];
+        let currentTheme = 'spring';
+        let currentBackground = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            loadMenuItems();
+            loadThemeSettings();
+            loadBackgroundSettings();
+        });
+        
+        // 设置事件监听
+        function setupEventListeners() {
+            // 标签页切换
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有激活状态
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // 激活当前标签
+                    this.classList.add('active');
+                    const tabId = this.dataset.tab + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // 添加菜品表单
+            document.getElementById('add-dish-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addMenuItem();
+            });
+            
+            // 编辑菜品表单
+            document.getElementById('edit-dish-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateMenuItem();
+            });
+            
+            // 主题选择
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    currentTheme = this.dataset.theme;
+                    
+                    // 更新UI状态
+                    document.querySelectorAll('.theme-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    showMessage(`已选择${this.textContent.trim()}！`, 'success');
+                });
+            });
+            
+            // 背景图片上传
+            document.getElementById('bg-image').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // 检查文件大小 (限制为2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showMessage('图片大小不能超过2MB', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentBackground = e.target.result;
+                    
+                    // 显示预览
+                    const preview = document.getElementById('bg-preview');
+                    preview.src = currentBackground;
+                    preview.style.display = 'block';
+                    
+                    showMessage('背景图片已选择！', 'success');
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            // 取消背景图片
+            document.getElementById('clear-bg').addEventListener('click', function() {
+                currentBackground = null;
+                
+                // 隐藏预览
+                const preview = document.getElementById('bg-preview');
+                preview.style.display = 'none';
+                
+                // 清空文件输入
+                document.getElementById('bg-image').value = '';
+                
+                showMessage('背景图片已取消！', 'success');
+            });
+            
+            // Excel文件上传
+            document.getElementById('excel-file').addEventListener('change', handleExcelUpload);
+            
+            // 下载模板
+            document.getElementById('download-template').addEventListener('click', downloadTemplate);
+            
+            // 保存所有设置
+            document.getElementById('save-all').addEventListener('click', saveAllSettings);
+            
+            // 模态框关闭
+            document.querySelector('.close-modal').addEventListener('click', closeEditModal);
+            document.getElementById('cancel-edit').addEventListener('click', closeEditModal);
+        }
+        
+        // 加载菜单项
+        async function loadMenuItems() {
+            try {
+                const response = await fetch('/api/menu-items');
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentMenuItems = result.data;
+                    renderMenuItems();
+                } else {
+                    showMessage('加载菜单数据失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('加载菜单数据时出错: ' + error.message, 'error');
+            }
+        }
+        
+        // 渲染菜单项
+        function renderMenuItems() {
+            const container = document.getElementById('menu-items-list');
+            container.innerHTML = '';
+            
+            // 按分类分组
+            const categorized = {};
+            currentMenuItems.forEach(item => {
+                if (!categorized[item.category]) {
+                    categorized[item.category] = [];
+                }
+                categorized[item.category].push(item);
+            });
+            
+            // 渲染每个分类
+            Object.keys(categorized).forEach(category => {
+                const categorySection = document.createElement('div');
+                categorySection.className = 'preview-section';
+                
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'preview-section-title';
+                categoryTitle.textContent = category;
+                categorySection.appendChild(categoryTitle);
+                
+                const dishList = document.createElement('div');
+                dishList.className = 'dish-list';
+                
+                categorized[category].forEach(item => {
+                    const dishItem = document.createElement('div');
+                    dishItem.className = 'menu-item';
+                    
+                    const dishInfo = document.createElement('div');
+                    dishInfo.className = 'menu-item-info';
+                    
+                    const dishName = document.createElement('span');
+                    dishName.className = 'dish-name';
+                    dishName.textContent = item.name;
+                    
+                    const dishPrice = document.createElement('span');
+                    dishPrice.className = 'dish-price';
+                    dishPrice.textContent = `¥${item.price}`;
+                    
+                    dishInfo.appendChild(dishName);
+                    dishInfo.appendChild(dishPrice);
+                    
+                    if (item.tag) {
+                        const tag = document.createElement('span');
+                        tag.className = 'tag';
+                        tag.textContent = item.tag;
+                        dishInfo.appendChild(tag);
+                    }
+                    
+                    const dishActions = document.createElement('div');
+                    dishActions.className = 'menu-item-actions';
+                    
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn btn-small btn-edit';
+                    editBtn.textContent = '编辑';
+                    editBtn.addEventListener('click', () => openEditModal(item));
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-small btn-delete';
+                    deleteBtn.textContent = '删除';
+                    deleteBtn.addEventListener('click', () => deleteMenuItem(item.id));
+                    
+                    dishActions.appendChild(editBtn);
+                    dishActions.appendChild(deleteBtn);
+                    
+                    dishItem.appendChild(dishInfo);
+                    dishItem.appendChild(dishActions);
+                    
+                    dishList.appendChild(dishItem);
+                });
+                
+                categorySection.appendChild(dishList);
+                container.appendChild(categorySection);
+            });
+        }
+        
+        // 添加菜单项
+        async function addMenuItem() {
+            const category = document.getElementById('dish-category').value;
+            const name = document.getElementById('dish-name').value;
+            const price = parseFloat(document.getElementById('dish-price').value);
+            const tag = document.getElementById('dish-tag').value;
+            
+            try {
+                const response = await fetch('/api/menu-items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        category,
+                        name,
+                        price,
+                        tag
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('菜品添加成功！', 'success');
+                    document.getElementById('add-dish-form').reset();
+                    loadMenuItems(); // 重新加载菜单项
+                } else {
+                    showMessage('添加菜品失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('添加菜品时出错: ' + error.message, 'error');
+            }
+        }
+        
+        // 打开编辑模态框
+        function openEditModal(item) {
+            document.getElementById('edit-dish-id').value = item.id;
+            document.getElementById('edit-dish-category').value = item.category;
+            document.getElementById('edit-dish-name').value = item.name;
+            document.getElementById('edit-dish-price').value = item.price;
+            document.getElementById('edit-dish-tag').value = item.tag || '';
+            
+            document.getElementById('edit-dish-modal').style.display = 'block';
+        }
+        
+        // 关闭编辑模态框
+        function closeEditModal() {
+            document.getElementById('edit-dish-modal').style.display = 'none';
+        }
+        
+        // 更新菜单项
+        async function updateMenuItem() {
+            const id = document.getElementById('edit-dish-id').value;
+            const category = document.getElementById('edit-dish-category').value;
+            const name = document.getElementById('edit-dish-name').value;
+            const price = parseFloat(document.getElementById('edit-dish-price').value);
+            const tag = document.getElementById('edit-dish-tag').value;
+            
+            try {
+                const response = await fetch(`/api/menu-items/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        category,
+                        name,
+                        price,
+                        tag
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('菜品更新成功！', 'success');
+                    closeEditModal();
+                    loadMenuItems(); // 重新加载菜单项
+                } else {
+                    showMessage('更新菜品失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('更新菜品时出错: ' + error.message, 'error');
+            }
+        }
+        
+        // 删除菜单项
+        async function deleteMenuItem(id) {
+            if (!confirm('确定要删除这个菜品吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/menu-items/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('菜品删除成功！', 'success');
+                    loadMenuItems(); // 重新加载菜单项
+                } else {
+                    showMessage('删除菜品失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('删除菜品时出错: ' + error.message, 'error');
+            }
+        }
+        
+        // 加载主题设置
+        async function loadThemeSettings() {
+            try {
+                const response = await fetch('/api/themes');
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentTheme = result.data.current.theme_name;
+                    
+                    // 更新UI状态
+                    document.querySelectorAll('.theme-option').forEach(option => {
+                        if (option.dataset.theme === currentTheme) {
+                            option.classList.add('active');
+                        } else {
+                            option.classList.remove('active');
+                        }
+                    });
+                } else {
+                    showMessage('加载主题设置失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('加载主题设置时出错: ' + error.message, 'error');
+            }
+        }
+        
+        // 加载背景设置
+        async function loadBackgroundSettings() {
+            try {
+                const response = await fetch('/api/background');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    currentBackground = result.data.image_data;
+                    
+                    // 显示预览
+                    const preview = document.getElementById('bg-preview');
+                    if (currentBackground) {
+                        preview.src = currentBackground;
+                        preview.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('加载背景设置时出错:', error);
+            }
+        }
+        
+        // 处理Excel上传
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // 这里可以添加Excel解析逻辑
+            // 由于前端Excel解析较复杂，这里仅作演示
+            showMessage('Excel上传功能需要后端API支持', 'error');
+        }
+        
+        // 下载模板
+// 下载模板 - Excel 版本（需要 SheetJS）
+function downloadTemplate() {
+    // 检查 SheetJS 是否加载
+    if (typeof XLSX === 'undefined') {
+        showMessage('Excel 库加载失败，请刷新页面重试', 'error');
+        return;
+    }
+
+    // 创建示例数据
+    const templateData = [
+        { '类别': '凉菜', '菜品名称': '凉拌黄瓜', '价格': 8, '标签': '' },
+        { '类别': '凉菜', '菜品名称': '麻辣口水鸡', '价格': 15, '标签': '招牌' },
+        { '类别': '热菜', '菜品名称': '红烧狮子头', '价格': 18, '标签': '推荐' },
+        { '类别': '热菜', '菜品名称': '宫保鸡丁', '价格': 16, '标签': '' },
+        { '类别': '热菜', '菜品名称': '鱼香肉丝', '价格': 16, '标签': '' },
+        { '类别': '热菜', '菜品名称': '麻婆豆腐', '价格': 12, '标签': '' },
+        { '类别': '热菜', '菜品名称': '酸辣土豆丝', '价格': 10, '标签': '推荐' },
+        { '类别': '热菜', '菜品名称': '清炒时蔬', '价格': 10, '标签': '' },
+        { '类别': '主食', '菜品名称': '米饭', '价格': 2, '标签': '' },
+        { '类别': '主食', '菜品名称': '馒头', '价格': 1, '标签': '' },
+        { '类别': '主食', '菜品名称': '葱油饼', '价格': 5, '标签': '' },
+        { '类别': '主食', '菜品名称': '水饺(10个)', '价格': 12, '标签': '' },
+        { '类别': '主食', '菜品名称': '牛肉面', '价格': 15, '标签': '热销' },
+        { '类别': '主食', '菜品名称': '炒饭', '价格': 10, '标签': '' },
+        { '类别': '汤品', '菜品名称': '西红柿蛋汤', '价格': 5, '标签': '' },
+        { '类别': '汤品', '菜品名称': '紫菜蛋花汤', '价格': 5, '标签': '' },
+        { '类别': '水果', '菜品名称': '时令水果拼盘', '价格': 8, '标签': '' }
+    ];
+
+    try {
+        // 创建工作簿和工作表
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(templateData);
+        
+        // 添加工作表到工作簿
+        XLSX.utils.book_append_sheet(wb, ws, "菜单数据");
+        
+        // 生成 Excel 文件并下载
+        XLSX.writeFile(wb, "食堂菜单模板.xlsx");
+        
+        showMessage('Excel 模板下载成功！', 'success');
+    } catch (error) {
+        console.error('生成 Excel 文件时出错:', error);
+        showMessage('生成 Excel 文件失败: ' + error.message, 'error');
+    }
+}
+        
+        // 保存所有设置
+        async function saveAllSettings() {
+            try {
+                // 保存主题设置
+                const themeResponse = await fetch('/api/themes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        themeName: currentTheme
+                    })
+                });
+                
+                const themeResult = await themeResponse.json();
+                
+                if (!themeResult.success) {
+                    showMessage('保存主题设置失败: ' + themeResult.error, 'error');
+                    return;
+                }
+                
+                // 保存背景设置
+                const bgResponse = await fetch('/api/background', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        imageData: currentBackground
+                    })
+                });
+                
+                const bgResult = await bgResponse.json();
+                
+                if (!bgResult.success) {
+                    showMessage('保存背景设置失败: ' + bgResult.error, 'error');
+                    return;
+                }
+                
+                showMessage('所有设置已保存成功！', 'success');
+            } catch (error) {
+                showMessage('保存设置时出错: ' + error.message, 'error');
+            }
+        }
+        
+        // 显示消息
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
     </script>
 </body>
 </html>
