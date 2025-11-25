@@ -1,0 +1,187 @@
+/* 前台显示样式 - 针对3200×192分辨率优化 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #000;
+    overflow: hidden;
+    width: 3200px;
+    height: 192px;
+}
+
+.display-screen {
+    width: 3200px;
+    height: 192px;
+    overflow: hidden;
+    position: relative;
+    padding: 12px 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 优化后的四季主题样式 */
+.spring-theme {
+    background: linear-gradient(135deg, 
+        #a8e6cf 0%, 
+        #dcedc1 40%, 
+        #ffd3b6 100%);
+    color: #2d5016;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+.summer-theme {
+    background: linear-gradient(135deg, 
+        #4fc3f7 0%, 
+        #29b6f6 30%, 
+        #81d4fa 70%, 
+        #b3e5fc 100%);
+    color: #01579b;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+.autumn-theme {
+    background: linear-gradient(135deg, 
+        #ffb74d 0%, 
+        #ff9800 30%, 
+        #ffcc80 70%, 
+        #ffe0b2 100%);
+    color: #5d4037;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+.winter-theme {
+    background: linear-gradient(135deg, 
+        #bbdefb 0%, 
+        #90caf9 30%, 
+        #e3f2fd 70%, 
+        #f3e5f5 100%);
+    color: #0d47a1;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+/* 头部样式 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 3px solid rgba(0,0,0,0.15);
+    margin-bottom: 12px;
+    height: 42px;
+}
+
+.date-display {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.canteen-name {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 菜单容器 */
+.menu-container {
+    display: flex;
+    height: calc(100% - 42px - 30px); /* 减去头部和底部高度 */
+    flex: 1;
+}
+
+.menu-category {
+    flex: 1;
+    padding: 0 15px;
+    border-right: 2px dashed rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.menu-category:last-child {
+    border-right: none;
+}
+
+.category-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-items {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5px 0;
+}
+
+.menu-item {
+    font-size: 26px;
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 36px;
+}
+
+.item-name {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+}
+
+.item-price {
+    font-weight: bold;
+    text-align: right;
+    min-width: 120px;
+}
+
+/* 底部样式 */
+.footer {
+    height: 30px;
+    text-align: right;
+    padding-top: 5px;
+    border-top: 2px solid rgba(0,0,0,0.15);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* 加载状态 */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* 空状态提示 */
+.empty-message {
+    font-size: 24px;
+    text-align: center;
+    color: rgba(0,0,0,0.5);
+    font-style: italic;
+}
+
+/* 特殊效果 - 为菜单项添加轻微阴影增强可读性 */
+.menu-item {
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+}
+
+/* 响应式调整 - 确保在3200px宽度下正常显示 */
+@media (max-width: 3200px) {
+    body {
+        width: 3200px;
+        overflow-x: hidden;
+    }
+}
