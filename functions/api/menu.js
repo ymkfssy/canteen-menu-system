@@ -69,7 +69,7 @@ async function handleGetMenu(context) {
   }
 }
 
-// 保存菜单
+// 保存菜单 - 修复事务处理
 async function handleSaveMenu(context) {
   const { request, env } = context;
   
@@ -100,15 +100,16 @@ async function handleSaveMenu(context) {
       });
     }
     
-    // 开始事务
-    await env.DB.prepare("BEGIN TRANSACTION").run();
-    
+    // 使用D1的batch API进行批量操作（替代事务）
     try {
-      // 清空现有菜单
-      await env.DB.prepare("DELETE FROM menu_items").run();
-      console.log('已清空现有菜单');
+      // 准备所有SQL语句
+      const statements = [];
       
-      // 插入新菜单项
+      // 首先清空现有菜单
+      statements.push(env.DB.prepare("DELETE FROM menu_items"));
+      console.log('已准备清空菜单语句');
+      
+      // 准备插入新菜单项的语句
       const categories = ['coldDishes', 'hotDishes', 'staples', 'soups', 'fruits'];
       let totalItems = 0;
       
@@ -119,22 +120,25 @@ async function handleSaveMenu(context) {
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
           if (item && item.name && item.price !== undefined) {
-            await env.DB.prepare(
-              "INSERT INTO menu_items (category, name, price, sort_order) VALUES (?, ?, ?, ?)"
-            ).bind(
-              category, 
-              String(item.name).trim(), 
-              parseFloat(item.price) || 0, 
-              i + 1
-            ).run();
+            statements.push(
+              env.DB.prepare(
+                "INSERT INTO menu_items (category, name, price, sort_order) VALUES (?, ?, ?, ?)"
+              ).bind(
+                category, 
+                String(item.name).trim(), 
+                parseFloat(item.price) || 0, 
+                i + 1
+              )
+            );
             totalItems++;
           }
         }
       }
       
-      // 提交事务
-      await env.DB.prepare("COMMIT").run();
-      console.log(`成功保存 ${totalItems} 个菜品到数据库`);
+      // 使用batch执行所有语句（原子操作）
+      console.log(`准备执行 ${statements.length} 条SQL语句`);
+      const results = await env.DB.batch(statements);
+      console.log(`成功保存 ${totalItems} 个菜品到数据库`, results);
       
       return new Response(JSON.stringify({ 
         success: true,
@@ -144,10 +148,9 @@ async function handleSaveMenu(context) {
         status: 200,
         headers: getCorsHeaders()
       });
-    } catch (transactionError) {
-      // 回滚事务
-      await env.DB.prepare("ROLLBACK").run();
-      throw transactionError;
+    } catch (batchError) {
+      console.error('批量操作失败:', batchError);
+      throw batchError;
     }
   } catch (error) {
     console.error('保存菜单错误:', error);
