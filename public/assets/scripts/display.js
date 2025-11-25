@@ -50,6 +50,8 @@ async function updateDisplay() {
         // 更新最后更新时间
         document.getElementById('lastUpdateTime').textContent = 
             new Date().toLocaleString('zh-CN');
+            
+        console.log('菜单显示更新成功');
     } catch (error) {
         console.error('更新显示失败:', error);
         // 降级处理，显示默认菜单
