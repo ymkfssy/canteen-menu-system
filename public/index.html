@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食堂菜单 - 今日菜品</title>
+    <link rel="stylesheet" href="/assets/styles/display.css">
+</head>
+<body>
+    <div class="display-screen spring-theme" id="displayScreen">
+        <div class="header">
+            <div class="date-display" id="currentDate"></div>
+            <div class="canteen-name">员工食堂</div>
+        </div>
+        
+        <div class="menu-container">
+            <!-- 凉菜区 -->
+            <div class="menu-category">
+                <div class="category-title">凉菜</div>
+                <div class="menu-items" id="coldDishes">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 热菜区 -->
+            <div class="menu-category">
+                <div class="category-title">热菜</div>
+                <div class="menu-items" id="hotDishes">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 主食区 -->
+            <div class="menu-category">
+                <div class="category-title">主食</div>
+                <div class="menu-items" id="staples">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 汤品区 -->
+            <div class="menu-category">
+                <div class="category-title">汤品</div>
+                <div class="menu-items" id="soups">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 水果区 -->
+            <div class="menu-category">
+                <div class="category-title">水果</div>
+                <div class="menu-items" id="fruits">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="update-time">最后更新: <span id="lastUpdateTime">--</span></div>
+        </div>
+    </div>
+
+    <script src="/assets/scripts/api.js"></script>
+    <script src="/assets/scripts/display.js"></script>
+</body>
+</html>

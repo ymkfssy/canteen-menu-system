@@ -1,0 +1,13 @@
+name = "canteen-menu-system"
+compatibility_date = "2023-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "canteen-db"
+database_id = "YOUR_DATABASE_ID"
+
+[env.production]
+pages_build_output_dir = "./public"
+
+[env.development]
+pages_build_output_dir = "./public"

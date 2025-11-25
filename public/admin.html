@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食堂菜单管理系统 - 后台管理</title>
+    <link rel="stylesheet" href="/assets/styles/admin.css">
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <h1>食堂菜单管理系统</h1>
+            <p>请输入管理员密码</p>
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" placeholder="管理员用户名" value="admin">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" placeholder="管理员密码">
+            </div>
+            <button id="loginBtn">登录</button>
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+
+    <!-- 管理界面 -->
+    <div class="admin-container" id="adminContainer" style="display: none;">
+        <header class="admin-header">
+            <h1>食堂菜单管理系统</h1>
+            <div class="admin-actions">
+                <span id="adminUsername">管理员</span>
+                <button id="logoutBtn">退出登录</button>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-tab="menu">菜单管理</a></li>
+                    <li><a href="#" class="nav-link" data-tab="theme">主题设置</a></li>
+                    <li><a href="#" class="nav-link" data-tab="upload">数据导入</a></li>
+                    <li><a href="#" class="nav-link" data-tab="settings">系统设置</a></li>
+                </ul>
+            </nav>
+
+            <div class="admin-content">
+                <!-- 菜单管理 -->
+                <section class="content-section active" id="menuSection">
+                    <h2>菜单管理</h2>
+                    <p class="section-description">编辑今日菜单，点击菜品名称或价格进行修改</p>
+                    
+                    <div class="category-editor">
+                        <!-- 凉菜 -->
+                        <div class="category-panel">
+                            <h3>凉菜 (<span class="item-count" id="coldDishesCount">0</span>/2)</h3>
+                            <div class="items-list" id="coldDishesEditor">
+                                <!-- 动态生成 -->
+                            </div>
+                            <button class="add-item-btn" data-category="coldDishes">+ 添加凉菜</button>
+                        </div>
+                        
+                        <!-- 热菜 -->
+                        <div class="category-panel">
+                            <h3>热菜 (<span class="item-count" id="hotDishesCount">0</span>/6)</h3>
+                            <div class="items-list" id="hotDishesEditor">
+                                <!-- 动态生成 -->
+                            </div>
+                            <button class="add-item-btn" data-category="hotDishes">+ 添加热菜</button>
+                        </div>
+                        
+                        <!-- 主食 -->
+                        <div class="category-panel">
+                            <h3>主食 (<span class="item-count" id="staplesCount">0</span>/6)</h3>
+                            <div class="items-list" id="staplesEditor">
+                                <!-- 动态生成 -->
+                            </div>
+                            <button class="add-item-btn" data-category="staples">+ 添加主食</button>
+                        </div>
+                        
+                        <!-- 汤品 -->
+                        <div class="category-panel">
+                            <h3>汤品 (<span class="item-count" id="soupsCount">0</span>/2)</h3>
+                            <div class="items-list" id="soupsEditor">
+                                <!-- 动态生成 -->
+                            </div>
+                            <button class="add-item-btn" data-category="soups">+ 添加汤品</button>
+                        </div>
+                        
+                        <!-- 水果 -->
+                        <div class="category-panel">
+                            <h3>水果 (<span class="item-count" id="fruitsCount">0</span>/2)</h3>
+                            <div class="items-list" id="fruitsEditor">
+                                <!-- 动态生成 -->
+                            </div>
+                            <button class="add-item-btn" data-category="fruits">+ 添加水果</button>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="saveMenuBtn" class="btn-primary">保存菜单</button>
+                        <button id="resetMenuBtn" class="btn-secondary">重置菜单</button>
+                    </div>
+                </section>
+
+                <!-- 主题设置 -->
+                <section class="content-section" id="themeSection">
+                    <h2>主题设置</h2>
+                    <p class="section-description">选择前台显示的主题，点击预览查看效果</p>
+                    
+                    <div class="theme-selector">
+                        <div class="theme-option active" data-theme="spring">
+                            <div class="theme-preview spring-preview"></div>
+                            <div class="theme-name">春季主题</div>
+                        </div>
+                        <div class="theme-option" data-theme="summer">
+                            <div class="theme-preview summer-preview"></div>
+                            <div class="theme-name">夏季主题</div>
+                        </div>
+                        <div class="theme-option" data-theme="autumn">
+                            <div class="theme-preview autumn-preview"></div>
+                            <div class="theme-name">秋季主题</div>
+                        </div>
+                        <div class="theme-option" data-theme="winter">
+                            <div class="theme-preview winter-preview"></div>
+                            <div class="theme-name">冬季主题</div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-container">
+                        <h3>前台预览</h3>
+                        <div class="preview-screen spring-theme" id="themePreview">
+                            <div class="preview-header">
+                                <div class="preview-date" id="previewDate"></div>
+                                <div class="preview-canteen">员工食堂</div>
+                            </div>
+                            <div class="preview-menu">
+                                <div class="preview-category">
+                                    <div class="preview-category-title">热菜</div>
+                                    <div class="preview-items">
+                                        <div class="preview-item">红烧肉 ¥28.00</div>
+                                        <div class="preview-item">宫保鸡丁 ¥22.00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="saveThemeBtn" class="btn-primary">应用主题</button>
+                    </div>
+                </section>
+
+                <!-- 数据导入 -->
+                <section class="content-section" id="uploadSection">
+                    <h2>数据导入</h2>
+                    <p class="section-description">通过Excel文件更新菜单数据</p>
+                    
+                    <div class="upload-area">
+                        <div class="upload-box" id="uploadBox">
+                            <div class="upload-icon">📤</div>
+                            <p>拖放Excel文件到这里，或点击选择文件</p>
+                            <input type="file" id="excelFile" accept=".xlsx, .xls" style="display: none;">
+                            <button class="btn-secondary" id="selectFileBtn">选择文件</button>
+                        </div>
+                        
+                        <div class="upload-info">
+                            <h3>Excel文件格式说明</h3>
+                            <p>请确保Excel文件包含以下列：类别、菜品名称、价格</p>
+                            <p>支持的类别：coldDishes(凉菜), hotDishes(热菜), staples(主食), soups(汤品), fruits(水果)</p>
+                            <p>每类菜品数量限制：凉菜(2)、热菜(6)、主食(6)、汤品(2)、水果(2)</p>
+                            <a href="#" id="downloadTemplate" class="download-link">下载模板文件</a>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="uploadBtn" class="btn-primary" disabled>上传并更新</button>
+                    </div>
+                </section>
+
+                <!-- 系统设置 -->
+                <section class="content-section" id="settingsSection">
+                    <h2>系统设置</h2>
+                    
+                    <div class="settings-panel">
+                        <div class="setting-item">
+                            <h3>修改管理员密码</h3>
+                            <div class="form-group">
+                                <label for="currentPassword">当前密码</label>
+                                <input type="password" id="currentPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">新密码</label>
+                                <input type="password" id="newPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">确认新密码</label>
+                                <input type="password" id="confirmPassword">
+                            </div>
+                            <button id="changePasswordBtn" class="btn-primary">修改密码</button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <h3>系统信息</h3>
+                            <div class="system-info">
+                                <p>版本: 1.0.0</p>
+                                <p>最后更新: <span id="systemLastUpdate">--</span></p>
+                                <p>当前主题: <span id="systemCurrentTheme">--</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/assets/scripts/api.js"></script>
+    <script src="/assets/scripts/admin.js"></script>
+</body>
+</html>

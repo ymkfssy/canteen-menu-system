@@ -1,0 +1,14 @@
+{
+  "name": "canteen-menu-system",
+  "version": "1.0.0",
+  "description": "食堂菜单管理系统",
+  "scripts": {
+    "dev": "wrangler pages dev public --d1=DB",
+    "deploy": "wrangler pages publish public",
+    "db:init": "wrangler d1 execute canteen-db --file=schema.sql",
+    "db:local": "wrangler d1 execute canteen-db --local --file=schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
