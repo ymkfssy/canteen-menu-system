@@ -4,7 +4,7 @@ compatibility_date = "2023-10-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "canteen-db"
-database_id = "YOUR_DATABASE_ID"
+database_id = "e161ab80-6232-4f6e-b010-119973c39a8e"
 
 [env.production]
 pages_build_output_dir = "./public"
