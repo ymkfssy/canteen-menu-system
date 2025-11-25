@@ -5,184 +5,202 @@
     <meta name="viewport" content="width=3200, initial-scale=1.0">
     <title>食堂菜单 - 今日菜品</title>
     <style>
-        /* 强制设置页面尺寸为3200×192 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        :root {
+            --header-gradient: linear-gradient(to right, #ff6b6b, #ff8e53);
+            --border-color: #ff9a9e;
+            --title-color: #ff6b6b;
+            --price-color: #ff6b6b;
+            --hover-bg: #fff9f9;
         }
         
-        html, body {
-            width: 3200px;
-            height: 192px;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
+        * {
+            box-sizing: border-box;
         }
         
         body {
-            background-color: #000;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            margin: 0;
+            padding: 15px;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            overflow-x: auto;
+            min-height: 100vh;
         }
         
-        .display-screen {
-            width: 3200px;
-            height: 192px;
+        .container {
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            position: relative;
-            padding: 8px 16px;
-            display: flex;
-            flex-direction: column;
+            margin: 0 auto;
         }
         
-        /* 优化后的四季主题样式 */
-        .spring-theme {
-            background: linear-gradient(135deg, 
-                #a8e6cf 0%, 
-                #dcedc1 40%, 
-                #ffd3b6 100%);
-            color: #2d5016;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        .summer-theme {
-            background: linear-gradient(135deg, 
-                #4fc3f7 0%, 
-                #29b6f6 30%, 
-                #81d4fa 70%, 
-                #b3e5fc 100%);
-            color: #01579b;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        .autumn-theme {
-            background: linear-gradient(135deg, 
-                #ffb74d 0%, 
-                #ff9800 30%, 
-                #ffcc80 70%, 
-                #ffe0b2 100%);
-            color: #5d4037;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        .winter-theme {
-            background: linear-gradient(135deg, 
-                #bbdefb 0%, 
-                #90caf9 30%, 
-                #e3f2fd 70%, 
-                #f3e5f5 100%);
-            color: #0d47a1;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        /* 头部样式 */
         .header {
+            height: 60px;
+            background: var(--header-gradient);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 4px 0;
-            border-bottom: 3px solid rgba(0,0,0,0.15);
-            margin-bottom: 8px;
-            height: 32px;
-        }
-        
-        .date-display {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .canteen-name {
+            justify-content: center;
+            color: white;
             font-size: 28px;
             font-weight: bold;
-            text-align: center;
+            position: relative;
+            padding: 0 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
         
-        /* 菜单容器 */
-        .menu-container {
+        .menu-content {
             display: flex;
-            height: calc(100% - 32px - 24px); /* 减去头部和底部高度 */
-            flex: 1;
+            flex-wrap: wrap;
+            padding: 12px;
         }
         
-        .menu-category {
+        .menu-section {
+            padding: 10px;
+            border-right: 2px dashed var(--border-color);
             flex: 1;
-            padding: 0 12px;
-            border-right: 2px dashed rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            min-width: 200px;
         }
         
-        .menu-category:last-child {
+        .menu-section:last-child {
             border-right: none;
         }
         
-        .category-title {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-align: center;
-            padding-bottom: 6px;
-            border-bottom: 2px solid rgba(0,0,0,0.15);
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .menu-items {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4px 0;
-        }
-        
-        .menu-item {
-            font-size: 22px;
-            margin: 4px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 28px;
-        }
-        
-        .item-name {
-            flex: 1;
-            text-align: left;
-            font-weight: 500;
-        }
-        
-        .item-price {
-            font-weight: bold;
-            text-align: right;
-            min-width: 100px;
-        }
-        
-        /* 底部样式 */
-        .footer {
-            height: 24px;
-            text-align: right;
-            padding-top: 4px;
-            border-top: 2px solid rgba(0,0,0,0.15);
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        
-        /* 空状态提示 */
-        .empty-message {
+        .section-title {
             font-size: 20px;
+            font-weight: bold;
+            color: var(--title-color);
+            margin-bottom: 10px;
             text-align: center;
-            color: rgba(0,0,0,0.5);
-            font-style: italic;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 6px;
         }
         
-        /* 特殊效果 - 为菜单项添加轻微阴影增强可读性 */
-        .menu-item {
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+        .dish-item {
+            background: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .dish-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            background: var(--hover-bg);
+        }
+        
+        .dish-name {
+            font-size: 16px;
+            font-weight: bold;
+            flex: 1;
+        }
+        
+        .dish-price {
+            font-size: 15px;
+            color: var(--price-color);
+            margin-left: 8px;
+            font-weight: bold;
+        }
+        
+        .special-tag {
+            background: var(--price-color);
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        
+        .cold-dishes { background: rgba(255, 245, 245, 0.7); }
+        .hot-dishes { background: rgba(255, 250, 245, 0.7); }
+        .staple-food { background: rgba(245, 255, 245, 0.7); }
+        .soup { background: rgba(245, 245, 255, 0.7); }
+        .fruit { background: rgba(255, 255, 245, 0.7); }
+        
+        .hot-dishes .dishes,
+        .staple-food .dishes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        
+        .datetime {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: white;
+            font-weight: normal;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .header {
+                font-size: 24px;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
+            
+            .dish-name {
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .menu-content {
+                flex-direction: column;
+            }
+            
+            .menu-section {
+                border-right: none;
+                border-bottom: 2px dashed var(--border-color);
+                margin-bottom: 10px;
+            }
+            
+            .menu-section:last-child {
+                border-bottom: none;
+            }
+            
+            .header {
+                font-size: 22px;
+                height: 50px;
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .datetime {
+                position: static;
+                transform: none;
+                margin-top: 5px;
+                text-align: center;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -540,3 +558,4 @@
     </script>
 </body>
 </html>
+
