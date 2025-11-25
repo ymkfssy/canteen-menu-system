@@ -2,14 +2,194 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=3200, initial-scale=1.0, user-scalable=no">
     <title>食堂菜单 - 今日菜品</title>
-    <link rel="stylesheet" href="/assets/styles/display.css">
+    <style>
+        /* 强制设置页面尺寸为3200×192 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        html, body {
+            width: 3200px;
+            height: 192px;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        
+        body {
+            background-color: #000;
+        }
+        
+        .display-screen {
+            width: 3200px;
+            height: 192px;
+            overflow: hidden;
+            position: relative;
+            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 优化后的四季主题样式 */
+        .spring-theme {
+            background: linear-gradient(135deg, 
+                #a8e6cf 0%, 
+                #dcedc1 40%, 
+                #ffd3b6 100%);
+            color: #2d5016;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .summer-theme {
+            background: linear-gradient(135deg, 
+                #4fc3f7 0%, 
+                #29b6f6 30%, 
+                #81d4fa 70%, 
+                #b3e5fc 100%);
+            color: #01579b;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .autumn-theme {
+            background: linear-gradient(135deg, 
+                #ffb74d 0%, 
+                #ff9800 30%, 
+                #ffcc80 70%, 
+                #ffe0b2 100%);
+            color: #5d4037;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .winter-theme {
+            background: linear-gradient(135deg, 
+                #bbdefb 0%, 
+                #90caf9 30%, 
+                #e3f2fd 70%, 
+                #f3e5f5 100%);
+            color: #0d47a1;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        /* 头部样式 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 3px solid rgba(0,0,0,0.15);
+            margin-bottom: 8px;
+            height: 32px;
+        }
+        
+        .date-display {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .canteen-name {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* 菜单容器 */
+        .menu-container {
+            display: flex;
+            height: calc(100% - 32px - 24px); /* 减去头部和底部高度 */
+            flex: 1;
+        }
+        
+        .menu-category {
+            flex: 1;
+            padding: 0 12px;
+            border-right: 2px dashed rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .menu-category:last-child {
+            border-right: none;
+        }
+        
+        .category-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(0,0,0,0.15);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-items {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4px 0;
+        }
+        
+        .menu-item {
+            font-size: 22px;
+            margin: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 28px;
+        }
+        
+        .item-name {
+            flex: 1;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .item-price {
+            font-weight: bold;
+            text-align: right;
+            min-width: 100px;
+        }
+        
+        /* 底部样式 */
+        .footer {
+            height: 24px;
+            text-align: right;
+            padding-top: 4px;
+            border-top: 2px solid rgba(0,0,0,0.15);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        /* 空状态提示 */
+        .empty-message {
+            font-size: 20px;
+            text-align: center;
+            color: rgba(0,0,0,0.5);
+            font-style: italic;
+        }
+        
+        /* 特殊效果 - 为菜单项添加轻微阴影增强可读性 */
+        .menu-item {
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+        }
+    </style>
 </head>
 <body>
     <div class="display-screen spring-theme" id="displayScreen">
         <div class="header">
-            <div class="date-display" id="currentDate"></div>
+            <div class="date-display" id="currentDate">2023年11月15日 星期三</div>
             <div class="canteen-name">员工食堂</div>
         </div>
         
@@ -18,7 +198,14 @@
             <div class="menu-category">
                 <div class="category-title">凉菜</div>
                 <div class="menu-items" id="coldDishes">
-                    <!-- 动态生成 -->
+                    <div class="menu-item">
+                        <span class="item-name">凉拌黄瓜</span>
+                        <span class="item-price">¥8.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">拍黄瓜</span>
+                        <span class="item-price">¥8.00</span>
+                    </div>
                 </div>
             </div>
             
@@ -26,7 +213,30 @@
             <div class="menu-category">
                 <div class="category-title">热菜</div>
                 <div class="menu-items" id="hotDishes">
-                    <!-- 动态生成 -->
+                    <div class="menu-item">
+                        <span class="item-name">红烧肉</span>
+                        <span class="item-price">¥28.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">宫保鸡丁</span>
+                        <span class="item-price">¥22.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">麻婆豆腐</span>
+                        <span class="item-price">¥18.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">清蒸鲈鱼</span>
+                        <span class="item-price">¥35.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">西红柿炒蛋</span>
+                        <span class="item-price">¥15.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">地三鲜</span>
+                        <span class="item-price">¥16.00</span>
+                    </div>
                 </div>
             </div>
             
@@ -34,7 +244,30 @@
             <div class="menu-category">
                 <div class="category-title">主食</div>
                 <div class="menu-items" id="staples">
-                    <!-- 动态生成 -->
+                    <div class="menu-item">
+                        <span class="item-name">米饭</span>
+                        <span class="item-price">¥2.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">馒头</span>
+                        <span class="item-price">¥1.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">面条</span>
+                        <span class="item-price">¥10.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">水饺</span>
+                        <span class="item-price">¥15.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">包子</span>
+                        <span class="item-price">¥2.50</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">煎饼</span>
+                        <span class="item-price">¥5.00</span>
+                    </div>
                 </div>
             </div>
             
@@ -42,7 +275,14 @@
             <div class="menu-category">
                 <div class="category-title">汤品</div>
                 <div class="menu-items" id="soups">
-                    <!-- 动态生成 -->
+                    <div class="menu-item">
+                        <span class="item-name">西红柿蛋汤</span>
+                        <span class="item-price">¥6.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">紫菜汤</span>
+                        <span class="item-price">¥5.00</span>
+                    </div>
                 </div>
             </div>
             
@@ -50,17 +290,253 @@
             <div class="menu-category">
                 <div class="category-title">水果</div>
                 <div class="menu-items" id="fruits">
-                    <!-- 动态生成 -->
+                    <div class="menu-item">
+                        <span class="item-name">苹果</span>
+                        <span class="item-price">¥5.00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">香蕉</span>
+                        <span class="item-price">¥4.00</span>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <div class="update-time">最后更新: <span id="lastUpdateTime">--</span></div>
+            <div class="update-time">最后更新: <span id="lastUpdateTime">2023-11-15 10:30:00</span></div>
         </div>
     </div>
 
-    <script src="/assets/scripts/api.js"></script>
-    <script src="/assets/scripts/display.js"></script>
+    <script>
+        // 前台显示脚本 - 针对3200×192分辨率优化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化显示
+            initDisplay();
+            
+            // 每30秒更新一次数据
+            setInterval(updateDisplay, 30000);
+        });
+
+        // 初始化显示
+        async function initDisplay() {
+            // 设置当前日期
+            updateDateDisplay();
+            
+            // 更新显示内容
+            await updateDisplay();
+        }
+
+        // 更新日期显示
+        function updateDateDisplay() {
+            const currentDate = new Date();
+            const dateString = currentDate.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            document.getElementById('currentDate').textContent = dateString;
+        }
+
+        // 更新显示内容
+        async function updateDisplay() {
+            try {
+                // 获取菜单数据
+                const menuData = await window.canteenAPI.getMenu();
+                
+                // 获取主题数据
+                const themeData = await window.canteenAPI.getThemes();
+                
+                // 更新各分类菜品
+                updateCategory('coldDishes', menuData.coldDishes);
+                updateCategory('hotDishes', menuData.hotDishes);
+                updateCategory('staples', menuData.staples);
+                updateCategory('soups', menuData.soups);
+                updateCategory('fruits', menuData.fruits);
+                
+                // 更新主题
+                updateTheme(themeData.activeTheme);
+                
+                // 更新最后更新时间
+                document.getElementById('lastUpdateTime').textContent = 
+                    new Date().toLocaleString('zh-CN');
+                    
+                console.log('菜单显示更新成功');
+            } catch (error) {
+                console.error('更新显示失败:', error);
+                // 降级处理，显示默认菜单
+                showFallbackMenu();
+            }
+        }
+
+        // 更新分类菜品显示
+        function updateCategory(categoryId, items) {
+            const container = document.getElementById(categoryId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (!items || items.length === 0) {
+                const emptyItem = document.createElement('div');
+                emptyItem.className = 'menu-item empty-message';
+                emptyItem.innerHTML = '<span>暂无菜品</span>';
+                container.appendChild(emptyItem);
+                return;
+            }
+            
+            items.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+                menuItem.innerHTML = `
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-price">¥${parseFloat(item.price).toFixed(2)}</span>
+                `;
+                container.appendChild(menuItem);
+            });
+        }
+
+        // 更新主题
+        function updateTheme(theme) {
+            const displayScreen = document.getElementById('displayScreen');
+            if (!displayScreen) return;
+            
+            // 移除所有主题类
+            displayScreen.classList.remove('spring-theme', 'summer-theme', 'autumn-theme', 'winter-theme');
+            // 添加当前主题类
+            displayScreen.classList.add(`${theme}-theme`);
+        }
+
+        // 显示降级菜单（当API不可用时）
+        function showFallbackMenu() {
+            const fallbackMenu = {
+                coldDishes: [
+                    { name: '凉拌黄瓜', price: '8.00' },
+                    { name: '拍黄瓜', price: '8.00' }
+                ],
+                hotDishes: [
+                    { name: '红烧肉', price: '28.00' },
+                    { name: '宫保鸡丁', price: '22.00' },
+                    { name: '麻婆豆腐', price: '18.00' },
+                    { name: '清蒸鲈鱼', price: '35.00' },
+                    { name: '西红柿炒蛋', price: '15.00' },
+                    { name: '地三鲜', price: '16.00' }
+                ],
+                staples: [
+                    { name: '米饭', price: '2.00' },
+                    { name: '馒头', price: '1.00' },
+                    { name: '面条', price: '10.00' },
+                    { name: '水饺', price: '15.00' },
+                    { name: '包子', price: '2.50' },
+                    { name: '煎饼', price: '5.00' }
+                ],
+                soups: [
+                    { name: '西红柿蛋汤', price: '6.00' },
+                    { name: '紫菜汤', price: '5.00' }
+                ],
+                fruits: [
+                    { name: '苹果', price: '5.00' },
+                    { name: '香蕉', price: '4.00' }
+                ]
+            };
+            
+            updateCategory('coldDishes', fallbackMenu.coldDishes);
+            updateCategory('hotDishes', fallbackMenu.hotDishes);
+            updateCategory('staples', fallbackMenu.staples);
+            updateCategory('soups', fallbackMenu.soups);
+            updateCategory('fruits', fallbackMenu.fruits);
+            
+            document.getElementById('lastUpdateTime').textContent = '数据加载失败，显示默认菜单';
+        }
+    </script>
+    
+    <!-- API脚本 -->
+    <script>
+        class CanteenAPI {
+          constructor() {
+            this.baseURL = '/api';
+          }
+
+          async request(endpoint, options = {}) {
+            const url = `${this.baseURL}${endpoint}`;
+            
+            try {
+              console.log(`API请求: ${options.method || 'GET'} ${url}`);
+              
+              const config = {
+                headers: {
+                  'Content-Type': 'application/json',
+                  ...options.headers
+                },
+                ...options
+              };
+              
+              // 如果是POST/PUT请求，确保body是JSON字符串
+              if (options.body && typeof options.body !== 'string') {
+                config.body = JSON.stringify(options.body);
+              }
+              
+              const response = await fetch(url, config);
+              console.log(`API响应: ${response.status} ${response.statusText}`);
+
+              if (!response.ok) {
+                let errorText;
+                try {
+                  const errorData = await response.json();
+                  errorText = errorData.error || errorData.detail || `HTTP错误: ${response.status}`;
+                  console.error('API错误详情:', errorData);
+                } catch {
+                  errorText = await response.text() || `HTTP错误: ${response.status}`;
+                }
+                
+                const error = new Error(errorText);
+                error.status = response.status;
+                throw error;
+              }
+
+              const data = await response.json();
+              console.log('API响应数据:', data);
+              return data;
+            } catch (error) {
+              console.error('API请求错误:', error);
+              throw error;
+            }
+          }
+
+          // 认证相关
+          async login(username, password) {
+            return this.request('/auth', {
+              method: 'POST',
+              body: { username, password }
+            });
+          }
+
+          // 菜单相关
+          async getMenu() {
+            return this.request('/menu');
+          }
+
+          async saveMenu(menuData) {
+            return this.request('/menu', {
+              method: 'POST',
+              body: menuData
+            });
+          }
+
+          // 主题相关
+          async getThemes() {
+            return this.request('/theme');
+          }
+
+          async setTheme(theme) {
+            return this.request('/theme', {
+              method: 'POST',
+              body: { theme }
+            });
+          }
+        }
+
+        // 创建全局API实例
+        window.canteenAPI = new CanteenAPI();
+    </script>
 </body>
 </html>
