@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>食堂菜单展示</title>
     <style>
-        /* 基础样式 - 与之前类似，但改为CSS变量 */
-        :root {
-            --header-gradient: linear-gradient(to right, #ff6b6b, #ff8e53);
-            --border-color: #ff9a9e;
-            --title-color: #ff6b6b;
-            --price-color: #ff6b6b;
-            --hover-bg: #fff9f9;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
         }
         
         body {
@@ -23,103 +21,210 @@
             overflow: hidden;
             width: 3200px;
             height: 192px;
-            margin: 0;
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            transition: background-color 0.5s ease;
         }
         
-        /* 其他样式与之前类似，使用CSS变量 */
         .container {
             width: 3200px;
             height: 192px;
             background: rgba(255, 255, 255, 0.95);
             position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
         
         .header {
-            height: 45px;
-            background: var(--header-gradient);
+            height: 40px;
+            background: var(--header-gradient, linear-gradient(to right, #ff6b6b, #ff8e53));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 26px;
             font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         
-        /* 菜单内容区域样式保持不变 */
         .menu-content {
             display: flex;
-            height: 147px;
-            padding: 8px;
+            height: 152px;
+            padding: 5px;
         }
         
         .menu-section {
             height: 100%;
-            padding: 8px;
-            border-right: 2px dashed var(--border-color);
+            padding: 5px;
+            border-right: 2px dashed var(--border-color, #ff9a9e);
+            overflow: hidden;
+        }
+        
+        .menu-section:last-child {
+            border-right: none;
         }
         
         .section-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            color: var(--title-color);
-            margin-bottom: 6px;
+            color: var(--title-color, #ff6b6b);
+            margin-bottom: 5px;
             text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 4px;
+            border-bottom: 2px solid var(--border-color, #ff9a9e);
+            padding-bottom: 3px;
+        }
+        
+        .dishes {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            height: calc(100% - 30px);
+            overflow: hidden;
         }
         
         .dish-item {
             background: white;
-            border-radius: 6px;
-            padding: 5px 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            padding: 6px 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            margin-bottom: 6px;
+            transition: all 0.3s ease;
+            min-height: 32px;
+        }
+        
+        .dish-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            background: var(--hover-bg, #fff9f9);
         }
         
         .dish-name {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: bold;
+            flex: 1;
         }
         
         .dish-price {
-            font-size: 13px;
-            color: var(--price-color);
+            font-size: 14px;
+            color: var(--price-color, #ff6b6b);
             margin-left: 8px;
             font-weight: bold;
+            white-space: nowrap;
         }
         
-        .special-tag {
-            background: var(--price-color);
-            color: white;
-            font-size: 10px;
-            padding: 1px 4px;
-            border-radius: 3px;
-            margin-left: 6px;
+        .cold-dishes {
+            width: 420px;
+            background: var(--cold-bg, rgba(255, 245, 245, 0.7));
         }
         
-        .cold-dishes { width: 400px; background: rgba(255, 245, 245, 0.7); }
-        .hot-dishes { width: 1200px; background: rgba(255, 250, 245, 0.7); }
-        .staple-food { width: 800px; background: rgba(245, 255, 245, 0.7); }
-        .soup { width: 400px; background: rgba(245, 245, 255, 0.7); }
-        .fruit { width: 400px; background: rgba(255, 255, 245, 0.7); }
+        .hot-dishes {
+            width: 1220px;
+            background: var(--hot-bg, rgba(255, 250, 245, 0.7));
+        }
         
-        .hot-dishes .dishes,
+        .hot-dishes .dishes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 6px;
+        }
+        
+        .staple-food {
+            width: 820px;
+            background: var(--staple-bg, rgba(245, 255, 245, 0.7));
+        }
+        
         .staple-food .dishes {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 8px;
+            gap: 6px;
+        }
+        
+        .soup {
+            width: 420px;
+            background: var(--soup-bg, rgba(245, 245, 255, 0.7));
+        }
+        
+        .fruit {
+            width: 320px;
+            background: var(--fruit-bg, rgba(255, 255, 245, 0.7));
         }
         
         .datetime {
             position: absolute;
-            top: 10px;
+            top: 8px;
             right: 20px;
-            font-size: 14px;
+            font-size: 16px;
             color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .special-tag {
+            background: var(--tag-bg, #ff6b6b);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 6px;
+            white-space: nowrap;
+        }
+        
+        /* 主题样式 */
+        .theme-spring {
+            --header-gradient: linear-gradient(to right, #ff6b6b, #ff8e53);
+            --border-color: #ff9a9e;
+            --title-color: #ff6b6b;
+            --price-color: #ff6b6b;
+            --hover-bg: #fff9f9;
+            --cold-bg: rgba(255, 245, 245, 0.7);
+            --hot-bg: rgba(255, 250, 245, 0.7);
+            --staple-bg: rgba(245, 255, 245, 0.7);
+            --soup-bg: rgba(245, 245, 255, 0.7);
+            --fruit-bg: rgba(255, 255, 245, 0.7);
+            --tag-bg: #ff6b6b;
+        }
+        
+        .theme-summer {
+            --header-gradient: linear-gradient(to right, #4facfe, #00f2fe);
+            --border-color: #4facfe;
+            --title-color: #4facfe;
+            --price-color: #4facfe;
+            --hover-bg: #f0f9ff;
+            --cold-bg: rgba(240, 249, 255, 0.7);
+            --hot-bg: rgba(240, 255, 255, 0.7);
+            --staple-bg: rgba(240, 255, 249, 0.7);
+            --soup-bg: rgba(240, 240, 255, 0.7);
+            --fruit-bg: rgba(255, 255, 240, 0.7);
+            --tag-bg: #4facfe;
+        }
+        
+        .theme-autumn {
+            --header-gradient: linear-gradient(to right, #ff9a62, #ffcb74);
+            --border-color: #ff9a62;
+            --title-color: #ff9a62;
+            --price-color: #ff9a62;
+            --hover-bg: #fff5e6;
+            --cold-bg: rgba(255, 245, 230, 0.7);
+            --hot-bg: rgba(255, 250, 230, 0.7);
+            --staple-bg: rgba(245, 255, 230, 0.7);
+            --soup-bg: rgba(245, 245, 230, 0.7);
+            --fruit-bg: rgba(255, 255, 230, 0.7);
+            --tag-bg: #ff9a62;
+        }
+        
+        .theme-winter {
+            --header-gradient: linear-gradient(to right, #a8c0ff, #8da2ff);
+            --border-color: #a8c0ff;
+            --title-color: #a8c0ff;
+            --price-color: #a8c0ff;
+            --hover-bg: #f0f4ff;
+            --cold-bg: rgba(240, 244, 255, 0.7);
+            --hot-bg: rgba(240, 248, 255, 0.7);
+            --staple-bg: rgba(240, 255, 255, 0.7);
+            --soup-bg: rgba(240, 240, 255, 0.7);
+            --fruit-bg: rgba(255, 255, 240, 0.7);
+            --tag-bg: #a8c0ff;
         }
     </style>
 </head>
@@ -127,33 +232,43 @@
     <div class="container">
         <div class="header">
             今日食堂菜单
-            <div class="datetime" id="datetime"></div>
+            <div class="datetime" id="datetime">2023年11月15日 星期三</div>
         </div>
         
         <div class="menu-content">
             <div class="menu-section cold-dishes">
                 <div class="section-title">凉菜</div>
-                <div class="dishes" id="cold-dishes-list"></div>
+                <div class="dishes" id="cold-dishes-list">
+                    <!-- 凉菜将通过JS动态生成 -->
+                </div>
             </div>
             
             <div class="menu-section hot-dishes">
                 <div class="section-title">热菜</div>
-                <div class="dishes" id="hot-dishes-list"></div>
+                <div class="dishes" id="hot-dishes-list">
+                    <!-- 热菜将通过JS动态生成 -->
+                </div>
             </div>
             
             <div class="menu-section staple-food">
                 <div class="section-title">主食</div>
-                <div class="dishes" id="staple-food-list"></div>
+                <div class="dishes" id="staple-food-list">
+                    <!-- 主食将通过JS动态生成 -->
+                </div>
             </div>
             
             <div class="menu-section soup">
                 <div class="section-title">汤品</div>
-                <div class="dishes" id="soup-list"></div>
+                <div class="dishes" id="soup-list">
+                    <!-- 汤品将通过JS动态生成 -->
+                </div>
             </div>
             
             <div class="menu-section fruit">
                 <div class="section-title">水果</div>
-                <div class="dishes" id="fruit-list"></div>
+                <div class="dishes" id="fruit-list">
+                    <!-- 水果将通过JS动态生成 -->
+                </div>
             </div>
         </div>
     </div>
@@ -189,13 +304,23 @@
             }
         }
         
+        // 加载背景设置
+        async function loadBackgroundSettings() {
+            try {
+                const response = await fetch('/api/background');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    document.body.style.setProperty('--bg-image', `url(${result.data.image_data})`);
+                }
+            } catch (error) {
+                console.error('加载背景设置时出错:', error);
+            }
+        }
+        
         // 应用主题
         function applyTheme(theme) {
-            const root = document.documentElement;
-            root.style.setProperty('--header-gradient', theme.header_gradient);
-            root.style.setProperty('--border-color', theme.border_color);
-            root.style.setProperty('--title-color', theme.title_color);
-            root.style.setProperty('--price-color', theme.price_color);
+            document.body.className = `theme-${theme.theme_name}`;
         }
         
         // 渲染菜单
@@ -281,12 +406,14 @@
         async function init() {
             updateDateTime();
             await loadThemeSettings();
+            await loadBackgroundSettings();
             await loadMenuData();
             
             // 每30秒刷新一次数据
             setInterval(async () => {
                 await loadMenuData();
                 await loadThemeSettings();
+                await loadBackgroundSettings();
             }, 30000);
         }
         
