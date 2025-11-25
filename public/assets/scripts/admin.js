@@ -364,6 +364,9 @@ function selectTheme(theme) {
     updateThemePreview(theme);
 }
 
+// 后台管理脚本 - 更新主题预览功能
+// ... 其他代码保持不变 ...
+
 function updateThemePreview(theme) {
     const previewScreen = document.getElementById('themePreview');
     if (!previewScreen) return;
@@ -373,6 +376,8 @@ function updateThemePreview(theme) {
     // 添加当前主题类
     previewScreen.classList.add(`${theme}-theme`);
 }
+
+// ... 其他代码保持不变 ...
 
 function updatePreviewDate() {
     const previewDate = document.getElementById('previewDate');
@@ -532,4 +537,5 @@ function switchTab(tabName) {
     if (tabName === 'theme') {
         updatePreviewDate();
     }
+
 }
