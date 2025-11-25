@@ -5,15 +5,7 @@
     <meta name="viewport" content="width=3200, initial-scale=1.0">
     <title>食堂菜单 - 今日菜品</title>
     <style>
-      
-        html, body {
-            width: 3200px;
-            height: 192px;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
+     
         
        /* 修改 body 样式 - 移除固定尺寸，改为自适应 */
 body {
@@ -267,14 +259,18 @@ body {
         .menu-item {
             text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
         }
+        .header-title {
+    flex: 1;
+    text-align: center;
+}
     </style>
 </head>
 <body>
     <div class="display-screen spring-theme" id="displayScreen">
         <div class="header">
-            <div class="date-display" id="currentDate">2023年11月15日 星期三</div>
-            <div class="canteen-name">员工食堂</div>
-        </div>
+    <div class="header-title">今日食堂菜单</div>
+    <div class="datetime" id="datetime"></div>
+</div>
         
         <div class="menu-container">
             <!-- 凉菜区 -->
@@ -623,5 +619,6 @@ body {
     </script>
 </body>
 </html>
+
 
 
