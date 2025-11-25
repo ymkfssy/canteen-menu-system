@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=3200, initial-scale=1.0">
     <title>食堂菜单 - 今日菜品</title>
     <style>
-     
-        
-       /* 修改 body 样式 - 移除固定尺寸，改为自适应 */
+     /* 修改 body 样式 - 移除固定尺寸，改为自适应 */
 body {
     background-color: #ff9a9e;
     background-image: var(--bg-image, none);
@@ -22,161 +20,7 @@ body {
     font-family: 'Microsoft YaHei', Arial, sans-serif;
     padding: 10px;
 }
-        
-        .display-screen {
-            width: 3200px;
-            height: 192px;
-            overflow: hidden;
-            position: relative;
-            padding: 8px 16px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* 优化后的四季主题样式 */
-        .spring-theme {
-            background: linear-gradient(135deg, 
-                #a8e6cf 0%, 
-                #dcedc1 40%, 
-                #ffd3b6 100%);
-            color: #2d5016;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        .summer-theme {
-            background: linear-gradient(135deg, 
-                #4fc3f7 0%, 
-                #29b6f6 30%, 
-                #81d4fa 70%, 
-                #b3e5fc 100%);
-            color: #01579b;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        .autumn-theme {
-            background: linear-gradient(135deg, 
-                #ffb74d 0%, 
-                #ff9800 30%, 
-                #ffcc80 70%, 
-                #ffe0b2 100%);
-            color: #5d4037;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        .winter-theme {
-            background: linear-gradient(135deg, 
-                #bbdefb 0%, 
-                #90caf9 30%, 
-                #e3f2fd 70%, 
-                #f3e5f5 100%);
-            color: #0d47a1;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        /* 头部样式 */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-            border-bottom: 3px solid rgba(0,0,0,0.15);
-            margin-bottom: 8px;
-            height: 32px;
-        }
-        
-        .date-display {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .canteen-name {
-            font-size: 28px;
-            font-weight: bold;
-            text-align: center;
-        }
-        
-        /* 菜单容器 */
-        .menu-container {
-            display: flex;
-            height: calc(100% - 32px - 24px); /* 减去头部和底部高度 */
-            flex: 1;
-        }
-        
-        .menu-category {
-            flex: 1;
-            padding: 0 12px;
-            border-right: 2px dashed rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        
-        .menu-category:last-child {
-            border-right: none;
-        }
-        
-        .category-title {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-align: center;
-            padding-bottom: 6px;
-            border-bottom: 2px solid rgba(0,0,0,0.15);
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .menu-items {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4px 0;
-        }
-        
-        .menu-item {
-            font-size: 22px;
-            margin: 4px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 28px;
-        }
-        
-        .item-name {
-            flex: 1;
-            text-align: left;
-            font-weight: 500;
-        }
-        
-        .item-price {
-            font-weight: bold;
-            text-align: right;
-            min-width: 100px;
-        }
-        
-        /* 底部样式 */
-        .footer {
-            height: 24px;
-            text-align: right;
-            padding-top: 4px;
-            border-top: 2px solid rgba(0,0,0,0.15);
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        
-        /* 空状态提示 */
-        .empty-message {
-            font-size: 20px;
-            text-align: center;
-            color: rgba(0,0,0,0.5);
-            font-style: italic;
-        }
-        
+
 /* 修改 container 样式 - 改为自适应 */
 .container {
     /* 移除固定宽高 */
@@ -254,14 +98,6 @@ body {
     .cold-dishes, .hot-dishes, .staple-food, .soup, .fruit {
         width: auto;
     }
-}
-        /* 特殊效果 - 为菜单项添加轻微阴影增强可读性 */
-        .menu-item {
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
-        }
-        .header-title {
-    flex: 1;
-    text-align: center;
 }
     </style>
 </head>
