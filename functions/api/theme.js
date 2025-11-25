@@ -62,7 +62,7 @@ async function handleGetThemes(context) {
   }
 }
 
-// 设置主题
+// 设置主题 - 修复事务处理
 async function handleSetTheme(context) {
   const { request, env } = context;
   
@@ -103,24 +103,32 @@ async function handleSetTheme(context) {
       });
     }
     
-    // 重置所有主题为非活跃
-    await env.DB.prepare("UPDATE themes SET is_active = FALSE").run();
-    
-    // 设置选定主题为活跃
-    const result = await env.DB.prepare(
-      "UPDATE themes SET is_active = TRUE WHERE name = ?"
-    ).bind(theme).run();
-    
-    console.log('主题更新结果:', result);
-    
-    return new Response(JSON.stringify({ 
-      success: true,
-      message: '主题已应用',
-      theme: theme
-    }), {
-      status: 200,
-      headers: getCorsHeaders()
-    });
+    // 使用批量操作替代事务
+    try {
+      // 准备所有SQL语句
+      const statements = [
+        // 重置所有主题为非活跃
+        env.DB.prepare("UPDATE themes SET is_active = FALSE"),
+        // 设置选定主题为活跃
+        env.DB.prepare("UPDATE themes SET is_active = TRUE WHERE name = ?").bind(theme)
+      ];
+      
+      // 执行批量操作
+      const results = await env.DB.batch(statements);
+      console.log('主题更新结果:', results);
+      
+      return new Response(JSON.stringify({ 
+        success: true,
+        message: '主题已应用',
+        theme: theme
+      }), {
+        status: 200,
+        headers: getCorsHeaders()
+      });
+    } catch (batchError) {
+      console.error('批量操作失败:', batchError);
+      throw batchError;
+    }
   } catch (error) {
     console.error('更新主题错误:', error);
     return new Response(JSON.stringify({ 
