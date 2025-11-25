@@ -5,14 +5,7 @@
     <meta name="viewport" content="width=3200, initial-scale=1.0">
     <title>食堂菜单 - 今日菜品</title>
     <style>
-        /* 强制设置页面尺寸为3200×192 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-        }
-        
+      
         html, body {
             width: 3200px;
             height: 192px;
@@ -22,9 +15,21 @@
             left: 0;
         }
         
-        body {
-            background-color: #000;
-        }
+       /* 修改 body 样式 - 移除固定尺寸，改为自适应 */
+body {
+    background-color: #ff9a9e;
+    background-image: var(--bg-image, none);
+    background-size: cover;
+    background-position: center;
+    color: #333;
+    /* 移除 overflow: hidden 和固定宽高 */
+    overflow: auto;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    padding: 10px;
+}
         
         .display-screen {
             width: 3200px;
@@ -180,6 +185,84 @@
             font-style: italic;
         }
         
+/* 修改 container 样式 - 改为自适应 */
+.container {
+    /* 移除固定宽高 */
+    width: 100%;
+    height: auto;
+    background: rgba(255, 255, 255, 0.95);
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+/* 修改 header 样式 - 确保标题真正居中 */
+.header {
+    height: 50px;
+    background: var(--header-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* 修改日期位置，避免影响标题居中 */
+.datetime {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: white;
+}
+
+/* 修改菜单内容区域 */
+.menu-content {
+    display: flex;
+    /* 移除固定高度 */
+    height: auto;
+    padding: 8px;
+    flex-wrap: wrap; /* 添加换行支持 */
+}
+
+/* 修改菜单区块为百分比宽度 */
+.cold-dishes { 
+    width: 15%; 
+    background: rgba(255, 245, 245, 0.7); 
+}
+.hot-dishes { 
+    width: 40%; 
+    background: rgba(255, 250, 245, 0.7); 
+}
+.staple-food { 
+    width: 25%; 
+    background: rgba(245, 255, 245, 0.7); 
+}
+.soup { 
+    width: 10%; 
+    background: rgba(245, 245, 255, 0.7); 
+}
+.fruit { 
+    width: 10%; 
+    background: rgba(255, 255, 245, 0.7); 
+}
+
+/* 添加响应式设计 */
+@media (max-width: 1200px) {
+    .menu-section {
+        min-width: 200px;
+        flex: 1;
+    }
+    
+    .cold-dishes, .hot-dishes, .staple-food, .soup, .fruit {
+        width: auto;
+    }
+}
         /* 特殊效果 - 为菜单项添加轻微阴影增强可读性 */
         .menu-item {
             text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
@@ -540,4 +623,5 @@
     </script>
 </body>
 </html>
+
 
