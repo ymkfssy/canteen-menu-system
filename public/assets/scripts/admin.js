@@ -1,4 +1,4 @@
-// 后台管理脚本
+// 后台管理脚本 - 增强错误处理
 document.addEventListener('DOMContentLoaded', function() {
     // 检查登录状态
     checkLoginStatus();
@@ -90,9 +90,10 @@ async function initAdminPanel() {
         await loadThemeData();
         updatePreviewDate();
         switchTab('menu');
+        console.log('后台管理面板初始化成功');
     } catch (error) {
         console.error('初始化管理面板失败:', error);
-        alert('初始化失败，请检查网络连接');
+        alert('初始化失败: ' + error.message);
     }
 }
 
@@ -116,7 +117,7 @@ async function handleLogin() {
             errorElement.textContent = result.error || '登录失败';
         }
     } catch (error) {
-        errorElement.textContent = '登录失败，请检查网络连接';
+        errorElement.textContent = '登录失败: ' + error.message;
     }
 }
 
@@ -138,9 +139,12 @@ async function loadMenuData() {
         
         // 更新菜品计数
         updateItemCounts(menuData);
+        console.log('菜单数据加载成功');
     } catch (error) {
         console.error('加载菜单数据失败:', error);
-        alert('加载菜单数据失败');
+        alert('加载菜单数据失败: ' + error.message);
+        // 使用模拟数据
+        useMockMenuData();
     }
 }
 
@@ -149,9 +153,12 @@ async function loadThemeData() {
         const themeData = await window.canteenAPI.getThemes();
         selectTheme(themeData.activeTheme);
         updateSystemInfo(themeData.activeTheme);
+        console.log('主题数据加载成功');
     } catch (error) {
         console.error('加载主题数据失败:', error);
-        alert('加载主题数据失败');
+        alert('加载主题数据失败: ' + error.message);
+        // 使用默认主题
+        selectTheme('spring');
     }
 }
 
@@ -171,9 +178,9 @@ function updateCategoryEditor(categoryId, items) {
         const itemEditor = document.createElement('div');
         itemEditor.className = 'menu-item-editor';
         itemEditor.innerHTML = `
-            <input type="text" class="item-name" value="${item.name}" data-category="${categoryId}" data-index="${index}">
-            <input type="text" class="item-price" value="${parseFloat(item.price).toFixed(2)}" data-category="${categoryId}" data-index="${index}">
-            <button class="delete-item-btn" data-category="${categoryId}" data-index="${index}">删除</button>
+            <input type="text" class="item-name" value="${item.name}" data-category="${categoryId}">
+            <input type="text" class="item-price" value="${parseFloat(item.price).toFixed(2)}" data-category="${categoryId}">
+            <button class="delete-item-btn" data-category="${categoryId}">删除</button>
         `;
         container.appendChild(itemEditor);
     });
@@ -182,8 +189,7 @@ function updateCategoryEditor(categoryId, items) {
     container.querySelectorAll('.delete-item-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
-            const index = parseInt(this.getAttribute('data-index'));
-            deleteMenuItem(category, index);
+            deleteMenuItem(this);
         });
     });
 }
@@ -236,15 +242,15 @@ function getCategoryName(categoryId) {
     return names[categoryId] || categoryId;
 }
 
-function deleteMenuItem(category, index) {
+function deleteMenuItem(button) {
     if (!confirm('确定要删除这个菜品吗？')) return;
     
-    const container = document.getElementById(`${category}Editor`);
-    const items = container.querySelectorAll('.menu-item-editor');
-    if (items[index]) {
-        container.removeChild(items[index]);
-        updateItemCount(category);
-    }
+    const container = button.parentElement.parentElement;
+    const itemEditor = button.parentElement;
+    const category = button.getAttribute('data-category');
+    
+    container.removeChild(itemEditor);
+    updateItemCount(category);
 }
 
 function updateItemCounts(menuData) {
@@ -283,14 +289,15 @@ async function saveMenu() {
             return;
         }
         
-        await window.canteenAPI.saveMenu(menuData);
-        alert('菜单已保存！');
+        const result = await window.canteenAPI.saveMenu(menuData);
+        alert(result.message || '菜单已保存！');
         
         // 更新菜品计数
         updateItemCounts(menuData);
+        console.log('菜单保存成功');
     } catch (error) {
         console.error('保存菜单失败:', error);
-        alert('保存菜单失败');
+        alert('保存菜单失败: ' + error.message);
     }
 }
 
@@ -346,7 +353,7 @@ async function resetMenu() {
         alert('菜单已重置！');
     } catch (error) {
         console.error('重置菜单失败:', error);
-        alert('重置菜单失败');
+        alert('重置菜单失败: ' + error.message);
     }
 }
 
@@ -364,9 +371,6 @@ function selectTheme(theme) {
     updateThemePreview(theme);
 }
 
-// 后台管理脚本 - 更新主题预览功能
-// ... 其他代码保持不变 ...
-
 function updateThemePreview(theme) {
     const previewScreen = document.getElementById('themePreview');
     if (!previewScreen) return;
@@ -376,8 +380,6 @@ function updateThemePreview(theme) {
     // 添加当前主题类
     previewScreen.classList.add(`${theme}-theme`);
 }
-
-// ... 其他代码保持不变 ...
 
 function updatePreviewDate() {
     const previewDate = document.getElementById('previewDate');
@@ -403,12 +405,13 @@ async function saveTheme() {
     const theme = selectedTheme.getAttribute('data-theme');
     
     try {
-        await window.canteenAPI.setTheme(theme);
-        alert('主题已应用！');
+        const result = await window.canteenAPI.setTheme(theme);
+        alert(result.message || '主题已应用！');
         updateSystemInfo(theme);
+        console.log('主题应用成功');
     } catch (error) {
         console.error('应用主题失败:', error);
-        alert('应用主题失败');
+        alert('应用主题失败: ' + error.message);
     }
 }
 
@@ -445,7 +448,7 @@ async function uploadExcel() {
     // 这里应该实现解析Excel文件并更新菜单数据的逻辑
     // 由于浏览器限制，这里仅模拟上传过程
     
-    alert('Excel文件上传成功！菜单数据已更新。');
+    alert('Excel文件上传功能将在后续版本中实现');
     
     // 模拟上传后的数据更新
     try {
@@ -460,8 +463,7 @@ async function uploadExcel() {
 
 function downloadTemplate() {
     // 这里应该实现生成并下载Excel模板的逻辑
-    alert('模板文件下载开始...');
-    // 在实际实现中，这里应该生成一个Excel文件并触发下载
+    alert('模板文件下载功能将在后续版本中实现');
 }
 
 function resetUploadArea() {
@@ -537,5 +539,46 @@ function switchTab(tabName) {
     if (tabName === 'theme') {
         updatePreviewDate();
     }
+}
 
+// 使用模拟菜单数据
+function useMockMenuData() {
+    const mockData = {
+        coldDishes: [
+            { name: '凉拌黄瓜', price: 8.00 },
+            { name: '拍黄瓜', price: 8.00 }
+        ],
+        hotDishes: [
+            { name: '红烧肉', price: 28.00 },
+            { name: '宫保鸡丁', price: 22.00 },
+            { name: '麻婆豆腐', price: 18.00 },
+            { name: '清蒸鲈鱼', price: 35.00 },
+            { name: '西红柿炒蛋', price: 15.00 },
+            { name: '地三鲜', price: 16.00 }
+        ],
+        staples: [
+            { name: '米饭', price: 2.00 },
+            { name: '馒头', price: 1.00 },
+            { name: '面条', price: 10.00 },
+            { name: '水饺', price: 15.00 },
+            { name: '包子', price: 2.50 },
+            { name: '煎饼', price: 5.00 }
+        ],
+        soups: [
+            { name: '西红柿蛋汤', price: 6.00 },
+            { name: '紫菜汤', price: 5.00 }
+        ],
+        fruits: [
+            { name: '苹果', price: 5.00 },
+            { name: '香蕉', price: 4.00 }
+        ]
+    };
+    
+    updateCategoryEditor('coldDishes', mockData.coldDishes);
+    updateCategoryEditor('hotDishes', mockData.hotDishes);
+    updateCategoryEditor('staples', mockData.staples);
+    updateCategoryEditor('soups', mockData.soups);
+    updateCategoryEditor('fruits', mockData.fruits);
+    
+    updateItemCounts(mockData);
 }
