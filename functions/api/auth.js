@@ -4,33 +4,57 @@ export async function onRequestPost(context) {
   try {
     const { username, password } = await request.json();
     
-    // 简单的认证逻辑 - 生产环境应该使用更安全的方案
-    const result = await env.DB.prepare(
-      "SELECT * FROM admin WHERE username = ?"
-    ).bind(username).first();
-    
-    if (!result) {
-      return new Response(JSON.stringify({ error: '用户不存在' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    
-    // 简化密码验证 - 生产环境应该使用bcrypt
-    if (password === 'admin') { // 默认密码
-      return new Response(JSON.stringify({ success: true }), {
-        headers: { 'Content-Type': 'application/json' }
+    // 简单的认证逻辑
+    if (username === 'admin' && password === 'admin') {
+      return new Response(JSON.stringify({ 
+        success: true,
+        message: '登录成功'
+      }), {
+        status: 200,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
       });
     } else {
-      return new Response(JSON.stringify({ error: '密码错误' }), {
+      return new Response(JSON.stringify({ 
+        error: '用户名或密码错误' 
+      }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
       });
     }
   } catch (error) {
-    return new Response(JSON.stringify({ error: '服务器错误' }), {
+    console.error('认证错误:', error);
+    return new Response(JSON.stringify({ 
+      error: '服务器错误: ' + error.message 
+    }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      }
     });
   }
+}
+
+// 处理预检请求
+export async function onRequestOptions(context) {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  });
 }
