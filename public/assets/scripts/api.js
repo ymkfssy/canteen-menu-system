@@ -7,16 +7,30 @@ class CanteenAPI {
     const url = `${this.baseURL}${endpoint}`;
     
     try {
-      const response = await fetch(url, {
+      const config = {
         headers: {
           'Content-Type': 'application/json',
           ...options.headers
         },
         ...options
-      });
+      };
+      
+      // 如果是POST请求，确保body是JSON字符串
+      if (options.body && typeof options.body !== 'string') {
+        config.body = JSON.stringify(options.body);
+      }
+      
+      const response = await fetch(url, config);
 
       if (!response.ok) {
-        throw new Error(`API请求失败: ${response.status}`);
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: errorText || `HTTP错误: ${response.status}` };
+        }
+        throw new Error(errorData.error || errorData.detail || `API请求失败: ${response.status}`);
       }
 
       return response.json();
@@ -30,7 +44,7 @@ class CanteenAPI {
   async login(username, password) {
     return this.request('/auth', {
       method: 'POST',
-      body: JSON.stringify({ username, password })
+      body: { username, password }
     });
   }
 
@@ -42,7 +56,7 @@ class CanteenAPI {
   async saveMenu(menuData) {
     return this.request('/menu', {
       method: 'POST',
-      body: JSON.stringify(menuData)
+      body: menuData
     });
   }
 
@@ -54,7 +68,7 @@ class CanteenAPI {
   async setTheme(theme) {
     return this.request('/theme', {
       method: 'POST',
-      body: JSON.stringify({ theme })
+      body: { theme }
     });
   }
 }
