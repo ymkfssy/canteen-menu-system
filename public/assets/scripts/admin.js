@@ -1,5 +1,6 @@
-// 后台管理脚本 - 增强错误处理
+// 后台管理脚本 - 增强错误处理和调试信息
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('后台管理页面加载完成');
     // 检查登录状态
     checkLoginStatus();
     
@@ -9,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function checkLoginStatus() {
     const isLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+    console.log('登录状态检查:', isLoggedIn);
     
     if (isLoggedIn) {
         showAdminPanel();
@@ -18,17 +20,21 @@ function checkLoginStatus() {
 }
 
 function showLoginForm() {
+    console.log('显示登录表单');
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('adminContainer').style.display = 'none';
 }
 
 function showAdminPanel() {
+    console.log('显示管理面板');
     document.getElementById('loginContainer').style.display = 'none';
     document.getElementById('adminContainer').style.display = 'block';
     initAdminPanel();
 }
 
 function initEventListeners() {
+    console.log('初始化事件监听器');
+    
     // 登录按钮
     document.getElementById('loginBtn').addEventListener('click', handleLogin);
     
@@ -39,7 +45,9 @@ function initEventListeners() {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            switchTab(this.getAttribute('data-tab'));
+            const tab = this.getAttribute('data-tab');
+            console.log('切换标签:', tab);
+            switchTab(tab);
         });
     });
     
@@ -72,19 +80,24 @@ function initEventListeners() {
     // 添加菜品按钮
     document.querySelectorAll('.add-item-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            addMenuItem(this.getAttribute('data-category'));
+            const category = this.getAttribute('data-category');
+            console.log('添加菜品:', category);
+            addMenuItem(category);
         });
     });
     
     // 主题选择
     document.querySelectorAll('.theme-option').forEach(option => {
         option.addEventListener('click', function() {
-            selectTheme(this.getAttribute('data-theme'));
+            const theme = this.getAttribute('data-theme');
+            console.log('选择主题:', theme);
+            selectTheme(theme);
         });
     });
 }
 
 async function initAdminPanel() {
+    console.log('初始化管理面板');
     try {
         await loadMenuData();
         await loadThemeData();
@@ -102,6 +115,8 @@ async function handleLogin() {
     const password = document.getElementById('password').value;
     const errorElement = document.getElementById('loginError');
     
+    console.log('登录尝试:', { username, hasPassword: !!password });
+    
     if (!username || !password) {
         errorElement.textContent = '请输入用户名和密码';
         return;
@@ -109,6 +124,7 @@ async function handleLogin() {
     
     try {
         const result = await window.canteenAPI.login(username, password);
+        console.log('登录响应:', result);
         
         if (result.success) {
             sessionStorage.setItem('adminLoggedIn', 'true');
@@ -117,11 +133,13 @@ async function handleLogin() {
             errorElement.textContent = result.error || '登录失败';
         }
     } catch (error) {
+        console.error('登录错误:', error);
         errorElement.textContent = '登录失败: ' + error.message;
     }
 }
 
 function handleLogout() {
+    console.log('用户退出登录');
     sessionStorage.setItem('adminLoggedIn', 'false');
     showLoginForm();
     document.getElementById('username').value = 'admin';
@@ -129,8 +147,11 @@ function handleLogout() {
 }
 
 async function loadMenuData() {
+    console.log('开始加载菜单数据');
     try {
         const menuData = await window.canteenAPI.getMenu();
+        console.log('菜单数据加载成功:', menuData);
+        
         updateCategoryEditor('coldDishes', menuData.coldDishes);
         updateCategoryEditor('hotDishes', menuData.hotDishes);
         updateCategoryEditor('staples', menuData.staples);
@@ -149,8 +170,11 @@ async function loadMenuData() {
 }
 
 async function loadThemeData() {
+    console.log('开始加载主题数据');
     try {
         const themeData = await window.canteenAPI.getThemes();
+        console.log('主题数据加载成功:', themeData);
+        
         selectTheme(themeData.activeTheme);
         updateSystemInfo(themeData.activeTheme);
         console.log('主题数据加载成功');
@@ -164,8 +188,12 @@ async function loadThemeData() {
 
 function updateCategoryEditor(categoryId, items) {
     const container = document.getElementById(`${categoryId}Editor`);
-    if (!container) return;
+    if (!container) {
+        console.error('找不到容器:', `${categoryId}Editor`);
+        return;
+    }
     
+    console.log(`更新分类编辑器 ${categoryId}, 有 ${items?.length || 0} 个菜品`);
     container.innerHTML = '';
     
     if (!items || items.length === 0) {
@@ -178,8 +206,8 @@ function updateCategoryEditor(categoryId, items) {
         const itemEditor = document.createElement('div');
         itemEditor.className = 'menu-item-editor';
         itemEditor.innerHTML = `
-            <input type="text" class="item-name" value="${item.name}" data-category="${categoryId}">
-            <input type="text" class="item-price" value="${parseFloat(item.price).toFixed(2)}" data-category="${categoryId}">
+            <input type="text" class="item-name" value="${item.name || ''}" data-category="${categoryId}">
+            <input type="text" class="item-price" value="${parseFloat(item.price || 0).toFixed(2)}" data-category="${categoryId}">
             <button class="delete-item-btn" data-category="${categoryId}">删除</button>
         `;
         container.appendChild(itemEditor);
@@ -189,6 +217,7 @@ function updateCategoryEditor(categoryId, items) {
     container.querySelectorAll('.delete-item-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
+            console.log('删除菜品:', category);
             deleteMenuItem(this);
         });
     });
@@ -274,6 +303,7 @@ function updateItemCount(category, count) {
 }
 
 async function saveMenu() {
+    console.log('开始保存菜单');
     try {
         // 收集菜单数据
         const menuData = {
@@ -284,12 +314,15 @@ async function saveMenu() {
             fruits: collectCategoryData('fruits')
         };
         
+        console.log('要保存的菜单数据:', menuData);
+        
         // 验证数据
         if (!validateMenuData(menuData)) {
             return;
         }
         
         const result = await window.canteenAPI.saveMenu(menuData);
+        console.log('保存菜单响应:', result);
         alert(result.message || '菜单已保存！');
         
         // 更新菜品计数
@@ -358,6 +391,7 @@ async function resetMenu() {
 }
 
 function selectTheme(theme) {
+    console.log('选择主题:', theme);
     document.querySelectorAll('.theme-option').forEach(option => {
         option.classList.remove('active');
     });
@@ -403,9 +437,11 @@ async function saveTheme() {
     }
     
     const theme = selectedTheme.getAttribute('data-theme');
+    console.log('保存主题:', theme);
     
     try {
         const result = await window.canteenAPI.setTheme(theme);
+        console.log('保存主题响应:', result);
         alert(result.message || '主题已应用！');
         updateSystemInfo(theme);
         console.log('主题应用成功');
@@ -525,6 +561,7 @@ function updateSystemInfo(theme) {
 }
 
 function switchTab(tabName) {
+    console.log('切换标签页:', tabName);
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
     });
@@ -543,6 +580,7 @@ function switchTab(tabName) {
 
 // 使用模拟菜单数据
 function useMockMenuData() {
+    console.log('使用模拟菜单数据');
     const mockData = {
         coldDishes: [
             { name: '凉拌黄瓜', price: 8.00 },
