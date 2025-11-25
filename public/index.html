@@ -142,6 +142,15 @@
             font-weight: normal;
         }
         
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px;
+            text-align: center;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 1200px) {
             .header {
@@ -193,22 +202,16 @@
             <div class="datetime" id="datetime"></div>
         </div>
         
+        <!-- 错误信息显示区域 -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        
         <div class="menu-content">
             <div class="menu-section cold-dishes">
                 <div class="section-title">凉菜</div>
                 <div class="dishes" id="cold-dishes-list">
+                    <!-- 默认显示内容，API加载后会被替换 -->
                     <div class="dish-item">
-                        <span class="dish-name">凉拌黄瓜</span>
-                        <span class="dish-price">¥8</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">凉拌海带丝</span>
-                        <span class="dish-price">¥10</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">凉拌木耳</span>
-                        <span class="dish-price">¥12</span>
-                        <span class="special-tag">新品</span>
+                        <span class="dish-name">加载中...</span>
                     </div>
                 </div>
             </div>
@@ -217,29 +220,7 @@
                 <div class="section-title">热菜</div>
                 <div class="dishes" id="hot-dishes-list">
                     <div class="dish-item">
-                        <span class="dish-name">红烧肉</span>
-                        <span class="dish-price">¥25</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">宫保鸡丁</span>
-                        <span class="dish-price">¥22</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">麻婆豆腐</span>
-                        <span class="dish-price">¥18</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">清蒸鲈鱼</span>
-                        <span class="dish-price">¥35</span>
-                        <span class="special-tag">推荐</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">西红柿炒蛋</span>
-                        <span class="dish-price">¥15</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">地三鲜</span>
-                        <span class="dish-price">¥16</span>
+                        <span class="dish-name">加载中...</span>
                     </div>
                 </div>
             </div>
@@ -248,21 +229,7 @@
                 <div class="section-title">主食</div>
                 <div class="dishes" id="staple-food-list">
                     <div class="dish-item">
-                        <span class="dish-name">米饭</span>
-                        <span class="dish-price">¥2</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">馒头</span>
-                        <span class="dish-price">¥1</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">面条</span>
-                        <span class="dish-price">¥8</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">饺子</span>
-                        <span class="dish-price">¥12</span>
-                        <span class="special-tag">热销</span>
+                        <span class="dish-name">加载中...</span>
                     </div>
                 </div>
             </div>
@@ -271,12 +238,7 @@
                 <div class="section-title">汤品</div>
                 <div class="dishes" id="soup-list">
                     <div class="dish-item">
-                        <span class="dish-name">紫菜蛋花汤</span>
-                        <span class="dish-price">¥5</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">西红柿鸡蛋汤</span>
-                        <span class="dish-price">¥5</span>
+                        <span class="dish-name">加载中...</span>
                     </div>
                 </div>
             </div>
@@ -285,12 +247,7 @@
                 <div class="section-title">水果</div>
                 <div class="dishes" id="fruit-list">
                     <div class="dish-item">
-                        <span class="dish-name">苹果</span>
-                        <span class="dish-price">¥3</span>
-                    </div>
-                    <div class="dish-item">
-                        <span class="dish-name">香蕉</span>
-                        <span class="dish-price">¥2</span>
+                        <span class="dish-name">加载中...</span>
                     </div>
                 </div>
             </div>
@@ -298,78 +255,101 @@
     </div>
 
     <script>
+        // API配置
+        const API_CONFIG = {
+            menuItems: '/api/menu-items',
+            themes: '/api/themes'
+        };
+        
+        // 显示错误信息
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            console.error(message);
+        }
+        
+        // 隐藏错误信息
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+        
         // 从API获取数据
         async function loadMenuData() {
             try {
-                // 模拟数据 - 实际使用时应调用真实API
-                const mockData = {
-                    success: true,
-                    data: [
-                        { id: 1, name: '凉拌黄瓜', price: 8, category: '凉菜' },
-                        { id: 2, name: '凉拌海带丝', price: 10, category: '凉菜' },
-                        { id: 3, name: '凉拌木耳', price: 12, category: '凉菜', tag: '新品' },
-                        { id: 4, name: '红烧肉', price: 25, category: '热菜' },
-                        { id: 5, name: '宫保鸡丁', price: 22, category: '热菜' },
-                        { id: 6, name: '麻婆豆腐', price: 18, category: '热菜' },
-                        { id: 7, name: '清蒸鲈鱼', price: 35, category: '热菜', tag: '推荐' },
-                        { id: 8, name: '西红柿炒蛋', price: 15, category: '热菜' },
-                        { id: 9, name: '地三鲜', price: 16, category: '热菜' },
-                        { id: 10, name: '米饭', price: 2, category: '主食' },
-                        { id: 11, name: '馒头', price: 1, category: '主食' },
-                        { id: 12, name: '面条', price: 8, category: '主食' },
-                        { id: 13, name: '饺子', price: 12, category: '主食', tag: '热销' },
-                        { id: 14, name: '紫菜蛋花汤', price: 5, category: '汤品' },
-                        { id: 15, name: '西红柿鸡蛋汤', price: 5, category: '汤品' },
-                        { id: 16, name: '苹果', price: 3, category: '水果' },
-                        { id: 17, name: '香蕉', price: 2, category: '水果' }
-                    ]
-                };
+                hideError();
                 
-                // 实际使用时请取消下面注释，并删除上面的mockData
-                // const response = await fetch('/api/menu-items');
-                // const result = await response.json();
+                // 实际API调用
+                const response = await fetch(API_CONFIG.menuItems);
                 
-                // 使用模拟数据
-                const result = mockData;
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态: ${response.status}`);
+                }
+                
+                const result = await response.json();
                 
                 if (result.success) {
                     renderMenu(result.data);
                 } else {
-                    console.error('加载菜单数据失败:', result.error);
+                    throw new Error(result.error || '加载菜单数据失败');
                 }
             } catch (error) {
                 console.error('加载菜单数据时出错:', error);
+                showError(`菜单加载失败: ${error.message}。使用默认数据展示。`);
+                
+                // 使用默认数据作为后备方案
+                const defaultData = getDefaultMenuData();
+                renderMenu(defaultData);
             }
+        }
+        
+        // 获取默认菜单数据
+        function getDefaultMenuData() {
+            return [
+                { id: 1, name: '凉拌黄瓜', price: 8, category: '凉菜' },
+                { id: 2, name: '凉拌海带丝', price: 10, category: '凉菜' },
+                { id: 3, name: '红烧肉', price: 25, category: '热菜' },
+                { id: 4, name: '宫保鸡丁', price: 22, category: '热菜' },
+                { id: 5, name: '麻婆豆腐', price: 18, category: '热菜' },
+                { id: 6, name: '清蒸鲈鱼', price: 35, category: '热菜' },
+                { id: 7, name: '西红柿炒蛋', price: 15, category: '热菜' },
+                { id: 8, name: '地三鲜', price: 16, category: '热菜' },
+                { id: 9, name: '米饭', price: 2, category: '主食' },
+                { id: 10, name: '馒头', price: 1, category: '主食' },
+                { id: 11, name: '面条', price: 8, category: '主食' },
+                { id: 12, name: '饺子', price: 12, category: '主食' },
+                { id: 13, name: '紫菜蛋花汤', price: 5, category: '汤品' },
+                { id: 14, name: '西红柿鸡蛋汤', price: 5, category: '汤品' },
+                { id: 15, name: '苹果', price: 3, category: '水果' },
+                { id: 16, name: '香蕉', price: 2, category: '水果' }
+            ];
         }
         
         // 加载主题设置
         async function loadThemeSettings() {
             try {
-                // 模拟主题数据
-                const mockTheme = {
-                    success: true,
-                    data: {
-                        current: {
-                            header_gradient: 'linear-gradient(to right, #ff6b6b, #ff8e53)',
-                            border_color: '#ff9a9e',
-                            title_color: '#ff6b6b',
-                            price_color: '#ff6b6b'
-                        }
-                    }
-                };
+                const response = await fetch(API_CONFIG.themes);
                 
-                // 实际使用时请取消下面注释，并删除上面的mockTheme
-                // const response = await fetch('/api/themes');
-                // const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态: ${response.status}`);
+                }
                 
-                // 使用模拟数据
-                const result = mockTheme;
+                const result = await response.json();
                 
                 if (result.success && result.data.current) {
                     applyTheme(result.data.current);
+                } else {
+                    throw new Error(result.error || '主题数据格式不正确');
                 }
             } catch (error) {
                 console.error('加载主题设置时出错:', error);
+                // 使用默认主题
+                applyTheme({
+                    header_gradient: 'linear-gradient(to right, #ff6b6b, #ff8e53)',
+                    border_color: '#ff9a9e',
+                    title_color: '#ff6b6b',
+                    price_color: '#ff6b6b'
+                });
             }
         }
         
@@ -390,9 +370,22 @@
                 document.getElementById(`${section}-list`).innerHTML = '';
             });
             
+            // 检查数据格式
+            if (!Array.isArray(menuData)) {
+                console.error('菜单数据不是数组格式:', menuData);
+                showError('菜单数据格式不正确');
+                return;
+            }
+            
             // 按分类分组
             const categorized = {};
             menuData.forEach(item => {
+                // 验证必要字段
+                if (!item.category || !item.name || item.price === undefined) {
+                    console.warn('菜单项数据不完整:', item);
+                    return;
+                }
+                
                 if (!categorized[item.category]) {
                     categorized[item.category] = [];
                 }
@@ -409,8 +402,18 @@
                         const dishElement = createDishElement(dish);
                         container.appendChild(dishElement);
                     });
+                } else {
+                    console.warn(`未找到分类容器: ${category}`);
                 }
             });
+            
+            // 检查是否有数据
+            const totalItems = Object.values(categorized).reduce((sum, arr) => sum + arr.length, 0);
+            if (totalItems === 0) {
+                showError('菜单数据为空，请检查后台数据');
+            } else {
+                hideError();
+            }
         }
         
         function getContainerId(category) {
@@ -464,17 +467,33 @@
         // 初始化
         async function init() {
             updateDateTime();
-            await loadThemeSettings();
-            await loadMenuData();
+            
+            try {
+                await Promise.all([
+                    loadThemeSettings(),
+                    loadMenuData()
+                ]);
+            } catch (error) {
+                console.error('初始化失败:', error);
+                showError(`初始化失败: ${error.message}`);
+            }
             
             // 每30秒刷新一次数据
             setInterval(async () => {
-                await loadMenuData();
-                await loadThemeSettings();
+                try {
+                    await loadMenuData();
+                    await loadThemeSettings();
+                } catch (error) {
+                    console.error('刷新数据失败:', error);
+                showError(`刷新数据失败: ${error.message}`);
+                // 即使刷新失败，也不要中断后续刷新
+                setTimeout(() => hideError(), 5000);
+                }
             }, 30000);
         }
         
-        init();
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
