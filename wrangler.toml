@@ -1,0 +1,12 @@
+# wrangler.toml
+name = "canteen-menu-system"
+compatibility_date = "2024-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "canteen-menu-db"
+database_id = "9d63d5c2-4313-4db7-8698-75ed215f7ff0"
+
+[pages_build_output]
+dir = "public"

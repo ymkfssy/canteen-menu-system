@@ -1,0 +1,12 @@
+{
+  "name": "canteen-menu-system",
+  "version": "1.0.0",
+  "description": "Canteen Menu System with Cloudflare Pages and D1",
+  "scripts": {
+    "dev": "wrangler pages dev public --local --persist",
+    "deploy": "wrangler pages publish public --project-name=canteen-menu-system"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
