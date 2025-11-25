@@ -1,4 +1,4 @@
-// 前台显示脚本
+// 前台显示脚本 - 针对3200×192分辨率优化
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化显示
     initDisplay();
@@ -52,7 +52,7 @@ async function updateDisplay() {
             new Date().toLocaleString('zh-CN');
     } catch (error) {
         console.error('更新显示失败:', error);
-        // 可以在这里添加降级处理，如显示默认菜单
+        // 降级处理，显示默认菜单
         showFallbackMenu();
     }
 }
@@ -66,8 +66,8 @@ function updateCategory(categoryId, items) {
     
     if (!items || items.length === 0) {
         const emptyItem = document.createElement('div');
-        emptyItem.className = 'menu-item';
-        emptyItem.innerHTML = '<span class="item-name">--</span><span class="item-price">--</span>';
+        emptyItem.className = 'menu-item empty-message';
+        emptyItem.innerHTML = '<span>暂无菜品</span>';
         container.appendChild(emptyItem);
         return;
     }
