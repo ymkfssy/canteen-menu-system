@@ -35,7 +35,7 @@ INSERT OR IGNORE INTO themes (name, is_active, config) VALUES
 
 -- 插入默认管理员 (密码: admin)
 INSERT OR IGNORE INTO admin (username, password_hash) VALUES 
-('admin', '$2a$10$rOzZJ4c8n6Y2Y2Q2Y2Q2YuY2Q2Y2Q2Y2Q2Y2Q2Y2Q2Y2Q2Y2Q2Y2');
+('admin', 'admin');
 
 -- 插入默认菜单项
 INSERT OR IGNORE INTO menu_items (category, name, price, sort_order) VALUES 
