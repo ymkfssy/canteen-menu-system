@@ -643,35 +643,51 @@ class CanteenAdmin {
         }
     }
 
-    async loadSystemInfo() {
-        try {
-            const [menuResponse, themeResponse, bgResponse] = await Promise.all([
-                fetch('/api/menu-items'),
-                fetch('/api/themes'),
-                fetch('/api/background')
-            ]);
-
-            const menuResult = await menuResponse.json();
-            const themeResult = await themeResponse.json();
-            const bgResult = await bgResponse.json();
-
-            document.getElementById('db-status').textContent = '正常';
-            document.getElementById('menu-items-count').textContent = 
-                menuResult.success ? menuResult.data.length : '未知';
-            
-            if (themeResult.success && themeResult.data.current) {
-                this.currentTheme = themeResult.data.current.theme_name;
-                document.querySelectorAll('.theme-option').forEach(option => {
-                    option.classList.remove('active');
-                });
-                document.querySelector(`[data-theme="${this.currentTheme}"]`).classList.add('active');
-            }
-
-        } catch (error) {
-            document.getElementById('db-status').textContent = '异常';
-            console.error('加载系统信息失败:', error);
-        }
+async loadSystemInfo() {
+  try {
+    // 只检查核心的菜单项API
+    const menuResponse = await fetch('/api/menu-items');
+    
+    if (menuResponse.ok) {
+      const menuResult = await menuResponse.json();
+      document.getElementById('db-status').textContent = '正常';
+      document.getElementById('menu-items-count').textContent = 
+        menuResult.success ? menuResult.data.length : '未知';
+    } else {
+      throw new Error('菜单数据加载失败');
     }
+
+    // 主题和背景信息不是关键，不阻塞主要状态显示
+    try {
+      const [themeResponse, bgResponse] = await Promise.all([
+        fetch('/api/themes'),
+        fetch('/api/background')
+      ]);
+
+      const themeResult = await themeResponse.json();
+      const bgResult = await bgResponse.json();
+
+      if (themeResult.success && themeResult.data.current) {
+        this.currentTheme = themeResult.data.current.theme_name;
+        document.querySelectorAll('.theme-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        const activeOption = document.querySelector(`[data-theme="${this.currentTheme}"]`);
+        if (activeOption) {
+          activeOption.classList.add('active');
+        }
+      }
+    } catch (secondaryError) {
+      console.warn('加载主题或背景信息时出错:', secondaryError);
+      // 不将次要错误视为数据库异常
+    }
+
+  } catch (error) {
+    document.getElementById('db-status').textContent = '异常';
+    document.getElementById('menu-items-count').textContent = '未知';
+    console.error('加载系统信息失败:', error);
+  }
+}
 
     updateSystemInfo() {
         document.getElementById('menu-items-count').textContent = this.menuItems.length;
