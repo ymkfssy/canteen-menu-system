@@ -3,213 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>食堂菜单展示</title>
+    <title>食堂菜单展示系统</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-title">今日食堂菜单</div>
-            <div class="datetime" id="datetime">2023年11月15日 星期三 14:30:45</div>
+            <div class="header-controls">
+                <div class="datetime" id="datetime">加载中...</div>
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">在线</span>
+                </div>
+            </div>
         </div>
         
-        <div class="menu-content">
-            <div class="menu-section cold-dishes">
-                <div class="section-title">凉菜</div>
-                <div class="dishes" id="cold-dishes-list">
-                    <!-- 凉菜将通过JS动态生成 -->
-                </div>
+        <div class="menu-content" id="menuContent">
+            <!-- 菜单内容将通过JS动态生成 -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>加载菜单数据...</div>
             </div>
-            
-            <div class="menu-section hot-dishes">
-                <div class="section-title">热菜</div>
-                <div class="dishes" id="hot-dishes-list">
-                    <!-- 热菜将通过JS动态生成 -->
-                </div>
-            </div>
-            
-            <div class="menu-section staple-food">
-                <div class="section-title">主食</div>
-                <div class="dishes" id="staple-food-list">
-                    <!-- 主食将通过JS动态生成 -->
-                </div>
-            </div>
-            
-            <div class="menu-section soup">
-                <div class="section-title">汤品</div>
-                <div class="dishes" id="soup-list">
-                    <!-- 汤品将通过JS动态生成 -->
-                </div>
-            </div>
-            
-            <div class="menu-section fruit">
-                <div class="section-title">水果</div>
-                <div class="dishes" id="fruit-list">
-                    <!-- 水果将通过JS动态生成 -->
-                </div>
+        </div>
+        
+        <div class="footer">
+            <div class="refresh-info" id="refreshInfo">最后更新: <span id="lastUpdate">--</span></div>
+            <div class="system-info">
+                <span>系统运行中</span>
+                <span class="shortcut-hint">(F5刷新 | R重置)</span>
             </div>
         </div>
     </div>
 
-    <script>
-        // 从API获取数据
-        async function loadMenuData() {
-            try {
-                const response = await fetch('/api/menu-items');
-                const result = await response.json();
-                
-                if (result.success) {
-                    renderMenu(result.data);
-                } else {
-                    console.error('加载菜单数据失败:', result.error);
-                }
-            } catch (error) {
-                console.error('加载菜单数据时出错:', error);
-            }
-        }
-        
-        // 加载主题设置
-        async function loadThemeSettings() {
-            try {
-                const response = await fetch('/api/themes');
-                const result = await response.json();
-                
-                if (result.success && result.data.current) {
-                    applyTheme(result.data.current);
-                }
-            } catch (error) {
-                console.error('加载主题设置时出错:', error);
-            }
-        }
-        
-        // 加载背景设置
-        async function loadBackgroundSettings() {
-            try {
-                const response = await fetch('/api/background');
-                const result = await response.json();
-                
-                if (result.success && result.data) {
-                    document.body.style.setProperty('--bg-image', `url(${result.data.image_data})`);
-                }
-            } catch (error) {
-                console.error('加载背景设置时出错:', error);
-            }
-        }
-        
-        // 应用主题
-        function applyTheme(theme) {
-            document.body.className = `theme-${theme.theme_name}`;
-        }
-        
-        // 渲染菜单
-        function renderMenu(menuData) {
-            // 清空现有菜单
-            const sections = ['cold-dishes', 'hot-dishes', 'staple-food', 'soup', 'fruit'];
-            sections.forEach(section => {
-                document.getElementById(`${section}-list`).innerHTML = '';
-            });
-            
-            // 按分类分组
-            const categorized = {};
-            menuData.forEach(item => {
-                if (!categorized[item.category]) {
-                    categorized[item.category] = [];
-                }
-                categorized[item.category].push(item);
-            });
-            
-            // 渲染每个分类
-            Object.keys(categorized).forEach(category => {
-                const containerId = getContainerId(category);
-                const container = document.getElementById(containerId);
-                
-                if (container) {
-                    categorized[category].forEach(dish => {
-                        const dishElement = createDishElement(dish);
-                        container.appendChild(dishElement);
-                    });
-                }
-            });
-        }
-        
-        function getContainerId(category) {
-            const mapping = {
-                '凉菜': 'cold-dishes-list',
-                '热菜': 'hot-dishes-list',
-                '主食': 'staple-food-list',
-                '汤品': 'soup-list',
-                '水果': 'fruit-list'
-            };
-            return mapping[category] || '';
-        }
-        
-        function createDishElement(dish) {
-            const dishItem = document.createElement('div');
-            dishItem.className = 'dish-item';
-            
-            const dishName = document.createElement('span');
-            dishName.className = 'dish-name';
-            dishName.textContent = dish.name;
-            
-            const dishPrice = document.createElement('span');
-            dishPrice.className = 'dish-price';
-            dishPrice.textContent = `¥${dish.price}`;
-            
-            dishItem.appendChild(dishName);
-            dishItem.appendChild(dishPrice);
-            
-            if (dish.tag) {
-                const tag = document.createElement('span');
-                tag.className = 'special-tag';
-                tag.textContent = dish.tag;
-                dishItem.appendChild(tag);
-            }
-            
-            return dishItem;
-        }
-        
-        // 更新时间
-        function updateDateTime() {
-            const now = new Date();
-            
-            // 格式化日期
-            const dateOptions = { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                weekday: 'long'
-            };
-            const dateString = now.toLocaleDateString('zh-CN', dateOptions);
-            
-            // 格式化时间
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timeString = `${hours}:${minutes}:${seconds}`;
-            
-            // 合并为单行显示
-            document.getElementById('datetime').textContent = `${dateString} ${timeString}`;
-        }
-        
-        // 初始化
-        async function init() {
-            updateDateTime();
-            await loadThemeSettings();
-            await loadBackgroundSettings();
-            await loadMenuData();
-            
-            // 每秒更新一次时间
-            setInterval(updateDateTime, 1000);
-            
-            // 每30秒刷新一次数据
-            setInterval(async () => {
-                await loadMenuData();
-                await loadThemeSettings();
-                await loadBackgroundSettings();
-            }, 30000);
-        }
-        
-        init();
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
