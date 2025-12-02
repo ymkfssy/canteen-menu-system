@@ -199,7 +199,7 @@ async function updateTheme(request, env) {
 // 获取预存菜单列表
 async function getPresets(env) {
   const { results } = await env.DB.prepare(
-    'SELECT id, name, theme, created_at FROM menu_presets ORDER BY created_at DESC'
+    'SELECT id, name, menu_data, theme, created_at FROM menu_presets ORDER BY created_at DESC'
   ).all();
 
   return successResponse(results || []);

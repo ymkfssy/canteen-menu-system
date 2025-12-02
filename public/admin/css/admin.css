@@ -311,6 +311,16 @@ body {
     gap: 10px;
 }
 
+.no-presets {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #ddd;
+}
+
 /* 主题选择器 */
 .theme-selector {
     background: white;

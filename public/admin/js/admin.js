@@ -347,6 +347,11 @@ function renderPresets(presets) {
     const container = document.getElementById('presetsList');
     container.innerHTML = '';
     
+    if (presets.length === 0) {
+        container.innerHTML = '<p class="no-presets">暂无预存菜单</p>';
+        return;
+    }
+    
     presets.forEach(preset => {
         const card = document.createElement('div');
         card.className = 'preset-card';
@@ -354,11 +359,27 @@ function renderPresets(presets) {
             <h3>${preset.name}</h3>
             <div class="preset-date">${new Date(preset.created_at).toLocaleDateString()}</div>
             <div class="preset-actions">
-                <button class="btn btn-primary btn-sm" data-id="${preset.id}">应用</button>
-                <button class="btn btn-secondary btn-sm" data-id="${preset.id}">删除</button>
+                <button class="btn btn-primary btn-sm apply-preset" data-id="${preset.id}">应用</button>
+                <button class="btn btn-secondary btn-sm delete-preset" data-id="${preset.id}">删除</button>
             </div>
         `;
         container.appendChild(card);
+    });
+    
+    // 绑定应用按钮事件
+    container.querySelectorAll('.apply-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const presetId = btn.dataset.id;
+            applyPreset(presetId);
+        });
+    });
+    
+    // 绑定删除按钮事件
+    container.querySelectorAll('.delete-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const presetId = btn.dataset.id;
+            deletePresetConfirm(presetId);
+        });
     });
 }
 
@@ -519,6 +540,131 @@ document.getElementById('exportExcelBtn').addEventListener('click', () => {
     const fileName = `菜单导出_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`;
     XLSX.writeFile(wb, fileName);
 });
+
+// 创建新预存菜单
+document.getElementById('createPresetBtn').addEventListener('click', async () => {
+    const name = prompt('请输入预存菜单名称:');
+    if (!name) return;
+    
+    const token = checkAuth();
+    if (!token) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/menu/presets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name,
+                menu: currentMenu,
+                theme: currentTheme
+            })
+        });
+        
+        if (response.ok) {
+            alert('预存菜单创建成功！');
+            loadPresets(); // 重新加载预存列表
+        } else {
+            throw new Error('创建失败');
+        }
+    } catch (error) {
+        alert('创建预存菜单失败: ' + error.message);
+    }
+});
+
+// 应用预存菜单
+async function applyPreset(presetId) {
+    const token = checkAuth();
+    if (!token) return;
+    
+    try {
+        // 获取预存菜单详情
+        const response = await fetch(`${API_BASE}/menu/presets`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('获取预存菜单失败');
+        
+        const presets = await response.json();
+        const preset = presets.find(p => p.id == presetId);
+        
+        if (!preset) {
+            throw new Error('预存菜单不存在');
+        }
+        
+        // 确认应用
+        const confirmed = confirm(`确定要应用预存菜单"${preset.name}"吗？\n这将替换当前菜单内容。`);
+        if (!confirmed) return;
+        
+        // 应用到当前菜单
+        const applyResponse = await fetch(`${API_BASE}/menu/current`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                menu: JSON.parse(preset.menu_data),
+                theme: preset.theme
+            })
+        });
+        
+        if (applyResponse.ok) {
+            alert('预存菜单应用成功！');
+            currentMenu = JSON.parse(preset.menu_data);
+            currentTheme = preset.theme;
+            renderAllEditors();
+            
+            // 更新主题选择
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.theme === currentTheme);
+            });
+            
+            // 切换到当前菜单Tab
+            document.querySelector('[data-tab="current"]').click();
+        } else {
+            throw new Error('应用失败');
+        }
+    } catch (error) {
+        alert('应用预存菜单失败: ' + error.message);
+    }
+}
+
+// 确认删除预存菜单
+function deletePresetConfirm(presetId) {
+    const confirmed = confirm('确定要删除这个预存菜单吗？删除后无法恢复。');
+    if (!confirmed) return;
+    
+    deletePreset(presetId);
+}
+
+// 删除预存菜单
+async function deletePreset(presetId) {
+    const token = checkAuth();
+    if (!token) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/menu/presets/${presetId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            alert('预存菜单删除成功！');
+            loadPresets(); // 重新加载预存列表
+        } else {
+            throw new Error('删除失败');
+        }
+    } catch (error) {
+        alert('删除预存菜单失败: ' + error.message);
+    }
+}
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
