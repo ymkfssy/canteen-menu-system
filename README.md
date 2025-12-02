@@ -34,20 +34,28 @@
 
 \`\`\`
 canteen-menu-system/
-├── index.html           # 菜单展示页面（支持动态主题切换）
-├── style.css            # 展示页基础样式
-├── themes.js            # 四季主题配置
-├── admin-login.html     # 后台登录页
-├── admin.html           # 后台管理页
-├── admin.css            # 后台样式
-├── admin.js             # 后台逻辑
+├── public/                     # 前端静态资源
+│   ├── index.html             # 菜单展示页面（支持动态主题切换）
+│   ├── css/
+│   │   └── style.css          # 展示页基础样式
+│   ├── js/
+│   │   ├── themes.js          # 四季主题配置
+│   │   └── display.js         # 展示页逻辑
+│   └── admin/                 # 后台管理模块
+│       ├── login.html         # 后台登录页
+│       ├── index.html         # 后台管理页
+│       ├── css/
+│       │   └── admin.css      # 后台样式
+│       └── js/
+│           └── admin.js       # 后台逻辑
 ├── functions/
 │   └── api/
-│       └── [[path]].js  # Cloudflare Pages Functions API
-├── schema.sql           # D1数据库结构
-├── wrangler.toml        # Cloudflare配置
-├── package.json         # 项目配置
-└── README.md            # 项目文档
+│       └── [[path]].js        # Cloudflare Pages Functions API
+├── database/
+│   └── schema.sql             # D1数据库结构
+├── wrangler.toml              # Cloudflare配置
+├── package.json               # 项目配置
+└── README.md                  # 项目文档
 \`\`\`
 
 ## 🚀 快速部署
@@ -173,7 +181,7 @@ wrangler d1 create canteen_menu_db
 
 \`\`\`bash
 # 执行数据库schema
-wrangler d1 execute canteen_menu_db --file=schema.sql
+wrangler d1 execute canteen_menu_db --file=database/schema.sql
 \`\`\`
 
 ### 步骤3: 配置项目
@@ -229,11 +237,11 @@ npm run deploy
 
 ### 菜单展示
 
-访问 \`https://your-project.pages.dev/display.html\` 查看菜单展示页面
+访问 \`https://your-project.pages.dev/\` 查看菜单展示页面
 
 ### 后台管理
 
-1. 访问 `https://your-project.pages.dev/admin-login.html`
+1. 访问 `https://your-project.pages.dev/admin/login.html`
 2. 默认账号：
    - 用户名: `admin`
    - 密码: `admin123`
@@ -317,7 +325,7 @@ wrangler d1 execute canteen_menu_db --command="UPDATE users SET password = '新�
 ## 📝 自定义
 
 ### 修改屏幕尺寸
-编辑 \`display.css\` 中的：
+编辑 \`public/css/style.css\` 中的：
 \`\`\`css
 body {
     width: 3200px;  /* 修改宽度 */
@@ -326,7 +334,7 @@ body {
 \`\`\`
 
 ### 修改菜品数量限制
-编辑 \`admin.html\` 中的 \`data-max\` 属性
+编辑 \`public/admin/index.html\` 中的 \`data-recommend\` 属性
 
 ### 添加新主题
 编辑 \`themes.js\`，添加新的主题配置

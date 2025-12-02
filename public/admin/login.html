@@ -176,7 +176,7 @@
                     // 保存token
                     localStorage.setItem('admin_token', data.token);
                     // 跳转到管理页面
-                    window.location.href = '/admin.html';
+                    window.location.href = '/admin/';
                 } else {
                     throw new Error(data.error || '登录失败');
                 }

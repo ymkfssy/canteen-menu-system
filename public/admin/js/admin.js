@@ -14,7 +14,7 @@ let editingIndex = null;
 function checkAuth() {
     const token = localStorage.getItem('admin_token');
     if (!token) {
-        window.location.href = '/admin-login.html';
+        window.location.href = '/admin/login.html';
         return false;
     }
     return token;
@@ -23,7 +23,7 @@ function checkAuth() {
 // 退出登录
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('admin_token');
-    window.location.href = '/admin-login.html';
+    window.location.href = '/admin/login.html';
 });
 
 // Tab切换
@@ -290,7 +290,7 @@ document.getElementById('saveThemeBtn').addEventListener('click', async () => {
 
 // 预览菜单
 document.getElementById('previewBtn').addEventListener('click', () => {
-    window.open('/index.html', '_blank');
+    window.open('../index.html', '_blank');
 });
 
 // 加载当前菜单
