@@ -8,28 +8,45 @@ function applyTheme(themeName) {
 
     let titleStyles = '';
     if (theme.isProsperityTheme) {
-        // 开门红主题特殊效果
+        // 开门红主题特殊效果 - 优化可读性
         titleStyles = `
         .title {
-            background: ${theme.colors.titleGradient};
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px ${theme.colors.titleShadow}, 0 0 40px rgba(255, 215, 0, 0.6);
-            animation: prosperityGlow 2s ease-in-out infinite alternate;
+            /* 使用金色文字而不是渐变，提高可读性 */
+            color: #ffd700;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 71, 87, 0.6),
+                2px 2px 4px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(255, 140, 0, 0.4);
+            animation: prosperityGlow 3s ease-in-out infinite alternate;
+            /* 添加金色边框增强效果 */
+            -webkit-text-stroke: 1px rgba(255, 215, 0, 0.3);
+            text-stroke: 1px rgba(255, 215, 0, 0.3);
         }
         @keyframes prosperityGlow {
             0% {
-                text-shadow: 0 0 20px ${theme.colors.titleShadow}, 0 0 40px rgba(255, 215, 0, 0.6);
+                text-shadow: 
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 71, 87, 0.6),
+                    2px 2px 4px rgba(0, 0, 0, 0.8),
+                    0 0 30px rgba(255, 140, 0, 0.4);
+                transform: scale(1);
             }
             100% {
-                text-shadow: 0 0 30px ${theme.colors.titleShadow}, 0 0 60px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 140, 0, 0.6);
+                text-shadow: 
+                    0 0 15px rgba(255, 215, 0, 1),
+                    0 0 30px rgba(255, 71, 87, 0.8),
+                    2px 2px 6px rgba(0, 0, 0, 0.9),
+                    0 0 50px rgba(255, 140, 0, 0.6);
+                transform: scale(1.02);
             }
         }
         .datetime {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 71, 87, 0.2));
-            border: 2px solid rgba(255, 215, 0, 0.5);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 71, 87, 0.15));
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         `;
     } else {
