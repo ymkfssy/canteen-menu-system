@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS current_menu (
     id INTEGER PRIMARY KEY CHECK (id = 1),
     menu_data TEXT NOT NULL,
     theme TEXT DEFAULT 'prosperity',
+    background_image TEXT DEFAULT '',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

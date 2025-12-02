@@ -95,6 +95,18 @@ export async function onRequest(context) {
       return await updateTheme(request, env);
     }
 
+    if (path === 'menu/background') {
+      const user = requireAuth(request);
+      if (!user) return errorResponse('未授权', 401);
+      
+      if (method === 'GET') {
+        return await getBackgroundImage(env);
+      }
+      if (method === 'PUT') {
+        return await updateBackgroundImage(request, env);
+      }
+    }
+
     if (path === 'menu/presets') {
       const user = requireAuth(request);
       if (!user) return errorResponse('未授权', 401);
@@ -169,7 +181,8 @@ async function getCurrentMenu(env) {
 
   return successResponse({
     menu: JSON.parse(result.menu_data),
-    theme: result.theme || 'winter'
+    theme: result.theme || 'winter',
+    backgroundImage: result.background_image || ''
   });
 }
 
@@ -222,6 +235,28 @@ async function deletePreset(id, env) {
   await env.DB.prepare(
     'DELETE FROM menu_presets WHERE id = ?'
   ).bind(id).run();
+
+  return successResponse({ success: true });
+}
+
+// 获取背景图片设置
+async function getBackgroundImage(env) {
+  const result = await env.DB.prepare(
+    'SELECT background_image FROM current_menu WHERE id = 1'
+  ).first();
+
+  return successResponse({
+    backgroundImage: result?.background_image || ''
+  });
+}
+
+// 更新背景图片设置
+async function updateBackgroundImage(request, env) {
+  const { backgroundImage } = await request.json();
+
+  await env.DB.prepare(
+    `UPDATE current_menu SET background_image = ?, updated_at = datetime('now') WHERE id = 1`
+  ).bind(backgroundImage || '').run();
 
   return successResponse({ success: true });
 }

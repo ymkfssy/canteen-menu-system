@@ -1,5 +1,6 @@
 const API_BASE = '/api';
 let currentTheme = 'prosperity';
+let currentBackgroundImage = '';
 
 // 应用主题样式
 function applyTheme(themeName) {
@@ -40,9 +41,14 @@ function applyTheme(themeName) {
         `;
     }
 
+    // 背景样式：优先使用背景图片，如果没有则使用主题背景
+    const backgroundStyle = currentBackgroundImage 
+        ? `background-image: url(${currentBackgroundImage}); background-size: cover; background-position: center; background-repeat: no-repeat;`
+        : `background: ${theme.colors.primary};`;
+
     const styles = `
         body {
-            background: ${theme.colors.primary};
+            ${backgroundStyle}
         }
         .header {
             background: ${theme.colors.header};
@@ -161,8 +167,14 @@ async function loadMenu() {
         // 应用主题
         if (data.theme) {
             currentTheme = data.theme;
-            applyTheme(currentTheme);
         }
+        
+        // 应用背景图片
+        if (data.backgroundImage) {
+            currentBackgroundImage = data.backgroundImage;
+        }
+        
+        applyTheme(currentTheme);
         
         // 渲染菜单
         if (data.menu) {

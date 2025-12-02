@@ -7,6 +7,7 @@ let currentMenu = {
     fruit: []
 };
 let currentTheme = 'prosperity';
+let currentBackgroundImage = '';
 let editingCategory = null;
 let editingIndex = null;
 
@@ -309,6 +310,7 @@ async function loadCurrentMenu() {
             const data = await response.json();
             currentMenu = data.menu || currentMenu;
             currentTheme = data.theme || currentTheme;
+            currentBackgroundImage = data.backgroundImage || '';
             renderAllEditors();
             
             // 更新主题选择
@@ -666,9 +668,93 @@ async function deletePreset(presetId) {
     }
 }
 
+// 背景图片配置功能
+// 背景图片输入框实时预览
+document.getElementById('backgroundImageUrl').addEventListener('input', (e) => {
+    const url = e.target.value.trim();
+    const preview = document.getElementById('backgroundPreview');
+    const previewImage = document.getElementById('previewImage');
+    
+    if (url) {
+        // 验证URL格式
+        try {
+            new URL(url);
+            previewImage.style.backgroundImage = `url(${url})`;
+            preview.style.display = 'block';
+        } catch (error) {
+            preview.style.display = 'none';
+        }
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
+// 保存背景图片设置
+document.getElementById('saveBackgroundBtn').addEventListener('click', async () => {
+    const token = checkAuth();
+    if (!token) return;
+    
+    const backgroundImageUrl = document.getElementById('backgroundImageUrl').value.trim();
+    
+    try {
+        const response = await fetch(`${API_BASE}/menu/background`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ 
+                backgroundImage: backgroundImageUrl 
+            })
+        });
+        
+        if (response.ok) {
+            currentBackgroundImage = backgroundImageUrl;
+            alert('背景图片设置已保存！');
+        } else {
+            throw new Error('保存失败');
+        }
+    } catch (error) {
+        alert('保存背景设置失败: ' + error.message);
+    }
+});
+
+// 加载当前背景图片设置
+async function loadBackgroundImage() {
+    const token = checkAuth();
+    if (!token) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/menu/background`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            currentBackgroundImage = data.backgroundImage || '';
+            
+            // 更新输入框和预览
+            const input = document.getElementById('backgroundImageUrl');
+            input.value = currentBackgroundImage;
+            
+            if (currentBackgroundImage) {
+                const preview = document.getElementById('backgroundPreview');
+                const previewImage = document.getElementById('previewImage');
+                previewImage.style.backgroundImage = `url(${currentBackgroundImage})`;
+                preview.style.display = 'block';
+            }
+        }
+    } catch (error) {
+        console.error('加载背景图片设置失败:', error);
+    }
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     loadCurrentMenu();
     loadPresets();
+    loadBackgroundImage();
 });
