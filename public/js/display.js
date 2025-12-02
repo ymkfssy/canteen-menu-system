@@ -229,6 +229,4 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDateTime();
     setInterval(updateDateTime, 1000);
     loadMenu();
-    // 每30秒刷新一次菜单
-    setInterval(loadMenu, 30000);
 });
