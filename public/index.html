@@ -21,12 +21,48 @@
     <script src="js/themes.js"></script>
     <script>
         const API_BASE = '/api';
-        let currentTheme = 'winter';
+        let currentTheme = 'prosperity';
 
         // 应用主题样式
         function applyTheme(themeName) {
             const theme = THEMES[themeName];
             if (!theme) return;
+
+            let titleStyles = '';
+            if (theme.isProsperityTheme) {
+                // 开门红主题特殊效果
+                titleStyles = `
+                .title {
+                    background: ${theme.colors.titleGradient};
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    text-shadow: 0 0 20px ${theme.colors.titleShadow}, 0 0 40px rgba(255, 215, 0, 0.6);
+                    animation: prosperityGlow 2s ease-in-out infinite alternate;
+                }
+                @keyframes prosperityGlow {
+                    0% {
+                        text-shadow: 0 0 20px ${theme.colors.titleShadow}, 0 0 40px rgba(255, 215, 0, 0.6);
+                    }
+                    100% {
+                        text-shadow: 0 0 30px ${theme.colors.titleShadow}, 0 0 60px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 140, 0, 0.6);
+                    }
+                }
+                .datetime {
+                    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 71, 87, 0.2));
+                    border: 2px solid rgba(255, 215, 0, 0.5);
+                    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+                }
+                `;
+            } else {
+                // 普通主题样式
+                titleStyles = `
+                .title {
+                    color: #fff;
+                    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+                }
+                `;
+            }
 
             const styles = `
                 body {
@@ -65,6 +101,7 @@
                 .fruit .dish-item {
                     background: ${theme.colors.fruit.item};
                 }
+                ${titleStyles}
             `;
 
             document.getElementById('dynamic-styles').textContent = styles;

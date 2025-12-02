@@ -367,6 +367,10 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+.prosperity-preview {
+    background: linear-gradient(135deg, #ff4757 0%, #ff6348 20%, #ffa502 50%, #ff4757 80%, #c44569 100%);
+}
+
 .theme-card h4 {
     margin-bottom: 5px;
     color: #333;

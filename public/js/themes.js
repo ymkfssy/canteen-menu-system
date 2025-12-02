@@ -115,6 +115,36 @@ const THEMES = {
         item: 'linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%)'
       }
     }
+  },
+  prosperity: {
+    name: '开门红',
+    colors: {
+      primary: 'linear-gradient(135deg, #ff4757 0%, #ff6348 20%, #ffa502 50%, #ff4757 80%, #c44569 100%)',
+      header: 'linear-gradient(135deg, rgba(255, 71, 87, 0.9) 0%, rgba(255, 165, 2, 0.8) 50%, rgba(196, 69, 105, 0.9) 100%)',
+      titleGradient: 'linear-gradient(to right, #ffd700, #ff4757, #ffd700, #ff6348, #ffd700)',
+      titleShadow: 'rgba(255, 71, 87, 0.9)',
+      coldDishes: {
+        header: '#ff4757',
+        item: 'linear-gradient(135deg, #fff5f5 0%, #ffe8e8 50%, #ffd3d3 100%)'
+      },
+      hotDishes: {
+        header: '#ff6348',
+        item: 'linear-gradient(135deg, #fff9f0 0%, #ffe8d6 50%, #ffd4b3 100%)'
+      },
+      stapleFood: {
+        header: '#ffa502',
+        item: 'linear-gradient(135deg, #fffbf0 0%, #fff9e6 50%, #fff4cc 100%)'
+      },
+      soup: {
+        header: '#ff7675',
+        item: 'linear-gradient(135deg, #fff5f7 0%, #ffe8ec 50%, #ffd6d9 100%)'
+      },
+      fruit: {
+        header: '#fd79a8',
+        item: 'linear-gradient(135deg, #fff0f5 0%, #ffe8f1 50%, #ffd1dc 100%)'
+      }
+    },
+    isProsperityTheme: true
   }
 };
 
