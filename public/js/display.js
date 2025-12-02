@@ -13,6 +13,10 @@ function applyTheme(themeName) {
         .title {
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            background: none !important;
+            background-image: none !important;
+            -webkit-background-clip: none !important;
+            -webkit-text-fill-color: #fff !important;
         }
         .datetime {
             background: rgba(255, 215, 0, 0.2);
@@ -28,6 +32,10 @@ function applyTheme(themeName) {
         .title {
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            background: none !important;
+            background-image: none !important;
+            -webkit-background-clip: none !important;
+            -webkit-text-fill-color: #fff !important;
         }
         `;
     }
