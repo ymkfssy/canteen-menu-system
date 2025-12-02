@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 食堂菜单系统</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>🍽️ 菜单管理</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#current" class="nav-item active" data-tab="current">当前菜单</a>
+                <a href="#presets" class="nav-item" data-tab="presets">预存菜单</a>
+                <a href="#theme" class="nav-item" data-tab="theme">主题设置</a>
+            </nav>
+            <div class="user-info">
+                <p id="currentUser">管理员</p>
+                <button id="logoutBtn" class="logout-btn">退出登录</button>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 id="pageTitle">当前菜单管理</h1>
+                <button id="previewBtn" class="btn btn-secondary">预览菜单</button>
+            </div>
+
+            <!-- 当前菜单Tab -->
+            <div id="currentTab" class="tab-content active">
+                <div class="menu-editor">
+                    <div class="editor-section">
+                        <h3>凉菜 <span class="count-badge" id="coldDishesCount">0</span></h3>
+                        <div id="coldDishesEditor" class="dishes-list"></div>
+                        <button class="btn-add" data-category="coldDishes" data-recommend="2">+ 添加凉菜</button>
+                    </div>
+
+                    <div class="editor-section">
+                        <h3>热菜 <span class="count-badge" id="hotDishesCount">0</span></h3>
+                        <div id="hotDishesEditor" class="dishes-list"></div>
+                        <button class="btn-add" data-category="hotDishes" data-recommend="6">+ 添加热菜</button>
+                    </div>
+
+                    <div class="editor-section">
+                        <h3>主食 <span class="count-badge" id="stapleFoodCount">0</span></h3>
+                        <div id="stapleFoodEditor" class="dishes-list"></div>
+                        <button class="btn-add" data-category="stapleFood" data-recommend="6">+ 添加主食</button>
+                    </div>
+
+                    <div class="editor-section">
+                        <h3>汤品 <span class="count-badge" id="soupCount">0</span></h3>
+                        <div id="soupEditor" class="dishes-list"></div>
+                        <button class="btn-add" data-category="soup" data-recommend="2">+ 添加汤品</button>
+                    </div>
+
+                    <div class="editor-section">
+                        <h3>水果 <span class="count-badge" id="fruitCount">0</span></h3>
+                        <div id="fruitEditor" class="dishes-list"></div>
+                        <button class="btn-add" data-category="fruit" data-recommend="2">+ 添加水果</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="saveCurrentBtn" class="btn btn-primary">保存当前菜单</button>
+                    <button id="saveAsPresetBtn" class="btn btn-secondary">保存为预存菜单</button>
+                </div>
+            </div>
+
+            <!-- 预存菜单Tab -->
+            <div id="presetsTab" class="tab-content">
+                <div class="presets-header">
+                    <button id="createPresetBtn" class="btn btn-primary">创建新预存</button>
+                </div>
+                <div id="presetsList" class="presets-grid"></div>
+            </div>
+
+            <!-- 主题设置Tab -->
+            <div id="themeTab" class="tab-content">
+                <div class="theme-selector">
+                    <h3>选择展示主题</h3>
+                    <div class="theme-grid">
+                        <div class="theme-card" data-theme="spring">
+                            <div class="theme-preview spring-preview"></div>
+                            <h4>春季主题</h4>
+                            <p>清新粉绿色调</p>
+                        </div>
+                        <div class="theme-card" data-theme="summer">
+                            <div class="theme-preview summer-preview"></div>
+                            <h4>夏季主题</h4>
+                            <p>清凉蓝色色调</p>
+                        </div>
+                        <div class="theme-card" data-theme="autumn">
+                            <div class="theme-preview autumn-preview"></div>
+                            <h4>秋季主题</h4>
+                            <p>温暖橙黄色调</p>
+                        </div>
+                        <div class="theme-card active" data-theme="winter">
+                            <div class="theme-preview winter-preview"></div>
+                            <h4>冬季主题</h4>
+                            <p>优雅紫色色调</p>
+                        </div>
+                    </div>
+                    <button id="saveThemeBtn" class="btn btn-primary">应用主题</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">添加菜品</h2>
+            <form id="dishForm">
+                <div class="form-group">
+                    <label>菜品名称</label>
+                    <input type="text" id="dishName" required>
+                </div>
+                <div class="form-group">
+                    <label>价格 (元)</label>
+                    <input type="number" id="dishPrice" step="0.5" min="0" required>
+                </div>
+                <input type="hidden" id="dishCategory">
+                <input type="hidden" id="dishIndex">
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="themes.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

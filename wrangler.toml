@@ -1,0 +1,13 @@
+# Cloudflare Pages 配置文件
+
+name = "canteen-menu"
+compatibility_date = "2024-01-01"
+
+# Pages 部署目录
+pages_build_output_dir = "public"
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB"
+database_name = "canteen_menu_db"
+database_id = "17874c9a-485b-489f-9496-e907b8a4c8c1"  # 需要替换为实际的数据库ID

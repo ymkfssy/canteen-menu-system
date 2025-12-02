@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 3200px;
+    height: 192px;
+    overflow: hidden;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    /* 背景色通过JavaScript动态设置 */
+}
+
+/* 响应式缩放 - 在普通浏览器中预览 */
+@media screen and (max-width: 1920px) {
+    body {
+        transform: scale(0.5);
+        transform-origin: top left;
+        width: 3200px;
+        height: 192px;
+    }
+}
+
+/* 顶部标题栏 */
+.header {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    /* 背景通过JavaScript动态设置 */
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-spacer {
+    flex: 1;
+}
+
+.title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 6px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    /* 简洁优雅的纯白色标题 */
+}
+
+.datetime {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px 18px;
+    border-radius: 20px;
+    min-width: 420px;
+    text-align: center;
+}
+
+.menu-container {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 20px;
+    gap: 15px;
+}
+
+.menu-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 8px 12px;
+    height: 125px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.menu-section:hover {
+    transform: translateY(-2px);
+}
+
+.section-header {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    padding: 6px 0;
+    border-bottom: 3px solid;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    letter-spacing: 8px;
+    /* 边框颜色通过JavaScript动态设置 */
+}
+
+.dishes {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    align-items: stretch;
+}
+
+.dish-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 10px;
+    /* 背景通过JavaScript动态设置 */
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 0; /* 允许收缩 */
+}
+
+/* 根据菜品数量调整字体大小 */
+.dishes[data-count="1"] .dish-item { min-width: 100px; }
+.dishes[data-count="2"] .dish-item { min-width: 80px; }
+.dishes[data-count="3"] .dish-item { min-width: 60px; }
+.dishes[data-count="4"] .dish-item { min-width: 50px; }
+.dishes[data-count="5"] .dish-item { min-width: 45px; }
+.dishes[data-count="6"] .dish-item { min-width: 40px; }
+
+/* 数量较多时缩小字体 */
+.dishes[data-count="7"] .dish-item,
+.dishes[data-count="8"] .dish-item { 
+    min-width: 35px;
+}
+.dishes[data-count="7"] .dish-name,
+.dishes[data-count="8"] .dish-name { 
+    font-size: 13px;
+}
+.dishes[data-count="7"] .dish-price,
+.dishes[data-count="8"] .dish-price { 
+    font-size: 15px;
+}
+
+.dish-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dish-name {
+    font-size: 15px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.dish-price {
+    font-size: 17px;
+    color: #e74c3c;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 各区域flex比例 */
+.cold-dishes { flex: 1; }
+.hot-dishes { flex: 3; }
+.staple-food { flex: 3; }
+.soup { flex: 1; }
+.fruit { flex: 1; }
+
+/* 颜色主题通过JavaScript动态设置 */
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-section {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.menu-section:nth-child(1) { animation-delay: 0.1s; }
+.menu-section:nth-child(2) { animation-delay: 0.2s; }
+.menu-section:nth-child(3) { animation-delay: 0.3s; }
+.menu-section:nth-child(4) { animation-delay: 0.4s; }
+.menu-section:nth-child(5) { animation-delay: 0.5s; }

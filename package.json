@@ -1,13 +1,23 @@
 {
   "name": "canteen-menu-system",
   "version": "1.0.0",
-  "description": "食堂菜单管理系统",
+  "description": "食堂菜单展示系统 - 支持四季主题、后台管理、Cloudflare D1数据库",
   "scripts": {
-    "dev": "wrangler pages dev public --d1=DB",
-    "deploy": "wrangler pages publish public",
-    "db:init": "wrangler d1 execute canteen-db --file=schema.sql",
-    "db:local": "wrangler d1 execute canteen-db --local --file=schema.sql"
+    "dev": "wrangler pages dev public --d1 DB=canteen_menu_db",
+    "deploy": "wrangler pages deploy public --project-name=canteen-menu",
+    "db:create": "wrangler d1 create canteen_menu_db",
+    "db:init": "wrangler d1 execute canteen_menu_db --file=database/schema.sql",
+    "db:query": "wrangler d1 execute canteen_menu_db --command"
   },
+  "keywords": [
+    "menu",
+    "canteen",
+    "cloudflare",
+    "d1",
+    "pages"
+  ],
+  "author": "",
+  "license": "MIT",
   "devDependencies": {
     "wrangler": "^3.0.0"
   }
