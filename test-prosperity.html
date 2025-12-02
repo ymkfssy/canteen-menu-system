@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开门红主题测试</title>
+    <style id="dynamic-styles"></style>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-spacer"></div>
+        <div class="title">今日食堂菜单</div>
+        <div class="datetime" id="datetime">2024-01-01 星期一 12:00:00</div>
+    </div>
+    
+    <div class="menu-container" id="menuContainer">
+        <!-- 测试菜单数据 -->
+        <div class="menu-section cold-dishes">
+            <div class="section-header">凉菜</div>
+            <div class="dishes" data-count="2">
+                <div class="dish-item">
+                    <div class="dish-name">拍黄瓜</div>
+                    <div class="dish-price">¥5</div>
+                </div>
+                <div class="dish-item">
+                    <div class="dish-name">凉拌木耳</div>
+                    <div class="dish-price">¥6</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="menu-section hot-dishes">
+            <div class="section-header">热菜</div>
+            <div class="dishes" data-count="3">
+                <div class="dish-item">
+                    <div class="dish-name">红烧肉</div>
+                    <div class="dish-price">¥18</div>
+                </div>
+                <div class="dish-item">
+                    <div class="dish-name">糖醋鱼</div>
+                    <div class="dish-price">¥22</div>
+                </div>
+                <div class="dish-item">
+                    <div class="dish-name">宫保鸡丁</div>
+                    <div class="dish-price">¥16</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="menu-section staple-food">
+            <div class="section-header">主食</div>
+            <div class="dishes" data-count="3">
+                <div class="dish-item">
+                    <div class="dish-name">米饭</div>
+                    <div class="dish-price">¥2</div>
+                </div>
+                <div class="dish-item">
+                    <div class="dish-name">面条</div>
+                    <div class="dish-price">¥8</div>
+                </div>
+                <div class="dish-item">
+                    <div class="dish-name">饺子</div>
+                    <div class="dish-price">¥12</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/themes.js"></script>
+    <script>
+        // 测试开门红主题
+        function testProsperityTheme() {
+            const theme = THEMES['prosperity'];
+            if (!theme) {
+                console.error('开门红主题未找到');
+                return;
+            }
+            
+            console.log('正在应用开门红主题:', theme);
+            
+            // 开门红主题特殊效果
+            const titleStyles = `
+            .title {
+                background: ${theme.colors.titleGradient};
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 20px ${theme.colors.titleShadow}, 0 0 40px rgba(255, 215, 0, 0.6);
+                animation: prosperityGlow 2s ease-in-out infinite alternate;
+            }
+            @keyframes prosperityGlow {
+                0% {
+                    text-shadow: 0 0 20px ${theme.colors.titleShadow}, 0 0 40px rgba(255, 215, 0, 0.6);
+                }
+                100% {
+                    text-shadow: 0 0 30px ${theme.colors.titleShadow}, 0 0 60px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 140, 0, 0.6);
+                }
+            }
+            .datetime {
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 71, 87, 0.2));
+                border: 2px solid rgba(255, 215, 0, 0.5);
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            }
+            `;
+
+            const styles = `
+                body {
+                    background: ${theme.colors.primary};
+                }
+                .header {
+                    background: ${theme.colors.header};
+                }
+                .cold-dishes .section-header {
+                    border-bottom-color: ${theme.colors.coldDishes.header};
+                }
+                .cold-dishes .dish-item {
+                    background: ${theme.colors.coldDishes.item};
+                }
+                .hot-dishes .section-header {
+                    border-bottom-color: ${theme.colors.hotDishes.header};
+                }
+                .hot-dishes .dish-item {
+                    background: ${theme.colors.hotDishes.item};
+                }
+                .staple-food .section-header {
+                    border-bottom-color: ${theme.colors.stapleFood.header};
+                }
+                .staple-food .dish-item {
+                    background: ${theme.colors.stapleFood.item};
+                }
+                .soup .section-header {
+                    border-bottom-color: ${theme.colors.soup.header};
+                }
+                .soup .dish-item {
+                    background: ${theme.colors.soup.item};
+                }
+                .fruit .section-header {
+                    border-bottom-color: ${theme.colors.fruit.header};
+                }
+                .fruit .dish-item {
+                    background: ${theme.colors.fruit.item};
+                }
+                ${titleStyles}
+            `;
+
+            document.getElementById('dynamic-styles').textContent = styles;
+            console.log('开门红主题应用成功！');
+        }
+
+        // 页面加载后自动测试
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('页面加载完成，开始测试开门红主题...');
+            
+            // 检查主题对象
+            console.log('THEMES对象:', THEMES);
+            console.log('开门红主题:', THEMES.prosperity);
+            
+            // 延迟一秒确保所有样式加载完成
+            setTimeout(testProsperityTheme, 1000);
+        });
+    </script>
+</body>
+</html>

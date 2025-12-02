@@ -6,7 +6,7 @@ let currentMenu = {
     soup: [],
     fruit: []
 };
-let currentTheme = 'winter';
+let currentTheme = 'prosperity';
 let editingCategory = null;
 let editingIndex = null;
 
