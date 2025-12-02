@@ -101,6 +101,11 @@ body {
     color: #333;
 }
 
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
 /* 按钮 */
 .btn {
     padding: 10px 20px;

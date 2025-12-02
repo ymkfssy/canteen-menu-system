@@ -362,6 +362,164 @@ function renderPresets(presets) {
     });
 }
 
+// Excel相关功能
+// 下载Excel模板
+document.getElementById('downloadTemplateBtn').addEventListener('click', () => {
+    const templateData = [
+        ['分类', '菜品名称', '价格'],
+        ['凉菜', '示例：拍黄瓜', 5],
+        ['凉菜', '示例：凉拌木耳', 6],
+        ['热菜', '示例：红烧肉', 18],
+        ['热菜', '示例：糖醋鱼', 22],
+        ['主食', '示例：米饭', 2],
+        ['主食', '示例：面条', 8],
+        ['汤品', '示例：紫菜蛋花汤', 3],
+        ['汤品', '示例：番茄汤', 3],
+        ['水果', '示例：苹果', 5],
+        ['水果', '示例：香蕉', 4]
+    ];
+    
+    const ws = XLSX.utils.aoa_to_sheet(templateData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '菜单模板');
+    
+    // 设置列宽
+    ws['!cols'] = [{width: 15}, {width: 20}, {width: 10}];
+    
+    XLSX.writeFile(wb, '菜单模板.xlsx');
+});
+
+// 导入Excel
+document.getElementById('importExcelBtn').addEventListener('click', () => {
+    document.getElementById('excelFileInput').click();
+});
+
+document.getElementById('excelFileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+            
+            // 解析Excel数据
+            const menuData = parseExcelData(jsonData);
+            
+            if (menuData) {
+                // 确认导入
+                const totalDishes = Object.values(menuData).reduce((sum, arr) => sum + arr.length, 0);
+                const confirmed = confirm(`检测到${totalDishes}个菜品，确认导入吗？\n这将替换当前菜单内容。`);
+                
+                if (confirmed) {
+                    currentMenu = menuData;
+                    renderAllEditors();
+                    alert('导入成功！');
+                }
+            }
+        } catch (error) {
+            alert('Excel文件解析失败：' + error.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+    
+    // 清空文件输入
+    e.target.value = '';
+});
+
+// 解析Excel数据
+function parseExcelData(jsonData) {
+    const menuData = {
+        coldDishes: [],
+        hotDishes: [],
+        stapleFood: [],
+        soup: [],
+        fruit: []
+    };
+    
+    const categoryMap = {
+        '凉菜': 'coldDishes',
+        'coldDishes': 'coldDishes',
+        '热菜': 'hotDishes',
+        'hotDishes': 'hotDishes',
+        '主食': 'stapleFood',
+        'stapleFood': 'stapleFood',
+        '汤品': 'soup',
+        '汤': 'soup',
+        'soup': 'soup',
+        '水果': 'fruit',
+        'fruit': 'fruit'
+    };
+    
+    // 跳过标题行，从第二行开始处理
+    for (let i = 1; i < jsonData.length; i++) {
+        const row = jsonData[i];
+        if (!row || row.length < 3) continue;
+        
+        const categoryKey = String(row[0] || '').trim();
+        const dishName = String(row[1] || '').trim();
+        const price = parseFloat(row[2]);
+        
+        if (!categoryKey || !dishName || isNaN(price) || price <= 0) {
+            continue;
+        }
+        
+        const category = categoryMap[categoryKey];
+        if (category) {
+            menuData[category].push({
+                name: dishName,
+                price: price
+            });
+        }
+    }
+    
+    return menuData;
+}
+
+// 导出Excel
+document.getElementById('exportExcelBtn').addEventListener('click', () => {
+    const exportData = [
+        ['分类', '菜品名称', '价格']
+    ];
+    
+    // 按分类添加菜品
+    const categoryNames = {
+        coldDishes: '凉菜',
+        hotDishes: '热菜', 
+        stapleFood: '主食',
+        soup: '汤品',
+        fruit: '水果'
+    };
+    
+    Object.keys(currentMenu).forEach(category => {
+        currentMenu[category].forEach(dish => {
+            exportData.push([
+                categoryNames[category],
+                dish.name,
+                dish.price
+            ]);
+        });
+    });
+    
+    if (exportData.length === 1) {
+        alert('当前菜单为空，无法导出！');
+        return;
+    }
+    
+    const ws = XLSX.utils.aoa_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '菜单数据');
+    
+    // 设置列宽
+    ws['!cols'] = [{width: 15}, {width: 20}, {width: 10}];
+    
+    const fileName = `菜单导出_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+});
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();

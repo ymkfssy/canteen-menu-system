@@ -28,7 +28,12 @@
         <main class="main-content">
             <div class="content-header">
                 <h1 id="pageTitle">当前菜单管理</h1>
-                <button id="previewBtn" class="btn btn-secondary">预览菜单</button>
+                <div class="header-actions">
+                    <button id="downloadTemplateBtn" class="btn btn-info">下载Excel模板</button>
+                    <button id="importExcelBtn" class="btn btn-warning">导入Excel</button>
+                    <button id="exportExcelBtn" class="btn btn-success">导出Excel</button>
+                    <button id="previewBtn" class="btn btn-secondary">预览菜单</button>
+                </div>
             </div>
 
             <!-- 当前菜单Tab -->
@@ -139,6 +144,12 @@
             </form>
         </div>
     </div>
+
+    <!-- 隐藏的文件输入用于Excel导入 -->
+    <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display: none;">
+
+    <!-- SheetJS CDN for Excel processing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <script src="../js/themes.js"></script>
     <script src="js/admin.js"></script>
