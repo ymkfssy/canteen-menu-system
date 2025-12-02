@@ -121,8 +121,8 @@ const THEMES = {
     colors: {
       primary: 'linear-gradient(135deg, #ff4757 0%, #ff6348 20%, #ffa502 50%, #ff4757 80%, #c44569 100%)',
       header: 'linear-gradient(135deg, rgba(255, 71, 87, 0.9) 0%, rgba(255, 165, 2, 0.8) 50%, rgba(196, 69, 105, 0.9) 100%)',
-      titleGradient: 'linear-gradient(to right, #ffd700, #ff4757, #ffd700, #ff6348, #ffd700)',
-      titleShadow: 'rgba(255, 71, 87, 0.9)',
+      titleGradient: 'linear-gradient(to right, #ffffff, #f8f9fa, #ffffff)',
+      titleShadow: 'rgba(255, 255, 255, 0.8)',
       coldDishes: {
         header: '#ff4757',
         item: 'linear-gradient(135deg, #fff5f5 0%, #ffe8e8 50%, #ffd3d3 100%)'
