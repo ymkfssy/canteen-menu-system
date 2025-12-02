@@ -16,6 +16,7 @@
             <nav class="nav-menu">
                 <a href="#current" class="nav-item active" data-tab="current">当前菜单</a>
                 <a href="#presets" class="nav-item" data-tab="presets">预存菜单</a>
+                <a href="#category" class="nav-item" data-tab="category">分类管理</a>
                 <a href="#theme" class="nav-item" data-tab="theme">主题设置</a>
             </nav>
             <div class="user-info">
@@ -84,6 +85,17 @@
                 <div id="presetsList" class="presets-grid"></div>
             </div>
 
+            <!-- 分类管理Tab -->
+            <div id="categoryTab" class="tab-content">
+                <div class="category-manager">
+                    <div class="category-header">
+                        <h3>分类管理</h3>
+                        <button id="addCategoryBtn" class="btn btn-primary">添加分类</button>
+                    </div>
+                    <div id="categoriesList" class="categories-grid"></div>
+                </div>
+            </div>
+
             <!-- 主题设置Tab -->
             <div id="themeTab" class="tab-content">
                 <div class="theme-selector">
@@ -148,14 +160,53 @@
                     <input type="text" id="dishName" required>
                 </div>
                 <div class="form-group">
-                    <label>价格 (元)</label>
-                    <input type="number" id="dishPrice" step="0.01" min="0" required>
+                    <label>价格</label>
+                    <input type="text" id="dishPrice" placeholder="如：12元、时价、面议等" required>
+                </div>
+                <div class="form-group">
+                    <label>个性化标志</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dishIsHot" value="hot">
+                            <span class="checkmark"></span>
+                            畅销
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dishIsRecommend" value="recommend">
+                            <span class="checkmark"></span>
+                            推荐
+                        </label>
+                    </div>
                 </div>
                 <input type="hidden" id="dishCategory">
                 <input type="hidden" id="dishIndex">
                 <div class="modal-buttons">
                     <button type="submit" class="btn btn-primary">保存</button>
                     <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 分类管理模态框 -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-category">&times;</span>
+            <h2 id="categoryModalTitle">添加分类</h2>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="categoryName">分类名称</label>
+                    <input type="text" id="categoryName" placeholder="如：小菜、饮品等" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryKey">分类键名</label>
+                    <input type="text" id="categoryKey" placeholder="英文标识，如：xiaocai" required>
+                    <small class="form-help">用于系统识别，只能包含字母和数字</small>
+                </div>
+                <input type="hidden" id="categoryIndex">
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-secondary" id="cancelCategoryBtn">取消</button>
                 </div>
             </form>
         </div>

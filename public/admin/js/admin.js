@@ -45,6 +45,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
         const titles = {
             current: '当前菜单管理',
             presets: '预存菜单管理',
+            category: '分类管理',
             theme: '主题设置'
         };
         document.getElementById('pageTitle').textContent = titles[tab];
@@ -59,9 +60,20 @@ function renderDishEditor(category, items) {
     items.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'dish-item-editor';
+        // 构建个性化标志
+        const badges = item.badges || [];
+        const badgesHtml = badges.map(badge => {
+            if (badge === 'hot') return '<span class="dish-badge hot-badge">畅销</span>';
+            if (badge === 'recommend') return '<span class="dish-badge recommend-badge">推荐</span>';
+            return '';
+        }).join('');
+        
         div.innerHTML = `
             <div class="dish-info">
-                <div class="dish-name-text">${item.name}</div>
+                <div class="dish-name-section">
+                    <div class="dish-name-text">${item.name}</div>
+                    <div class="dish-badges">${badgesHtml}</div>
+                </div>
                 <div class="dish-price-text">¥${item.price}</div>
             </div>
             <div class="actions">
@@ -154,12 +166,24 @@ function openModal(category, index = null) {
     const modalTitle = document.getElementById('modalTitle');
     const dishName = document.getElementById('dishName');
     const dishPrice = document.getElementById('dishPrice');
+    const dishIsHot = document.getElementById('dishIsHot');
+    const dishIsRecommend = document.getElementById('dishIsRecommend');
+    
+    // 重置复选框
+    dishIsHot.checked = false;
+    dishIsRecommend.checked = false;
     
     if (index !== null) {
         modalTitle.textContent = '编辑菜品';
         const item = currentMenu[category][index];
         dishName.value = item.name;
         dishPrice.value = item.price;
+        
+        // 恢复个性化标志
+        if (item.badges) {
+            dishIsHot.checked = item.badges.includes('hot');
+            dishIsRecommend.checked = item.badges.includes('recommend');
+        }
     } else {
         modalTitle.textContent = '添加菜品';
         dishName.value = '';
@@ -182,12 +206,23 @@ dishForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     const name = document.getElementById('dishName').value;
-    const price = parseFloat(document.getElementById('dishPrice').value);
+    const price = document.getElementById('dishPrice').value; // 支持文字价格
+    const isHot = document.getElementById('dishIsHot').checked;
+    const isRecommend = document.getElementById('dishIsRecommend').checked;
+    
+    const dish = { 
+        name, 
+        price,
+        badges: []
+    };
+    
+    if (isHot) dish.badges.push('hot');
+    if (isRecommend) dish.badges.push('recommend');
     
     if (editingIndex !== null) {
-        currentMenu[editingCategory][editingIndex] = { name, price };
+        currentMenu[editingCategory][editingIndex] = dish;
     } else {
-        currentMenu[editingCategory].push({ name, price });
+        currentMenu[editingCategory].push(dish);
     }
     
     renderDishEditor(editingCategory, currentMenu[editingCategory]);
@@ -389,17 +424,17 @@ function renderPresets(presets) {
 // 下载Excel模板
 document.getElementById('downloadTemplateBtn').addEventListener('click', () => {
     const templateData = [
-        ['分类', '菜品名称', '价格'],
-        ['凉菜', '示例：拍黄瓜', 5],
-        ['凉菜', '示例：凉拌木耳', 6],
-        ['热菜', '示例：红烧肉', 18],
-        ['热菜', '示例：糖醋鱼', 22],
-        ['主食', '示例：米饭', 2],
-        ['主食', '示例：面条', 8],
-        ['汤品', '示例：紫菜蛋花汤', 3],
-        ['汤品', '示例：番茄汤', 3],
-        ['水果', '示例：苹果', 5],
-        ['水果', '示例：香蕉', 4]
+        ['分类', '菜品名称', '价格', '畅销', '推荐'],
+        ['凉菜', '示例：拍黄瓜', '12元', 'TRUE', 'FALSE'],
+        ['凉菜', '示例：凉拌木耳', '8元', 'FALSE', 'TRUE'],
+        ['热菜', '示例：红烧肉', '时价', 'TRUE', 'TRUE'],
+        ['热菜', '示例：糖醋鱼', '22元', 'FALSE', 'FALSE'],
+        ['主食', '示例：米饭', '面议', 'FALSE', 'TRUE'],
+        ['主食', '示例：面条', '8元', 'TRUE', 'FALSE'],
+        ['汤品', '示例：紫菜蛋花汤', '3元', 'FALSE', 'FALSE'],
+        ['汤品', '示例：番茄汤', '时价', 'TRUE', 'FALSE'],
+        ['水果', '示例：苹果', '5元/斤', 'TRUE', 'FALSE'],
+        ['水果', '示例：香蕉', '4元/斤', 'FALSE', 'TRUE']
     ];
     
     const ws = XLSX.utils.aoa_to_sheet(templateData);
@@ -455,18 +490,16 @@ document.getElementById('excelFileInput').addEventListener('change', (e) => {
 
 // 解析Excel数据
 function parseExcelData(jsonData) {
-    const menuData = {
-        coldDishes: [],
-        hotDishes: [],
-        stapleFood: [],
-        soup: [],
-        fruit: []
-    };
+    const menuData = {};
     
+    // 获取自定义分类
+    const customCategories = getCategoriesFromStorage();
+    
+    // 构建分类映射
     const categoryMap = {
         '凉菜': 'coldDishes',
         'coldDishes': 'coldDishes',
-        '热菜': 'hotDishes',
+        '热菜': 'hotDishes', 
         'hotDishes': 'hotDishes',
         '主食': 'stapleFood',
         'stapleFood': 'stapleFood',
@@ -477,6 +510,18 @@ function parseExcelData(jsonData) {
         'fruit': 'fruit'
     };
     
+    // 添加自定义分类映射
+    customCategories.forEach(cat => {
+        categoryMap[cat.name] = cat.key;
+        categoryMap[cat.key] = cat.key;
+    });
+    
+    // 初始化所有分类
+    const allCategories = ['coldDishes', 'hotDishes', 'stapleFood', 'soup', 'fruit', ...customCategories.map(c => c.key)];
+    allCategories.forEach(key => {
+        menuData[key] = [];
+    });
+    
     // 跳过标题行，从第二行开始处理
     for (let i = 1; i < jsonData.length; i++) {
         const row = jsonData[i];
@@ -484,18 +529,26 @@ function parseExcelData(jsonData) {
         
         const categoryKey = String(row[0] || '').trim();
         const dishName = String(row[1] || '').trim();
-        const price = parseFloat(row[2]);
+        const price = String(row[2] || '').trim(); // 支持文字价格
+        const isHot = String(row[3] || '').trim().toUpperCase() === 'TRUE';
+        const isRecommend = String(row[4] || '').trim().toUpperCase() === 'TRUE';
         
-        if (!categoryKey || !dishName || isNaN(price) || price <= 0) {
+        if (!categoryKey || !dishName) {
             continue;
         }
         
         const category = categoryMap[categoryKey];
         if (category) {
-            menuData[category].push({
+            const dish = {
                 name: dishName,
-                price: price
-            });
+                price: price,
+                badges: []
+            };
+            
+            if (isHot) dish.badges.push('hot');
+            if (isRecommend) dish.badges.push('recommend');
+            
+            menuData[category].push(dish);
         }
     }
     
@@ -505,10 +558,11 @@ function parseExcelData(jsonData) {
 // 导出Excel
 document.getElementById('exportExcelBtn').addEventListener('click', () => {
     const exportData = [
-        ['分类', '菜品名称', '价格']
+        ['分类', '菜品名称', '价格', '畅销', '推荐']
     ];
     
-    // 按分类添加菜品
+    // 获取所有分类名称
+    const customCategories = getCategoriesFromStorage();
     const categoryNames = {
         coldDishes: '凉菜',
         hotDishes: '热菜', 
@@ -517,12 +571,19 @@ document.getElementById('exportExcelBtn').addEventListener('click', () => {
         fruit: '水果'
     };
     
+    customCategories.forEach(cat => {
+        categoryNames[cat.key] = cat.name;
+    });
+    
     Object.keys(currentMenu).forEach(category => {
         currentMenu[category].forEach(dish => {
+            const badges = dish.badges || [];
             exportData.push([
                 categoryNames[category],
                 dish.name,
-                dish.price
+                dish.price,
+                badges.includes('hot') ? 'TRUE' : 'FALSE',
+                badges.includes('recommend') ? 'TRUE' : 'FALSE'
             ]);
         });
     });
@@ -689,6 +750,37 @@ document.getElementById('backgroundImageUrl').addEventListener('input', (e) => {
     }
 });
 
+// 添加分类按钮
+document.getElementById('addCategoryBtn').addEventListener('click', () => {
+    openCategoryModal();
+});
+
+// 分类表单提交
+document.getElementById('categoryForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('categoryName').value.trim();
+    const key = document.getElementById('categoryKey').value.trim();
+    
+    if (!name || !key) return;
+    
+    if (editingCategoryIndex !== null) {
+        // 编辑模式
+        customCategories[editingCategoryIndex] = { name, key };
+    } else {
+        // 添加模式
+        customCategories.push({ name, key });
+    }
+    
+    saveCategoriesToStorage();
+    renderCategories();
+    closeCategoryModal();
+});
+
+// 分类模态框关闭按钮
+document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
+document.querySelector('.close-category').addEventListener('click', closeCategoryModal);
+
 // 保存背景图片设置
 document.getElementById('saveBackgroundBtn').addEventListener('click', async () => {
     const token = checkAuth();
@@ -751,10 +843,131 @@ async function loadBackgroundImage() {
     }
 }
 
+// 分类管理功能
+let customCategories = [];
+let editingCategoryIndex = null;
+
+// 获取分类（从localStorage或默认）
+function getCategoriesFromStorage() {
+    const stored = localStorage.getItem('custom_categories');
+    return stored ? JSON.parse(stored) : customCategories;
+}
+
+// 保存分类到localStorage
+function saveCategoriesToStorage() {
+    localStorage.setItem('custom_categories', JSON.stringify(customCategories));
+}
+
+// 渲染分类列表
+function renderCategories() {
+    const container = document.getElementById('categoriesList');
+    container.innerHTML = '';
+    
+    // 默认分类（只显示，不可编辑删除）
+    const defaultCategories = [
+        { name: '凉菜', key: 'coldDishes' },
+        { name: '热菜', key: 'hotDishes' },
+        { name: '主食', key: 'stapleFood' },
+        { name: '汤品', key: 'soup' },
+        { name: '水果', key: 'fruit' }
+    ];
+    
+    // 渲染默认分类
+    defaultCategories.forEach(category => {
+        const card = document.createElement('div');
+        card.className = 'category-card default-category';
+        card.innerHTML = `
+            <h4>${category.name}</h4>
+            <div class="category-key">${category.key}</div>
+            <div class="category-actions">
+                <small style="color: #999;">默认分类</small>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+    
+    // 渲染自定义分类
+    customCategories.forEach((category, index) => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.innerHTML = `
+            <h4>${category.name}</h4>
+            <div class="category-key">${category.key}</div>
+            <div class="category-actions">
+                <button class="btn btn-primary btn-sm edit-category" data-index="${index}">编辑</button>
+                <button class="btn btn-secondary btn-sm delete-category" data-index="${index}">删除</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+    
+    // 绑定自定义分类事件
+    container.querySelectorAll('.edit-category').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            openCategoryModal(index);
+        });
+    });
+    
+    container.querySelectorAll('.delete-category').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            deleteCategory(index);
+        });
+    });
+}
+
+// 打开分类模态框
+function openCategoryModal(index = null) {
+    editingCategoryIndex = index;
+    
+    const modalTitle = document.getElementById('categoryModalTitle');
+    const categoryName = document.getElementById('categoryName');
+    const categoryKey = document.getElementById('categoryKey');
+    
+    if (index !== null) {
+        const category = customCategories[index];
+        modalTitle.textContent = '编辑分类';
+        categoryName.value = category.name;
+        categoryKey.value = category.key;
+    } else {
+        modalTitle.textContent = '添加分类';
+        categoryName.value = '';
+        categoryKey.value = '';
+    }
+    
+    document.getElementById('categoryModal').classList.add('show');
+}
+
+// 关闭分类模态框
+function closeCategoryModal() {
+    document.getElementById('categoryModal').classList.remove('show');
+    editingCategoryIndex = null;
+}
+
+// 删除分类
+function deleteCategory(index) {
+    const category = customCategories[index];
+    const confirmed = confirm(`确定要删除分类"${category.name}"吗？相关菜品也会被删除。`);
+    if (!confirmed) return;
+    
+    customCategories.splice(index, 1);
+    saveCategoriesToStorage();
+    renderCategories();
+    
+    // 同时删除该分类下的菜品
+    delete currentMenu[category.key];
+    renderAllEditors();
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     loadCurrentMenu();
     loadPresets();
     loadBackgroundImage();
+    
+    // 初始化分类
+    customCategories = getCategoriesFromStorage();
+    renderCategories();
 });

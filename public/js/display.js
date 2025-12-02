@@ -146,7 +146,27 @@ function renderMenu(menuData) {
             dishPrice.className = 'dish-price';
             dishPrice.textContent = `¥${item.price}`;
             
+            // 添加个性化标志
+            const badges = item.badges || [];
+            const badgesContainer = document.createElement('div');
+            badgesContainer.className = 'dish-badges';
+            
+            if (badges.includes('hot')) {
+                const hotBadge = document.createElement('span');
+                hotBadge.className = 'dish-badge hot-badge';
+                hotBadge.textContent = '畅销';
+                badgesContainer.appendChild(hotBadge);
+            }
+            
+            if (badges.includes('recommend')) {
+                const recommendBadge = document.createElement('span');
+                recommendBadge.className = 'dish-badge recommend-badge';
+                recommendBadge.textContent = '推荐';
+                badgesContainer.appendChild(recommendBadge);
+            }
+            
             dishItem.appendChild(dishName);
+            dishItem.appendChild(badgesContainer);
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });

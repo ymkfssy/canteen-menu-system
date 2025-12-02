@@ -12,6 +12,14 @@ CREATE TABLE IF NOT EXISTS users (
 -- 生产环境请修改密码！
 INSERT OR IGNORE INTO users (username, password) VALUES ('admin', 'admin123');
 
+-- 自定义分类表
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    key TEXT UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 当前展示菜单表
 CREATE TABLE IF NOT EXISTS current_menu (
     id INTEGER PRIMARY KEY CHECK (id = 1),

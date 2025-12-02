@@ -169,6 +169,42 @@ body {
     text-align: center;
 }
 
+.dish-badges {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.dish-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.hot-badge {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+}
+
+.recommend-badge {
+    background: linear-gradient(135deg, #51cf66, #3fb950);
+    color: white;
+    box-shadow: 0 2px 4px rgba(81, 207, 102, 0.3);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* 各区域flex比例 */
 .cold-dishes { flex: 1; }
 .hot-dishes { flex: 3; }
