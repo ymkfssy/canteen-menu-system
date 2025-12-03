@@ -160,13 +160,48 @@ function renderMenu(menuData) {
     
     // 合并所有分类
     const sections = [...defaultSections, ...customSections];
+    
+    // 过滤出有菜品的分类，并计算总菜品数
+    const sectionsWithData = sections
+        .map(section => ({
+            ...section,
+            items: menuData[section.key] || [],
+            itemCount: (menuData[section.key] || []).length
+        }))
+        .filter(section => section.itemCount > 0);
+    
+    // 计算每个分类的基础宽度（根据菜品数量）
+    const calculateBaseWidth = (count) => {
+        if (count === 1) return 180;
+        if (count === 2) return 240;
+        if (count === 3) return 300;
+        if (count === 4) return 340;
+        if (count === 5) return 400;
+        if (count === 6) return 450;
+        if (count <= 8) return 500;
+        return 600;
+    };
+    
+    sectionsWithData.forEach(section => {
+        section.baseWidth = calculateBaseWidth(section.itemCount);
+    });
+    
+    // 计算总宽度和可用宽度
+    const totalBaseWidth = sectionsWithData.reduce((sum, s) => sum + s.baseWidth, 0);
+    const availableWidth = 3200 - 30 - (sectionsWithData.length - 1) * 10; // 减去padding和gap
+    
+    // 如果总宽度超出，按比例缩小；如果有富余，适当增加
+    const widthRatio = totalBaseWidth > availableWidth ? availableWidth / totalBaseWidth : 1;
 
-    sections.forEach(section => {
-        const items = menuData[section.key] || [];
-        if (items.length === 0) return;
-
+    sectionsWithData.forEach(section => {
         const sectionDiv = document.createElement('div');
         sectionDiv.className = `menu-section ${section.class}`;
+        
+        // 应用宽度比例
+        let finalWidth = Math.floor(section.baseWidth * widthRatio);
+        // 确保最小宽度
+        finalWidth = Math.max(finalWidth, 180);
+        sectionDiv.style.width = `${finalWidth}px`;
         
         const header = document.createElement('div');
         header.className = 'section-header';
@@ -175,9 +210,9 @@ function renderMenu(menuData) {
 
         const dishesDiv = document.createElement('div');
         dishesDiv.className = 'dishes';
-        dishesDiv.setAttribute('data-count', items.length);
+        dishesDiv.setAttribute('data-count', section.itemCount);
 
-        items.forEach(item => {
+        section.items.forEach(item => {
             const dishItem = document.createElement('div');
             dishItem.className = 'dish-item';
             

@@ -72,10 +72,11 @@ body {
 .menu-container {
     flex: 1;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    padding: 8px 20px;
-    gap: 12px;
+    padding: 8px 15px;
+    gap: 10px;
+    flex-wrap: nowrap;
 }
 
 .menu-section {
@@ -87,6 +88,8 @@ body {
     flex-direction: column;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
+    flex-shrink: 1;
+    min-width: 180px;
 }
 
 .menu-section:hover {
@@ -128,27 +131,48 @@ body {
     min-width: 0; /* 允许收缩 */
 }
 
-/* 根据菜品数量调整字体大小 */
-.dishes[data-count="1"] .dish-item { min-width: 100px; }
-.dishes[data-count="2"] .dish-item { min-width: 80px; }
-.dishes[data-count="3"] .dish-item { min-width: 60px; }
-.dishes[data-count="4"] .dish-item { min-width: 50px; }
-.dishes[data-count="5"] .dish-item { min-width: 45px; }
-.dishes[data-count="6"] .dish-item { min-width: 40px; }
+/* 根据菜品数量调整样式 */
+.dishes[data-count="1"] .dish-item { min-width: 120px; }
+.dishes[data-count="2"] .dish-item { min-width: 100px; }
+.dishes[data-count="3"] .dish-item { min-width: 85px; }
+.dishes[data-count="4"] .dish-item { min-width: 70px; }
+.dishes[data-count="5"] .dish-item { min-width: 65px; }
+.dishes[data-count="6"] .dish-item { min-width: 60px; }
 
-/* 数量较多时缩小字体 */
+/* 数量较多时调整 */
 .dishes[data-count="7"] .dish-item,
 .dishes[data-count="8"] .dish-item { 
-    min-width: 35px;
-    padding: 5px 7px;
+    min-width: 55px;
+    padding: 5px 6px;
 }
 .dishes[data-count="7"] .dish-name,
 .dishes[data-count="8"] .dish-name { 
-    font-size: 15px;
+    font-size: 16px;
 }
 .dishes[data-count="7"] .dish-price,
 .dishes[data-count="8"] .dish-price { 
-    font-size: 17px;
+    font-size: 18px;
+}
+
+/* 数量很多时进一步缩小 */
+.dishes[data-count="9"] .dish-item,
+.dishes[data-count="10"] .dish-item,
+.dishes[data-count="11"] .dish-item,
+.dishes[data-count="12"] .dish-item { 
+    min-width: 50px;
+    padding: 4px 5px;
+}
+.dishes[data-count="9"] .dish-name,
+.dishes[data-count="10"] .dish-name,
+.dishes[data-count="11"] .dish-name,
+.dishes[data-count="12"] .dish-name { 
+    font-size: 14px;
+}
+.dishes[data-count="9"] .dish-price,
+.dishes[data-count="10"] .dish-price,
+.dishes[data-count="11"] .dish-price,
+.dishes[data-count="12"] .dish-price { 
+    font-size: 16px;
 }
 
 .dish-item:hover {
@@ -162,6 +186,24 @@ body {
     font-weight: 600;
     text-align: center;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1.3;
+}
+
+/* 菜品数量多时允许换行 */
+.dishes[data-count="7"] .dish-name,
+.dishes[data-count="8"] .dish-name,
+.dishes[data-count="9"] .dish-name,
+.dishes[data-count="10"] .dish-name,
+.dishes[data-count="11"] .dish-name,
+.dishes[data-count="12"] .dish-name {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.2;
+    max-height: 2.4em; /* 最多显示2行 */
 }
 
 .dish-price {
@@ -205,15 +247,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 各区域flex比例 */
-.cold-dishes { flex: 1; }
-.hot-dishes { flex: 3; }
-.staple-food { flex: 3; }
-.soup { flex: 1; }
-.fruit { flex: 1; }
-
-/* 自定义分类默认flex比例 */
-.menu-section[class*="custom-"] { flex: 2; }
+/* 移除固定flex比例，改用动态宽度分配 */
 
 /* 颜色主题通过JavaScript动态设置 */
 
