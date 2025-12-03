@@ -135,12 +135,12 @@ function updateDateTime() {
 }
 
 // 渲染菜单
-function renderMenu(menuData) {
+async function renderMenu(menuData) {
     const container = document.getElementById('menuContainer');
     container.innerHTML = '';
 
     // 获取自定义分类
-    const customCategories = getCustomCategories();
+    const customCategories = await getCustomCategories();
     
     // 默认分类配置
     const defaultSections = [
@@ -161,7 +161,7 @@ function renderMenu(menuData) {
     // 合并所有分类
     const sections = [...defaultSections, ...customSections];
     
-    // 过滤出有菜品的分类，并计算总菜品数
+    // 过滤出有菜品的分类
     const sectionsWithData = sections
         .map(section => ({
             ...section,
@@ -170,46 +170,17 @@ function renderMenu(menuData) {
         }))
         .filter(section => section.itemCount > 0);
     
-    // 计算每个分类的基础宽度（根据菜品数量）
-    const calculateBaseWidth = (count) => {
-        if (count === 1) return 200;
-        if (count === 2) return 280;
-        if (count === 3) return 380;
-        if (count === 4) return 460;
-        if (count === 5) return 540;
-        if (count === 6) return 620;
-        if (count <= 8) return 720;
-        return 820;
-    };
-    
-    sectionsWithData.forEach(section => {
-        section.baseWidth = calculateBaseWidth(section.itemCount);
-    });
-    
-    // 计算总宽度和可用宽度
-    const totalBaseWidth = sectionsWithData.reduce((sum, s) => sum + s.baseWidth, 0);
-    const availableWidth = 3200 - 30 - (sectionsWithData.length - 1) * 10; // 减去padding和gap
-    
-    // 如果总宽度超出，按比例缩小
-    let widthRatio = 1;
-    if (totalBaseWidth > availableWidth) {
-        widthRatio = availableWidth / totalBaseWidth;
-        // 确保缩放比例不要太小，最小0.85
-        widthRatio = Math.max(widthRatio, 0.85);
-    }
+    // 计算每个分类的flex权重（基于菜品数量）
+    const totalItems = sectionsWithData.reduce((sum, s) => sum + s.itemCount, 0);
 
     sectionsWithData.forEach(section => {
         const sectionDiv = document.createElement('div');
         sectionDiv.className = `menu-section ${section.class}`;
         
-        // 应用宽度比例
-        let finalWidth = Math.floor(section.baseWidth * widthRatio);
-        // 根据菜品数量确保最小宽度
-        const minWidth = section.itemCount >= 6 ? 500 : 
-                        section.itemCount >= 4 ? 380 : 
-                        section.itemCount >= 2 ? 250 : 180;
-        finalWidth = Math.max(finalWidth, minWidth);
-        sectionDiv.style.width = `${finalWidth}px`;
+        // 根据菜品数量占比设置flex-grow，确保填满整个宽度
+        const flexGrow = section.itemCount;
+        sectionDiv.style.flexGrow = flexGrow;
+        sectionDiv.style.flexBasis = '0';
         
         const header = document.createElement('div');
         header.className = 'section-header';
@@ -253,9 +224,8 @@ function renderMenu(menuData) {
             
             // 按正确顺序添加元素：名称 -> 标签 -> 价格
             dishItem.appendChild(dishName);
-            if (badges.length > 0) {
-                dishItem.appendChild(badgesContainer);
-            }
+            // 总是添加标签容器，即使没有标签也保持布局一致性
+            dishItem.appendChild(badgesContainer);
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
@@ -265,14 +235,21 @@ function renderMenu(menuData) {
     });
 }
 
-// 获取自定义分类（从localStorage）
-function getCustomCategories() {
+// 获取自定义分类（从API）
+async function getCustomCategories() {
     try {
+        const response = await fetch(`${API_BASE}/categories`);
+        if (response.ok) {
+            return await response.json();
+        }
+        // 如果API请求失败，尝试从localStorage获取作为后备
         const stored = localStorage.getItem('custom_categories');
         return stored ? JSON.parse(stored) : [];
     } catch (error) {
         console.error('获取自定义分类失败:', error);
-        return [];
+        // 错误时从localStorage获取作为后备
+        const stored = localStorage.getItem('custom_categories');
+        return stored ? JSON.parse(stored) : [];
     }
 }
 
@@ -298,7 +275,7 @@ async function loadMenu() {
         
         // 渲染菜单
         if (data.menu) {
-            renderMenu(data.menu);
+            await renderMenu(data.menu);
         }
     } catch (error) {
         console.error('加载菜单出错:', error);
@@ -308,7 +285,7 @@ async function loadMenu() {
 }
 
 // 加载默认菜单（离线模式）
-function loadDefaultMenu() {
+async function loadDefaultMenu() {
     const defaultMenu = {
         coldDishes: [
             { name: '拍黄瓜', price: 5 },
@@ -341,7 +318,7 @@ function loadDefaultMenu() {
     };
 
     applyTheme(currentTheme);
-    renderMenu(defaultMenu);
+    await renderMenu(defaultMenu);
 }
 
 // 初始化
