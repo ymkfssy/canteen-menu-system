@@ -26,7 +26,7 @@ body {
 
 /* 顶部标题栏 */
 .header {
-    height: 40px;
+    height: 35px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -45,10 +45,10 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
     color: #fff !important;
-    letter-spacing: 6px;
+    letter-spacing: 5px;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     background: none !important;
     background-image: none !important;
@@ -58,14 +58,14 @@ body {
 }
 
 .datetime {
-    font-size: 20px;
+    font-size: 18px;
     color: #fff;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     background: rgba(0, 0, 0, 0.2);
-    padding: 6px 18px;
-    border-radius: 20px;
-    min-width: 420px;
+    padding: 5px 16px;
+    border-radius: 18px;
+    min-width: 380px;
     text-align: center;
 }
 
@@ -74,15 +74,15 @@ body {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    padding: 0 20px;
-    gap: 15px;
+    padding: 8px 20px;
+    gap: 12px;
 }
 
 .menu-section {
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    padding: 8px 12px;
-    height: 125px;
+    border-radius: 8px;
+    padding: 6px 10px;
+    height: 132px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -94,21 +94,21 @@ body {
 }
 
 .section-header {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     color: #333;
     text-align: center;
-    padding: 6px 0;
+    padding: 4px 0;
     border-bottom: 3px solid;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     white-space: nowrap;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     /* 边框颜色通过JavaScript动态设置 */
 }
 
 .dishes {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex: 1;
     align-items: stretch;
 }
@@ -118,8 +118,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    padding: 8px 10px;
+    gap: 2px;
+    padding: 6px 8px;
     /* 背景通过JavaScript动态设置 */
     border-radius: 6px;
     transition: all 0.3s ease;
@@ -139,14 +139,15 @@ body {
 .dishes[data-count="7"] .dish-item,
 .dishes[data-count="8"] .dish-item { 
     min-width: 35px;
+    padding: 5px 7px;
 }
 .dishes[data-count="7"] .dish-name,
 .dishes[data-count="8"] .dish-name { 
-    font-size: 13px;
+    font-size: 15px;
 }
 .dishes[data-count="7"] .dish-price,
 .dishes[data-count="8"] .dish-price { 
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .dish-item:hover {
