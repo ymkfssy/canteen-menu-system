@@ -46,13 +46,8 @@ function applyTheme(themeName) {
         ? `background-image: url(${currentBackgroundImage}); background-size: cover; background-position: center; background-repeat: no-repeat;`
         : `background: ${theme.colors.primary};`;
 
-    const styles = `
-        body {
-            ${backgroundStyle}
-        }
-        .header {
-            background: ${theme.colors.header};
-        }
+    // 生成默认分类样式
+    let categoryStyles = `
         .cold-dishes .section-header {
             border-bottom-color: ${theme.colors.coldDishes.header};
         }
@@ -83,6 +78,39 @@ function applyTheme(themeName) {
         .fruit .dish-item {
             background: ${theme.colors.fruit.item};
         }
+    `;
+    
+    // 为自定义分类生成样式（使用循环颜色）
+    const customCategories = getCustomCategories();
+    const colorPalette = [
+        { header: '#48dbfb', item: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)' },
+        { header: '#f093fb', item: 'linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)' },
+        { header: '#a8e063', item: 'linear-gradient(135deg, #f0f9e8 0%, #d4edbd 100%)' },
+        { header: '#7ee8fa', item: 'linear-gradient(135deg, #e8f8f5 0%, #d0ece7 100%)' },
+        { header: '#ff9a9e', item: 'linear-gradient(135deg, #ffe8ea 0%, #ffd4d7 100%)' }
+    ];
+    
+    customCategories.forEach((cat, index) => {
+        const colorIndex = index % colorPalette.length;
+        const color = colorPalette[colorIndex];
+        categoryStyles += `
+        .custom-${cat.key} .section-header {
+            border-bottom-color: ${color.header};
+        }
+        .custom-${cat.key} .dish-item {
+            background: ${color.item};
+        }
+        `;
+    });
+
+    const styles = `
+        body {
+            ${backgroundStyle}
+        }
+        .header {
+            background: ${theme.colors.header};
+        }
+        ${categoryStyles}
         ${titleStyles}
     `;
 
@@ -111,13 +139,27 @@ function renderMenu(menuData) {
     const container = document.getElementById('menuContainer');
     container.innerHTML = '';
 
-    const sections = [
+    // 获取自定义分类
+    const customCategories = getCustomCategories();
+    
+    // 默认分类配置
+    const defaultSections = [
         { key: 'coldDishes', title: '凉菜', class: 'cold-dishes' },
         { key: 'hotDishes', title: '热菜', class: 'hot-dishes' },
         { key: 'stapleFood', title: '主食', class: 'staple-food' },
         { key: 'soup', title: '汤品', class: 'soup' },
         { key: 'fruit', title: '水果', class: 'fruit' }
     ];
+    
+    // 添加自定义分类配置
+    const customSections = customCategories.map(cat => ({
+        key: cat.key,
+        title: cat.name,
+        class: `custom-${cat.key}`
+    }));
+    
+    // 合并所有分类
+    const sections = [...defaultSections, ...customSections];
 
     sections.forEach(section => {
         const items = menuData[section.key] || [];
@@ -133,6 +175,7 @@ function renderMenu(menuData) {
 
         const dishesDiv = document.createElement('div');
         dishesDiv.className = 'dishes';
+        dishesDiv.setAttribute('data-count', items.length);
 
         items.forEach(item => {
             const dishItem = document.createElement('div');
@@ -174,6 +217,17 @@ function renderMenu(menuData) {
         sectionDiv.appendChild(dishesDiv);
         container.appendChild(sectionDiv);
     });
+}
+
+// 获取自定义分类（从localStorage）
+function getCustomCategories() {
+    try {
+        const stored = localStorage.getItem('custom_categories');
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('获取自定义分类失败:', error);
+        return [];
+    }
 }
 
 // 加载菜单数据

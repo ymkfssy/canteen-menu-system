@@ -155,7 +155,7 @@ body {
 }
 
 .dish-name {
-    font-size: 15px;
+    font-size: 18px;
     color: #333;
     font-weight: 600;
     text-align: center;
@@ -163,7 +163,7 @@ body {
 }
 
 .dish-price {
-    font-size: 17px;
+    font-size: 20px;
     color: #e74c3c;
     font-weight: bold;
     text-align: center;

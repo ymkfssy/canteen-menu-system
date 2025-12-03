@@ -131,9 +131,74 @@ function getCategoryRecommend(category) {
 
 // 渲染所有编辑器
 function renderAllEditors() {
-    Object.keys(currentMenu).forEach(category => {
-        renderDishEditor(category, currentMenu[category]);
+    // 获取所有分类（默认+自定义）
+    const allCategories = getAllCategories();
+    
+    // 确保currentMenu包含所有分类
+    allCategories.forEach(cat => {
+        if (!currentMenu[cat.key]) {
+            currentMenu[cat.key] = [];
+        }
     });
+    
+    // 清空现有编辑区
+    const menuEditor = document.querySelector('.menu-editor');
+    menuEditor.innerHTML = '';
+    
+    // 渲染所有分类
+    allCategories.forEach(cat => {
+        createCategoryEditor(cat.key, cat.name, cat.recommend || 6);
+        renderDishEditor(cat.key, currentMenu[cat.key] || []);
+    });
+}
+
+// 创建分类编辑器
+function createCategoryEditor(categoryKey, categoryName, recommend) {
+    const menuEditor = document.querySelector('.menu-editor');
+    
+    const section = document.createElement('div');
+    section.className = 'editor-section';
+    section.innerHTML = `
+        <h3>${categoryName} <span class="count-badge" id="${categoryKey}Count">0</span></h3>
+        <div id="${categoryKey}Editor" class="dishes-list"></div>
+        <button class="btn-add" data-category="${categoryKey}" data-recommend="${recommend}">+ 添加${categoryName}</button>
+    `;
+    
+    menuEditor.appendChild(section);
+    
+    // 为新添加的按钮绑定事件
+    const addBtn = section.querySelector('.btn-add');
+    addBtn.addEventListener('click', () => {
+        const category = addBtn.dataset.category;
+        const recommendCount = parseInt(addBtn.dataset.recommend);
+        const current = currentMenu[category].length;
+        
+        if (current >= recommendCount) {
+            const confirmed = confirm(`当前已有${current}个菜品，推荐数量为${recommendCount}个。\n继续添加可能导致前台显示过于拥挤。\n\n是否继续添加？`);
+            if (!confirmed) return;
+        }
+        
+        openModal(category);
+    });
+}
+
+// 获取所有分类（默认+自定义）
+function getAllCategories() {
+    const defaultCategories = [
+        { key: 'coldDishes', name: '凉菜', recommend: 2 },
+        { key: 'hotDishes', name: '热菜', recommend: 6 },
+        { key: 'stapleFood', name: '主食', recommend: 6 },
+        { key: 'soup', name: '汤品', recommend: 2 },
+        { key: 'fruit', name: '水果', recommend: 2 }
+    ];
+    
+    const custom = getCategoriesFromStorage();
+    const customWithRecommend = custom.map(cat => ({
+        ...cat,
+        recommend: 6  // 自定义分类默认推荐6个
+    }));
+    
+    return [...defaultCategories, ...customWithRecommend];
 }
 
 // 添加按钮事件
@@ -756,7 +821,7 @@ document.getElementById('addCategoryBtn').addEventListener('click', () => {
 });
 
 // 分类表单提交
-document.getElementById('categoryForm').addEventListener('submit', (e) => {
+document.getElementById('categoryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const name = document.getElementById('categoryName').value.trim();
@@ -764,17 +829,42 @@ document.getElementById('categoryForm').addEventListener('submit', (e) => {
     
     if (!name || !key) return;
     
-    if (editingCategoryIndex !== null) {
-        // 编辑模式
-        customCategories[editingCategoryIndex] = { name, key };
-    } else {
-        // 添加模式
-        customCategories.push({ name, key });
-    }
+    const token = checkAuth();
+    if (!token) return;
     
-    saveCategoriesToStorage();
-    renderCategories();
-    closeCategoryModal();
+    try {
+        if (editingCategoryIndex !== null) {
+            // 编辑模式（暂时只支持本地编辑，数据库不支持更新）
+            customCategories[editingCategoryIndex] = { name, key };
+            saveCategoriesToStorage();
+        } else {
+            // 添加模式 - 保存到数据库
+            const response = await fetch(`${API_BASE}/categories`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name, key })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || '添加分类失败');
+            }
+            
+            const result = await response.json();
+            customCategories.push({ id: result.id, name, key });
+            saveCategoriesToStorage();
+        }
+        
+        renderCategories();
+        renderAllEditors();
+        closeCategoryModal();
+        alert('分类保存成功！');
+    } catch (error) {
+        alert('保存分类失败: ' + error.message);
+    }
 });
 
 // 分类模态框关闭按钮
@@ -847,7 +937,39 @@ async function loadBackgroundImage() {
 let customCategories = [];
 let editingCategoryIndex = null;
 
-// 获取分类（从localStorage或默认）
+// 从数据库加载分类
+async function loadCategoriesFromDB() {
+    const token = checkAuth();
+    if (!token) return [];
+    
+    try {
+        const response = await fetch(`${API_BASE}/categories`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const allCategories = await response.json();
+            // 过滤掉默认分类，只保留自定义分类
+            const defaultKeys = ['coldDishes', 'hotDishes', 'stapleFood', 'soup', 'fruit'];
+            const custom = allCategories.filter(cat => !defaultKeys.includes(cat.key));
+            
+            // 同步到localStorage
+            customCategories = custom;
+            saveCategoriesToStorage();
+            
+            return custom;
+        }
+    } catch (error) {
+        console.error('从数据库加载分类失败:', error);
+    }
+    
+    // 如果加载失败，从localStorage加载
+    return getCategoriesFromStorage();
+}
+
+// 获取分类（优先从localStorage）
 function getCategoriesFromStorage() {
     const stored = localStorage.getItem('custom_categories');
     return stored ? JSON.parse(stored) : customCategories;
@@ -946,28 +1068,57 @@ function closeCategoryModal() {
 }
 
 // 删除分类
-function deleteCategory(index) {
+async function deleteCategory(index) {
     const category = customCategories[index];
-    const confirmed = confirm(`确定要删除分类"${category.name}"吗？相关菜品也会被删除。`);
+    const confirmed = confirm(`确定要删除分类\"${category.name}\"吗？相关菜品也会被删除。`);
     if (!confirmed) return;
     
-    customCategories.splice(index, 1);
-    saveCategoriesToStorage();
-    renderCategories();
+    const token = checkAuth();
+    if (!token) return;
     
-    // 同时删除该分类下的菜品
-    delete currentMenu[category.key];
-    renderAllEditors();
+    try {
+        // 如果有ID，从数据库删除
+        if (category.id) {
+            const response = await fetch(`${API_BASE}/categories/${category.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || '删除分类失败');
+            }
+        }
+        
+        // 从本地删除
+        customCategories.splice(index, 1);
+        saveCategoriesToStorage();
+        renderCategories();
+        
+        // 同时删除该分类下的菜品
+        delete currentMenu[category.key];
+        
+        // 重新渲染所有编辑器
+        renderAllEditors();
+        
+        alert('分类删除成功！');
+    } catch (error) {
+        alert('删除分类失败: ' + error.message);
+    }
 }
 
 // 初始化
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     checkAuth();
+    
+    // 先加载分类（需要等待，因为其他功能依赖分类）
+    customCategories = await loadCategoriesFromDB();
+    renderCategories();
+    
+    // 然后加载其他数据
     loadCurrentMenu();
     loadPresets();
     loadBackgroundImage();
-    
-    // 初始化分类
-    customCategories = getCategoriesFromStorage();
-    renderCategories();
 });

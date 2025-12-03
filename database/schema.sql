@@ -20,6 +20,14 @@ CREATE TABLE IF NOT EXISTS categories (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 插入默认分类（确保数据一致性）
+INSERT OR IGNORE INTO categories (name, key) VALUES 
+    ('凉菜', 'coldDishes'),
+    ('热菜', 'hotDishes'),
+    ('主食', 'stapleFood'),
+    ('汤品', 'soup'),
+    ('水果', 'fruit');
+
 -- 当前展示菜单表
 CREATE TABLE IF NOT EXISTS current_menu (
     id INTEGER PRIMARY KEY CHECK (id = 1),

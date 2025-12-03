@@ -126,6 +126,25 @@ export async function onRequest(context) {
       return await deletePreset(id, env);
     }
 
+    // 分类管理路由
+    if (path === 'categories') {
+      if (method === 'GET') {
+        return await getCategories(env);
+      }
+      if (method === 'POST') {
+        const user = requireAuth(request);
+        if (!user) return errorResponse('未授权', 401);
+        return await createCategory(request, env);
+      }
+    }
+
+    if (path.startsWith('categories/') && method === 'DELETE') {
+      const user = requireAuth(request);
+      if (!user) return errorResponse('未授权', 401);
+      const id = path.split('/')[1];
+      return await deleteCategory(id, env);
+    }
+
     return errorResponse('未找到', 404);
   } catch (error) {
     console.error('API错误:', error);
@@ -257,6 +276,67 @@ async function updateBackgroundImage(request, env) {
   await env.DB.prepare(
     `UPDATE current_menu SET background_image = ?, updated_at = datetime('now') WHERE id = 1`
   ).bind(backgroundImage || '').run();
+
+  return successResponse({ success: true });
+}
+
+// 获取所有分类
+async function getCategories(env) {
+  const { results } = await env.DB.prepare(
+    'SELECT id, name, key, created_at FROM categories ORDER BY id ASC'
+  ).all();
+
+  return successResponse(results || []);
+}
+
+// 创建新分类
+async function createCategory(request, env) {
+  const { name, key } = await request.json();
+
+  if (!name || !key) {
+    return errorResponse('分类名称和键名不能为空', 400);
+  }
+
+  // 验证key格式（只允许字母和数字）
+  if (!/^[a-zA-Z0-9]+$/.test(key)) {
+    return errorResponse('分类键名只能包含字母和数字', 400);
+  }
+
+  try {
+    const result = await env.DB.prepare(
+      `INSERT INTO categories (name, key, created_at)
+       VALUES (?, ?, datetime('now'))`
+    ).bind(name, key).run();
+
+    return successResponse({ success: true, id: result.lastRowId });
+  } catch (error) {
+    if (error.message.includes('UNIQUE')) {
+      return errorResponse('分类键名已存在', 400);
+    }
+    throw error;
+  }
+}
+
+// 删除分类
+async function deleteCategory(id, env) {
+  // 检查是否为默认分类（前5个）
+  const category = await env.DB.prepare(
+    'SELECT id, key FROM categories WHERE id = ?'
+  ).bind(id).first();
+
+  if (!category) {
+    return errorResponse('分类不存在', 404);
+  }
+
+  // 防止删除默认分类
+  const defaultKeys = ['coldDishes', 'hotDishes', 'stapleFood', 'soup', 'fruit'];
+  if (defaultKeys.includes(category.key)) {
+    return errorResponse('不能删除默认分类', 400);
+  }
+
+  await env.DB.prepare(
+    'DELETE FROM categories WHERE id = ?'
+  ).bind(id).run();
 
   return successResponse({ success: true });
 }
