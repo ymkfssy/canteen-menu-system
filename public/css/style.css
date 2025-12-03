@@ -114,6 +114,7 @@ body {
 }
 
 .dish-item {
+    position: relative; /* 为标签定位提供参照 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -171,21 +172,19 @@ body {
 }
 
 .dish-badges {
-    position: absolute;
-    top: 5px;
-    right: 5px;
     display: flex;
     gap: 4px;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2px;
 }
 
 .dish-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
     font-size: 10px;
     font-weight: bold;
-    text-transform: uppercase;
+    white-space: nowrap;
     animation: fadeIn 0.3s ease-in;
 }
 
@@ -212,6 +211,9 @@ body {
 .staple-food { flex: 3; }
 .soup { flex: 1; }
 .fruit { flex: 1; }
+
+/* 自定义分类默认flex比例 */
+.menu-section[class*="custom-"] { flex: 2; }
 
 /* 颜色主题通过JavaScript动态设置 */
 

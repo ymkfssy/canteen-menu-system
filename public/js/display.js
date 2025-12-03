@@ -197,7 +197,7 @@ function renderMenu(menuData) {
             if (badges.includes('hot')) {
                 const hotBadge = document.createElement('span');
                 hotBadge.className = 'dish-badge hot-badge';
-                hotBadge.textContent = '畅销';
+                hotBadge.textContent = '热销';
                 badgesContainer.appendChild(hotBadge);
             }
             
@@ -208,8 +208,11 @@ function renderMenu(menuData) {
                 badgesContainer.appendChild(recommendBadge);
             }
             
+            // 按正确顺序添加元素：名称 -> 标签 -> 价格
             dishItem.appendChild(dishName);
-            dishItem.appendChild(badgesContainer);
+            if (badges.length > 0) {
+                dishItem.appendChild(badgesContainer);
+            }
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
