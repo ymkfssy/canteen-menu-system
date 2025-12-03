@@ -240,15 +240,29 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+.name-and-badges {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .dish-name {
     font-size: 18px;
     color: #333;
     font-weight: 600;
-    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
     line-height: 1.3;
 }
 
@@ -270,20 +284,15 @@ body {
     display: -webkit-flex;
     display: flex;
     gap: 4px;
-    -webkit-flex-wrap: wrap;
-    -moz-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-justify-content: center;
-    -moz-justify-content: center;
-    -ms-justify-content: center;
-    justify-content: center;
-    margin-top: 2px;
-    width: 100%; /* 确保标签容器占满宽度 */
+    -webkit-flex-wrap: nowrap;
+    -moz-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
     -webkit-flex-shrink: 0; /* 防止标签容器被压缩 */
     -moz-flex-shrink: 0; /* 防止标签容器被压缩 */
     -ms-flex-shrink: 0; /* 防止标签容器被压缩 */
     flex-shrink: 0; /* 防止标签容器被压缩 */
+    margin-left: 4px;
 }
 
 .dish-badge {

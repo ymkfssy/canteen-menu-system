@@ -195,17 +195,18 @@ async function renderMenu(menuData) {
             const dishItem = document.createElement('div');
             dishItem.className = 'dish-item';
             
-            const dishName = document.createElement('div');
+            // 创建名称和标签的容器
+            const nameAndBadgesContainer = document.createElement('div');
+            nameAndBadgesContainer.className = 'name-and-badges';
+            
+            const dishName = document.createElement('span');
             dishName.className = 'dish-name';
             dishName.textContent = item.name;
-            
-            const dishPrice = document.createElement('div');
-            dishPrice.className = 'dish-price';
-            dishPrice.textContent = `¥${item.price}`;
+            nameAndBadgesContainer.appendChild(dishName);
             
             // 添加个性化标志
             const badges = item.badges || [];
-            const badgesContainer = document.createElement('div');
+            const badgesContainer = document.createElement('span');
             badgesContainer.className = 'dish-badges';
             
             if (badges.includes('hot')) {
@@ -222,10 +223,14 @@ async function renderMenu(menuData) {
                 badgesContainer.appendChild(recommendBadge);
             }
             
-            // 按正确顺序添加元素：名称 -> 标签 -> 价格
-            dishItem.appendChild(dishName);
-            // 总是添加标签容器，即使没有标签也保持布局一致性
-            dishItem.appendChild(badgesContainer);
+            nameAndBadgesContainer.appendChild(badgesContainer);
+            
+            const dishPrice = document.createElement('div');
+            dishPrice.className = 'dish-price';
+            dishPrice.textContent = `¥${item.price}`;
+            
+            // 按正确顺序添加元素：名称和标签容器 -> 价格
+            dishItem.appendChild(nameAndBadgesContainer);
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
