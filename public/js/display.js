@@ -135,12 +135,12 @@ function updateDateTime() {
 }
 
 // 渲染菜单
-function renderMenu(menuData) {
+async function renderMenu(menuData) {
     const container = document.getElementById('menuContainer');
     container.innerHTML = '';
 
     // 获取自定义分类
-    const customCategories = getCustomCategories();
+    const customCategories = await getCustomCategories();
     
     // 默认分类配置
     const defaultSections = [
@@ -235,14 +235,21 @@ function renderMenu(menuData) {
     });
 }
 
-// 获取自定义分类（从localStorage）
-function getCustomCategories() {
+// 获取自定义分类（从API）
+async function getCustomCategories() {
     try {
+        const response = await fetch(`${API_BASE}/categories`);
+        if (response.ok) {
+            return await response.json();
+        }
+        // 如果API请求失败，尝试从localStorage获取作为后备
         const stored = localStorage.getItem('custom_categories');
         return stored ? JSON.parse(stored) : [];
     } catch (error) {
         console.error('获取自定义分类失败:', error);
-        return [];
+        // 错误时从localStorage获取作为后备
+        const stored = localStorage.getItem('custom_categories');
+        return stored ? JSON.parse(stored) : [];
     }
 }
 
@@ -268,7 +275,7 @@ async function loadMenu() {
         
         // 渲染菜单
         if (data.menu) {
-            renderMenu(data.menu);
+            await renderMenu(data.menu);
         }
     } catch (error) {
         console.error('加载菜单出错:', error);
@@ -278,7 +285,7 @@ async function loadMenu() {
 }
 
 // 加载默认菜单（离线模式）
-function loadDefaultMenu() {
+async function loadDefaultMenu() {
     const defaultMenu = {
         coldDishes: [
             { name: '拍黄瓜', price: 5 },
@@ -311,7 +318,7 @@ function loadDefaultMenu() {
     };
 
     applyTheme(currentTheme);
-    renderMenu(defaultMenu);
+    await renderMenu(defaultMenu);
 }
 
 // 初始化
