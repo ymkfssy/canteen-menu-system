@@ -9,14 +9,7 @@ body {
     height: 192px;
     overflow: hidden;
     font-family: 'Microsoft YaHei', Arial, sans-serif;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
     /* 背景色通过JavaScript动态设置 */
 }
@@ -24,15 +17,7 @@ body {
 /* 响应式缩放 - 在普通浏览器中预览 */
 @media screen and (max-width: 1920px) {
     body {
-        -webkit-transform: scale(0.5);
-        -moz-transform: scale(0.5);
-        -ms-transform: scale(0.5);
-        -o-transform: scale(0.5);
         transform: scale(0.5);
-        -webkit-transform-origin: top left;
-        -moz-transform-origin: top left;
-        -ms-transform-origin: top left;
-        -o-transform-origin: top left;
         transform-origin: top left;
         width: 3200px;
         height: 192px;
@@ -42,28 +27,13 @@ body {
 /* 顶部标题栏 */
 .header {
     height: 35px;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -ms-justify-content: space-between;
     justify-content: space-between;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
     align-items: center;
     padding: 0 40px;
     /* 背景通过JavaScript动态设置 */
-    -webkit-backdrop-filter: blur(10px);
-    -moz-backdrop-filter: blur(10px);
-    -ms-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    -webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -101,24 +71,11 @@ body {
 
 .menu-container {
     flex: 1;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -ms-justify-content: space-between;
     justify-content: space-between;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
     align-items: center;
     padding: 8px 15px;
     gap: 10px;
-    -webkit-flex-wrap: nowrap;
-    -moz-flex-wrap: nowrap;
-    -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
 }
 
@@ -127,38 +84,16 @@ body {
     border-radius: 8px;
     padding: 6px 8px;
     height: 132px;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    -webkit-transition: -webkit-transform 0.3s ease;
-    -moz-transition: -moz-transform 0.3s ease;
-    -ms-transition: -ms-transform 0.3s ease;
     transition: transform 0.3s ease;
-    -webkit-flex-grow: 1;
-    -moz-flex-grow: 1;
-    -ms-flex-grow: 1;
     flex-grow: 1;
-    -webkit-flex-shrink: 1;
-    -moz-flex-shrink: 1;
-    -ms-flex-shrink: 1;
     flex-shrink: 1;
     min-width: 0;
 }
 
 .menu-section:hover {
-    -webkit-transform: translateY(-2px);
-    -moz-transform: translateY(-2px);
-    -ms-transform: translateY(-2px);
-    -o-transform: translateY(-2px);
     transform: translateY(-2px);
 }
 
@@ -176,67 +111,31 @@ body {
 }
 
 .dishes {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
     gap: 6px;
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
     flex: 1;
-    -webkit-align-items: stretch;
-    -moz-align-items: stretch;
-    -ms-align-items: stretch;
     align-items: stretch;
 }
 
 .dish-item {
     position: relative; /* 为标签定位提供参照 */
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
     align-items: center;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -ms-justify-content: space-between;
-    justify-content: space-between;
+    justify-content: center;
     gap: 2px;
     padding: 6px 6px;
     /* 背景通过JavaScript动态设置 */
     border-radius: 6px;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
     transition: all 0.3s ease;
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
     flex: 1;
     min-width: 0; /* 允许收缩 */
-    overflow: visible; /* 确保标签不会被裁剪 */
 }
 
 /* 移除固定宽度限制，使用flex自动填充 */
 
 .dish-item:hover {
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    -ms-transform: scale(1.05);
-    -o-transform: scale(1.05);
     transform: scale(1.05);
-    -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -264,26 +163,11 @@ body {
 }
 
 .dish-badges {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
     gap: 4px;
-    -webkit-flex-wrap: wrap;
-    -moz-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-justify-content: center;
-    -moz-justify-content: center;
-    -ms-justify-content: center;
     justify-content: center;
     margin-top: 2px;
-    width: 100%; /* 确保标签容器占满宽度 */
-    -webkit-flex-shrink: 0; /* 防止标签容器被压缩 */
-    -moz-flex-shrink: 0; /* 防止标签容器被压缩 */
-    -ms-flex-shrink: 0; /* 防止标签容器被压缩 */
-    flex-shrink: 0; /* 防止标签容器被压缩 */
 }
 
 .dish-badge {

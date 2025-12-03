@@ -135,12 +135,12 @@ function updateDateTime() {
 }
 
 // 渲染菜单
-async function renderMenu(menuData) {
+function renderMenu(menuData) {
     const container = document.getElementById('menuContainer');
     container.innerHTML = '';
 
     // 获取自定义分类
-    const customCategories = await getCustomCategories();
+    const customCategories = getCustomCategories();
     
     // 默认分类配置
     const defaultSections = [
@@ -224,8 +224,9 @@ async function renderMenu(menuData) {
             
             // 按正确顺序添加元素：名称 -> 标签 -> 价格
             dishItem.appendChild(dishName);
-            // 总是添加标签容器，即使没有标签也保持布局一致性
-            dishItem.appendChild(badgesContainer);
+            if (badges.length > 0) {
+                dishItem.appendChild(badgesContainer);
+            }
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
@@ -235,21 +236,14 @@ async function renderMenu(menuData) {
     });
 }
 
-// 获取自定义分类（从API）
-async function getCustomCategories() {
+// 获取自定义分类（从localStorage）
+function getCustomCategories() {
     try {
-        const response = await fetch(`${API_BASE}/categories`);
-        if (response.ok) {
-            return await response.json();
-        }
-        // 如果API请求失败，尝试从localStorage获取作为后备
         const stored = localStorage.getItem('custom_categories');
         return stored ? JSON.parse(stored) : [];
     } catch (error) {
         console.error('获取自定义分类失败:', error);
-        // 错误时从localStorage获取作为后备
-        const stored = localStorage.getItem('custom_categories');
-        return stored ? JSON.parse(stored) : [];
+        return [];
     }
 }
 
@@ -275,7 +269,7 @@ async function loadMenu() {
         
         // 渲染菜单
         if (data.menu) {
-            await renderMenu(data.menu);
+            renderMenu(data.menu);
         }
     } catch (error) {
         console.error('加载菜单出错:', error);
@@ -285,7 +279,7 @@ async function loadMenu() {
 }
 
 // 加载默认菜单（离线模式）
-async function loadDefaultMenu() {
+function loadDefaultMenu() {
     const defaultMenu = {
         coldDishes: [
             { name: '拍黄瓜', price: 5 },
@@ -318,7 +312,7 @@ async function loadDefaultMenu() {
     };
 
     applyTheme(currentTheme);
-    await renderMenu(defaultMenu);
+    renderMenu(defaultMenu);
 }
 
 // 初始化
