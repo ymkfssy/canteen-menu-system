@@ -172,14 +172,14 @@ function renderMenu(menuData) {
     
     // 计算每个分类的基础宽度（根据菜品数量）
     const calculateBaseWidth = (count) => {
-        if (count === 1) return 180;
-        if (count === 2) return 240;
-        if (count === 3) return 300;
-        if (count === 4) return 340;
-        if (count === 5) return 400;
-        if (count === 6) return 450;
-        if (count <= 8) return 500;
-        return 600;
+        if (count === 1) return 200;
+        if (count === 2) return 280;
+        if (count === 3) return 380;
+        if (count === 4) return 460;
+        if (count === 5) return 540;
+        if (count === 6) return 620;
+        if (count <= 8) return 720;
+        return 820;
     };
     
     sectionsWithData.forEach(section => {
@@ -190,8 +190,13 @@ function renderMenu(menuData) {
     const totalBaseWidth = sectionsWithData.reduce((sum, s) => sum + s.baseWidth, 0);
     const availableWidth = 3200 - 30 - (sectionsWithData.length - 1) * 10; // 减去padding和gap
     
-    // 如果总宽度超出，按比例缩小；如果有富余，适当增加
-    const widthRatio = totalBaseWidth > availableWidth ? availableWidth / totalBaseWidth : 1;
+    // 如果总宽度超出，按比例缩小
+    let widthRatio = 1;
+    if (totalBaseWidth > availableWidth) {
+        widthRatio = availableWidth / totalBaseWidth;
+        // 确保缩放比例不要太小，最小0.85
+        widthRatio = Math.max(widthRatio, 0.85);
+    }
 
     sectionsWithData.forEach(section => {
         const sectionDiv = document.createElement('div');
@@ -199,8 +204,11 @@ function renderMenu(menuData) {
         
         // 应用宽度比例
         let finalWidth = Math.floor(section.baseWidth * widthRatio);
-        // 确保最小宽度
-        finalWidth = Math.max(finalWidth, 180);
+        // 根据菜品数量确保最小宽度
+        const minWidth = section.itemCount >= 6 ? 500 : 
+                        section.itemCount >= 4 ? 380 : 
+                        section.itemCount >= 2 ? 250 : 180;
+        finalWidth = Math.max(finalWidth, minWidth);
         sectionDiv.style.width = `${finalWidth}px`;
         
         const header = document.createElement('div');
