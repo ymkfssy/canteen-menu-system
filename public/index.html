@@ -21,7 +21,13 @@
     <script src="js/themes.js"></script>
     <script src="js/display.js"></script>
     <script>
-        // 初始化代码已经移到display.js中，这里不需要重复
+        // 设置默认主题为开门红
+        let currentTheme = 'prosperity';
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(currentTheme);
+        });
     </script>
 </body>
 </html>

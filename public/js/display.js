@@ -3,7 +3,7 @@ let currentTheme = 'prosperity';
 let currentBackgroundImage = '';
 
 // 应用主题样式
-async function applyTheme(themeName) {
+function applyTheme(themeName) {
     const theme = THEMES[themeName];
     if (!theme) return;
 
@@ -81,7 +81,7 @@ async function applyTheme(themeName) {
     `;
     
     // 为自定义分类生成样式（使用循环颜色）
-    const customCategories = await getCustomCategories();
+    const customCategories = getCustomCategories();
     const colorPalette = [
         { header: '#48dbfb', item: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)' },
         { header: '#f093fb', item: 'linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)' },
@@ -135,12 +135,12 @@ function updateDateTime() {
 }
 
 // 渲染菜单
-async function renderMenu(menuData) {
+function renderMenu(menuData) {
     const container = document.getElementById('menuContainer');
     container.innerHTML = '';
 
     // 获取自定义分类
-    const customCategories = await getCustomCategories();
+    const customCategories = getCustomCategories();
     
     // 默认分类配置
     const defaultSections = [
@@ -161,7 +161,7 @@ async function renderMenu(menuData) {
     // 合并所有分类
     const sections = [...defaultSections, ...customSections];
     
-    // 过滤出有菜品的分类
+    // 过滤出有菜品的分类，并计算总菜品数
     const sectionsWithData = sections
         .map(section => ({
             ...section,
@@ -170,17 +170,46 @@ async function renderMenu(menuData) {
         }))
         .filter(section => section.itemCount > 0);
     
-    // 计算每个分类的flex权重（基于菜品数量）
-    const totalItems = sectionsWithData.reduce((sum, s) => sum + s.itemCount, 0);
+    // 计算每个分类的基础宽度（根据菜品数量）
+    const calculateBaseWidth = (count) => {
+        if (count === 1) return 200;
+        if (count === 2) return 280;
+        if (count === 3) return 380;
+        if (count === 4) return 460;
+        if (count === 5) return 540;
+        if (count === 6) return 620;
+        if (count <= 8) return 720;
+        return 820;
+    };
+    
+    sectionsWithData.forEach(section => {
+        section.baseWidth = calculateBaseWidth(section.itemCount);
+    });
+    
+    // 计算总宽度和可用宽度
+    const totalBaseWidth = sectionsWithData.reduce((sum, s) => sum + s.baseWidth, 0);
+    const availableWidth = 3200 - 30 - (sectionsWithData.length - 1) * 10; // 减去padding和gap
+    
+    // 如果总宽度超出，按比例缩小
+    let widthRatio = 1;
+    if (totalBaseWidth > availableWidth) {
+        widthRatio = availableWidth / totalBaseWidth;
+        // 确保缩放比例不要太小，最小0.85
+        widthRatio = Math.max(widthRatio, 0.85);
+    }
 
     sectionsWithData.forEach(section => {
         const sectionDiv = document.createElement('div');
         sectionDiv.className = `menu-section ${section.class}`;
         
-        // 根据菜品数量占比设置flex-grow，确保填满整个宽度
-        const flexGrow = section.itemCount;
-        sectionDiv.style.flexGrow = flexGrow;
-        sectionDiv.style.flexBasis = '0';
+        // 应用宽度比例
+        let finalWidth = Math.floor(section.baseWidth * widthRatio);
+        // 根据菜品数量确保最小宽度
+        const minWidth = section.itemCount >= 6 ? 500 : 
+                        section.itemCount >= 4 ? 380 : 
+                        section.itemCount >= 2 ? 250 : 180;
+        finalWidth = Math.max(finalWidth, minWidth);
+        sectionDiv.style.width = `${finalWidth}px`;
         
         const header = document.createElement('div');
         header.className = 'section-header';
@@ -195,18 +224,17 @@ async function renderMenu(menuData) {
             const dishItem = document.createElement('div');
             dishItem.className = 'dish-item';
             
-            // 创建名称和标签的容器
-            const nameAndBadgesContainer = document.createElement('div');
-            nameAndBadgesContainer.className = 'name-and-badges';
-            
-            const dishName = document.createElement('span');
+            const dishName = document.createElement('div');
             dishName.className = 'dish-name';
             dishName.textContent = item.name;
-            nameAndBadgesContainer.appendChild(dishName);
+            
+            const dishPrice = document.createElement('div');
+            dishPrice.className = 'dish-price';
+            dishPrice.textContent = `¥${item.price}`;
             
             // 添加个性化标志
             const badges = item.badges || [];
-            const badgesContainer = document.createElement('span');
+            const badgesContainer = document.createElement('div');
             badgesContainer.className = 'dish-badges';
             
             if (badges.includes('hot')) {
@@ -223,14 +251,11 @@ async function renderMenu(menuData) {
                 badgesContainer.appendChild(recommendBadge);
             }
             
-            nameAndBadgesContainer.appendChild(badgesContainer);
-            
-            const dishPrice = document.createElement('div');
-            dishPrice.className = 'dish-price';
-            dishPrice.textContent = `¥${item.price}`;
-            
-            // 按正确顺序添加元素：名称和标签容器 -> 价格
-            dishItem.appendChild(nameAndBadgesContainer);
+            // 按正确顺序添加元素：名称 -> 标签 -> 价格
+            dishItem.appendChild(dishName);
+            if (badges.length > 0) {
+                dishItem.appendChild(badgesContainer);
+            }
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
@@ -240,21 +265,14 @@ async function renderMenu(menuData) {
     });
 }
 
-// 获取自定义分类（从API）
-async function getCustomCategories() {
+// 获取自定义分类（从localStorage）
+function getCustomCategories() {
     try {
-        const response = await fetch(`${API_BASE}/categories`);
-        if (response.ok) {
-            return await response.json();
-        }
-        // 如果API请求失败，尝试从localStorage获取作为后备
         const stored = localStorage.getItem('custom_categories');
         return stored ? JSON.parse(stored) : [];
     } catch (error) {
         console.error('获取自定义分类失败:', error);
-        // 错误时从localStorage获取作为后备
-        const stored = localStorage.getItem('custom_categories');
-        return stored ? JSON.parse(stored) : [];
+        return [];
     }
 }
 
@@ -276,11 +294,11 @@ async function loadMenu() {
             currentBackgroundImage = data.backgroundImage;
         }
         
-        await applyTheme(currentTheme);
+        applyTheme(currentTheme);
         
         // 渲染菜单
         if (data.menu) {
-            await renderMenu(data.menu);
+            renderMenu(data.menu);
         }
     } catch (error) {
         console.error('加载菜单出错:', error);
@@ -290,18 +308,18 @@ async function loadMenu() {
 }
 
 // 加载默认菜单（离线模式）
-async function loadDefaultMenu() {
+function loadDefaultMenu() {
     const defaultMenu = {
         coldDishes: [
-            { name: '拍黄瓜', price: 5, badges: ['hot'] },
+            { name: '拍黄瓜', price: 5 },
             { name: '凉拌木耳', price: 6 }
         ],
         hotDishes: [
-            { name: '红烧肉', price: 18, badges: ['hot', 'recommend'] },
-            { name: '糖醋鱼', price: 22, badges: ['recommend'] },
+            { name: '红烧肉', price: 18 },
+            { name: '糖醋鱼', price: 22 },
             { name: '宫保鸡丁', price: 16 },
             { name: '蒜蓉西兰花', price: 10 },
-            { name: '鱼香茄子', price: 12, badges: ['hot'] },
+            { name: '鱼香茄子', price: 12 },
             { name: '土豆炖牛肉', price: 20 }
         ],
         stapleFood: [
@@ -322,8 +340,8 @@ async function loadDefaultMenu() {
         ]
     };
 
-    await applyTheme(currentTheme);
-    await renderMenu(defaultMenu);
+    applyTheme(currentTheme);
+    renderMenu(defaultMenu);
 }
 
 // 初始化

@@ -9,14 +9,7 @@ body {
     height: 192px;
     overflow: hidden;
     font-family: 'Microsoft YaHei', Arial, sans-serif;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
     /* 背景色通过JavaScript动态设置 */
 }
@@ -24,15 +17,7 @@ body {
 /* 响应式缩放 - 在普通浏览器中预览 */
 @media screen and (max-width: 1920px) {
     body {
-        -webkit-transform: scale(0.5);
-        -moz-transform: scale(0.5);
-        -ms-transform: scale(0.5);
-        -o-transform: scale(0.5);
         transform: scale(0.5);
-        -webkit-transform-origin: top left;
-        -moz-transform-origin: top left;
-        -ms-transform-origin: top left;
-        -o-transform-origin: top left;
         transform-origin: top left;
         width: 3200px;
         height: 192px;
@@ -42,28 +27,13 @@ body {
 /* 顶部标题栏 */
 .header {
     height: 35px;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -ms-justify-content: space-between;
     justify-content: space-between;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
     align-items: center;
     padding: 0 40px;
     /* 背景通过JavaScript动态设置 */
-    -webkit-backdrop-filter: blur(10px);
-    -moz-backdrop-filter: blur(10px);
-    -ms-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    -webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -101,24 +71,11 @@ body {
 
 .menu-container {
     flex: 1;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -ms-justify-content: space-between;
-    justify-content: space-between;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
+    justify-content: center;
     align-items: center;
     padding: 8px 15px;
     gap: 10px;
-    -webkit-flex-wrap: nowrap;
-    -moz-flex-wrap: nowrap;
-    -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
 }
 
@@ -127,38 +84,15 @@ body {
     border-radius: 8px;
     padding: 6px 8px;
     height: 132px;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    -webkit-transition: -webkit-transform 0.3s ease;
-    -moz-transition: -moz-transform 0.3s ease;
-    -ms-transition: -ms-transform 0.3s ease;
     transition: transform 0.3s ease;
-    -webkit-flex-grow: 1;
-    -moz-flex-grow: 1;
-    -ms-flex-grow: 1;
-    flex-grow: 1;
-    -webkit-flex-shrink: 1;
-    -moz-flex-shrink: 1;
-    -ms-flex-shrink: 1;
     flex-shrink: 1;
-    min-width: 0;
+    min-width: 180px;
 }
 
 .menu-section:hover {
-    -webkit-transform: translateY(-2px);
-    -moz-transform: translateY(-2px);
-    -ms-transform: translateY(-2px);
-    -o-transform: translateY(-2px);
     transform: translateY(-2px);
 }
 
@@ -176,94 +110,100 @@ body {
 }
 
 .dishes {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
     gap: 6px;
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
     flex: 1;
-    -webkit-align-items: stretch;
-    -moz-align-items: stretch;
-    -ms-align-items: stretch;
     align-items: stretch;
 }
 
 .dish-item {
     position: relative; /* 为标签定位提供参照 */
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
-    align-items: center;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -ms-justify-content: space-between;
-    justify-content: space-between;
-    gap: 2px;
-    padding: 6px 6px;
-    /* 背景通过JavaScript动态设置 */
-    border-radius: 6px;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    min-width: 0; /* 允许收缩 */
-    overflow: visible; /* 确保标签不会被裁剪 */
-}
-
-/* 移除固定宽度限制，使用flex自动填充 */
-
-.dish-item:hover {
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    -ms-transform: scale(1.05);
-    -o-transform: scale(1.05);
-    transform: scale(1.05);
-    -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.name-and-badges {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    flex-wrap: nowrap;
-    gap: 4px;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
+    gap: 2px;
+    padding: 6px 8px;
+    /* 背景通过JavaScript动态设置 */
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 0; /* 允许收缩 */
+}
+
+/* 根据菜品数量调整样式 */
+.dishes[data-count="1"] .dish-item { min-width: 140px; }
+.dishes[data-count="2"] .dish-item { min-width: 115px; }
+.dishes[data-count="3"] .dish-item { min-width: 100px; }
+.dishes[data-count="4"] .dish-item { min-width: 85px; }
+.dishes[data-count="5"] .dish-item { min-width: 90px; }
+.dishes[data-count="6"] .dish-item { min-width: 85px; }
+
+/* 数量较多时适度调整 */
+.dishes[data-count="7"] .dish-item,
+.dishes[data-count="8"] .dish-item { 
+    min-width: 75px;
+    padding: 5px 7px;
+}
+.dishes[data-count="7"] .dish-name,
+.dishes[data-count="8"] .dish-name { 
+    font-size: 17px;
+}
+.dishes[data-count="7"] .dish-price,
+.dishes[data-count="8"] .dish-price { 
+    font-size: 19px;
+}
+
+/* 数量很多时才进一步缩小 */
+.dishes[data-count="9"] .dish-item,
+.dishes[data-count="10"] .dish-item,
+.dishes[data-count="11"] .dish-item,
+.dishes[data-count="12"] .dish-item { 
+    min-width: 65px;
+    padding: 4px 6px;
+}
+.dishes[data-count="9"] .dish-name,
+.dishes[data-count="10"] .dish-name,
+.dishes[data-count="11"] .dish-name,
+.dishes[data-count="12"] .dish-name { 
+    font-size: 15px;
+}
+.dishes[data-count="9"] .dish-price,
+.dishes[data-count="10"] .dish-price,
+.dishes[data-count="11"] .dish-price,
+.dishes[data-count="12"] .dish-price { 
+    font-size: 17px;
+}
+
+.dish-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dish-name {
     font-size: 18px;
     color: #333;
     font-weight: 600;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
     line-height: 1.3;
+    min-height: 23px;
+}
+
+/* 菜品数量多时允许适度换行 */
+.dishes[data-count="9"] .dish-name,
+.dishes[data-count="10"] .dish-name,
+.dishes[data-count="11"] .dish-name,
+.dishes[data-count="12"] .dish-name {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.2;
+    max-height: 2.4em; /* 最多显示2行 */
+    min-height: auto;
 }
 
 .dish-price {
@@ -271,28 +211,14 @@ body {
     color: #e74c3c;
     font-weight: bold;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
 }
 
 .dish-badges {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
     gap: 4px;
-    -webkit-flex-wrap: nowrap;
-    -moz-flex-wrap: nowrap;
-    -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-flex-shrink: 0; /* 防止标签容器被压缩 */
-    -moz-flex-shrink: 0; /* 防止标签容器被压缩 */
-    -ms-flex-shrink: 0; /* 防止标签容器被压缩 */
-    flex-shrink: 0; /* 防止标签容器被压缩 */
-    margin-left: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2px;
 }
 
 .dish-badge {
