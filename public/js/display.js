@@ -161,7 +161,7 @@ function renderMenu(menuData) {
     // 合并所有分类
     const sections = [...defaultSections, ...customSections];
     
-    // 过滤出有菜品的分类，并计算总菜品数
+    // 过滤出有菜品的分类
     const sectionsWithData = sections
         .map(section => ({
             ...section,
@@ -170,46 +170,17 @@ function renderMenu(menuData) {
         }))
         .filter(section => section.itemCount > 0);
     
-    // 计算每个分类的基础宽度（根据菜品数量）
-    const calculateBaseWidth = (count) => {
-        if (count === 1) return 200;
-        if (count === 2) return 280;
-        if (count === 3) return 380;
-        if (count === 4) return 460;
-        if (count === 5) return 540;
-        if (count === 6) return 620;
-        if (count <= 8) return 720;
-        return 820;
-    };
-    
-    sectionsWithData.forEach(section => {
-        section.baseWidth = calculateBaseWidth(section.itemCount);
-    });
-    
-    // 计算总宽度和可用宽度
-    const totalBaseWidth = sectionsWithData.reduce((sum, s) => sum + s.baseWidth, 0);
-    const availableWidth = 3200 - 30 - (sectionsWithData.length - 1) * 10; // 减去padding和gap
-    
-    // 如果总宽度超出，按比例缩小
-    let widthRatio = 1;
-    if (totalBaseWidth > availableWidth) {
-        widthRatio = availableWidth / totalBaseWidth;
-        // 确保缩放比例不要太小，最小0.85
-        widthRatio = Math.max(widthRatio, 0.85);
-    }
+    // 计算每个分类的flex权重（基于菜品数量）
+    const totalItems = sectionsWithData.reduce((sum, s) => sum + s.itemCount, 0);
 
     sectionsWithData.forEach(section => {
         const sectionDiv = document.createElement('div');
         sectionDiv.className = `menu-section ${section.class}`;
         
-        // 应用宽度比例
-        let finalWidth = Math.floor(section.baseWidth * widthRatio);
-        // 根据菜品数量确保最小宽度
-        const minWidth = section.itemCount >= 6 ? 500 : 
-                        section.itemCount >= 4 ? 380 : 
-                        section.itemCount >= 2 ? 250 : 180;
-        finalWidth = Math.max(finalWidth, minWidth);
-        sectionDiv.style.width = `${finalWidth}px`;
+        // 根据菜品数量占比设置flex-grow，确保填满整个宽度
+        const flexGrow = section.itemCount;
+        sectionDiv.style.flexGrow = flexGrow;
+        sectionDiv.style.flexBasis = '0';
         
         const header = document.createElement('div');
         header.className = 'section-header';
