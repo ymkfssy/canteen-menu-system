@@ -224,9 +224,8 @@ function renderMenu(menuData) {
             
             // 按正确顺序添加元素：名称 -> 标签 -> 价格
             dishItem.appendChild(dishName);
-            if (badges.length > 0) {
-                dishItem.appendChild(badgesContainer);
-            }
+            // 总是添加标签容器，即使没有标签也保持布局一致性
+            dishItem.appendChild(badgesContainer);
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
