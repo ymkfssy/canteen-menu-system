@@ -3,7 +3,7 @@ let currentTheme = 'prosperity';
 let currentBackgroundImage = '';
 
 // 应用主题样式
-function applyTheme(themeName) {
+async function applyTheme(themeName) {
     const theme = THEMES[themeName];
     if (!theme) return;
 
@@ -81,7 +81,7 @@ function applyTheme(themeName) {
     `;
     
     // 为自定义分类生成样式（使用循环颜色）
-    const customCategories = getCustomCategories();
+    const customCategories = await getCustomCategories();
     const colorPalette = [
         { header: '#48dbfb', item: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)' },
         { header: '#f093fb', item: 'linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)' },
@@ -276,7 +276,7 @@ async function loadMenu() {
             currentBackgroundImage = data.backgroundImage;
         }
         
-        applyTheme(currentTheme);
+        await applyTheme(currentTheme);
         
         // 渲染菜单
         if (data.menu) {
@@ -293,15 +293,15 @@ async function loadMenu() {
 async function loadDefaultMenu() {
     const defaultMenu = {
         coldDishes: [
-            { name: '拍黄瓜', price: 5 },
+            { name: '拍黄瓜', price: 5, badges: ['hot'] },
             { name: '凉拌木耳', price: 6 }
         ],
         hotDishes: [
-            { name: '红烧肉', price: 18 },
-            { name: '糖醋鱼', price: 22 },
+            { name: '红烧肉', price: 18, badges: ['hot', 'recommend'] },
+            { name: '糖醋鱼', price: 22, badges: ['recommend'] },
             { name: '宫保鸡丁', price: 16 },
             { name: '蒜蓉西兰花', price: 10 },
-            { name: '鱼香茄子', price: 12 },
+            { name: '鱼香茄子', price: 12, badges: ['hot'] },
             { name: '土豆炖牛肉', price: 20 }
         ],
         stapleFood: [
@@ -322,7 +322,7 @@ async function loadDefaultMenu() {
         ]
     };
 
-    applyTheme(currentTheme);
+    await applyTheme(currentTheme);
     await renderMenu(defaultMenu);
 }
 
