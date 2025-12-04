@@ -171,22 +171,20 @@ body {
 }
 
 .dish-badges {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    display: flex;
+    display: inline-flex;
     gap: 4px;
-    flex-direction: column;
-    align-items: flex-end;
+    margin-left: 6px;
+    align-items: center;
 }
 
 .dish-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 9px;
     font-weight: bold;
     text-transform: uppercase;
     animation: fadeIn 0.3s ease-in;
+    white-space: nowrap;
 }
 
 .hot-badge {

@@ -278,22 +278,24 @@ body {
 .dish-name-section {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    gap: 0;
 }
 
 .dish-badges {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 6px;
+    align-items: center;
 }
 
 .dish-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .hot-badge {

@@ -71,7 +71,7 @@ function renderDishEditor(category, items) {
         div.innerHTML = `
             <div class="dish-info">
                 <div class="dish-name-section">
-                    <div class="dish-name-text">${item.name}</div>
+                    <span class="dish-name-text">${item.name}</span>
                     <div class="dish-badges">${badgesHtml}</div>
                 </div>
                 <div class="dish-price-text">¥${item.price}</div>

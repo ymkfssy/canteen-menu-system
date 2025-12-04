@@ -188,13 +188,15 @@ async function renderMenu(menuData) {
             const dishItem = document.createElement('div');
             dishItem.className = 'dish-item';
             
-            const dishName = document.createElement('div');
+            // 创建名称和标签的容器
+            const dishNameContainer = document.createElement('div');
+            dishNameContainer.style.display = 'flex';
+            dishNameContainer.style.alignItems = 'center';
+            dishNameContainer.style.flex = '1';
+            
+            const dishName = document.createElement('span');
             dishName.className = 'dish-name';
             dishName.textContent = item.name;
-            
-            const dishPrice = document.createElement('div');
-            dishPrice.className = 'dish-price';
-            dishPrice.textContent = `¥${item.price}`;
             
             // 添加个性化标志
             const badges = item.badges || [];
@@ -215,8 +217,15 @@ async function renderMenu(menuData) {
                 badgesContainer.appendChild(recommendBadge);
             }
             
-            dishItem.appendChild(dishName);
-            dishItem.appendChild(badgesContainer);
+            // 将名称和标签组合在一起
+            dishNameContainer.appendChild(dishName);
+            dishNameContainer.appendChild(badgesContainer);
+            
+            const dishPrice = document.createElement('div');
+            dishPrice.className = 'dish-price';
+            dishPrice.textContent = `¥${item.price}`;
+            
+            dishItem.appendChild(dishNameContainer);
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
