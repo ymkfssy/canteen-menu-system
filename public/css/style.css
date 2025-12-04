@@ -6,7 +6,7 @@
 
 body {
     width: 3200px;
-    height: 1080px;
+    height: 192px;
     overflow: hidden;
     font-family: 'Microsoft YaHei', Arial, sans-serif;
     display: flex;
@@ -14,41 +14,13 @@ body {
     /* 背景色通过JavaScript动态设置 */
 }
 
-/* 针对超宽屏幕优化 - 3200*192 */
-@media screen and (min-width: 3000px) {
-    body {
-        transform: scale(1);
-        transform-origin: top left;
-        width: 3200px;
-        height: 1080px;
-    }
-}
-
 /* 响应式缩放 - 在普通浏览器中预览 */
-@media screen and (max-width: 2560px) {
-    body {
-        transform: scale(0.75);
-        transform-origin: top left;
-        width: 3200px;
-        height: 1080px;
-    }
-}
-
 @media screen and (max-width: 1920px) {
     body {
-        transform: scale(0.6);
+        transform: scale(0.5);
         transform-origin: top left;
         width: 3200px;
-        height: 1080px;
-    }
-}
-
-@media screen and (max-width: 1366px) {
-    body {
-        transform: scale(0.45);
-        transform-origin: top left;
-        width: 3200px;
-        height: 1080px;
+        height: 192px;
     }
 }
 
@@ -108,12 +80,12 @@ body {
 
 .menu-section {
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    padding: 15px 20px;
-    height: 200px;
+    border-radius: 8px;
+    padding: 6px 10px;
+    height: 132px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
 }
 
@@ -146,35 +118,36 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 10px 12px;
+    gap: 2px;
+    padding: 6px 8px;
     /* 背景通过JavaScript动态设置 */
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.3s ease;
     flex: 1;
     min-width: 0; /* 允许收缩 */
 }
 
-/* 根据菜品数量调整字体大小 - 针对大屏优化 */
-.dishes[data-count="1"] .dish-item { min-width: 200px; }
-.dishes[data-count="2"] .dish-item { min-width: 160px; }
-.dishes[data-count="3"] .dish-item { min-width: 130px; }
-.dishes[data-count="4"] .dish-item { min-width: 110px; }
-.dishes[data-count="5"] .dish-item { min-width: 100px; }
-.dishes[data-count="6"] .dish-item { min-width: 90px; }
-.dishes[data-count="7"] .dish-item { min-width: 80px; }
-.dishes[data-count="8"] .dish-item { min-width: 70px; }
+/* 根据菜品数量调整字体大小 */
+.dishes[data-count="1"] .dish-item { min-width: 100px; }
+.dishes[data-count="2"] .dish-item { min-width: 80px; }
+.dishes[data-count="3"] .dish-item { min-width: 60px; }
+.dishes[data-count="4"] .dish-item { min-width: 50px; }
+.dishes[data-count="5"] .dish-item { min-width: 45px; }
+.dishes[data-count="6"] .dish-item { min-width: 40px; }
 
 /* 数量较多时缩小字体 */
-.dishes[data-count="9"] .dish-item { 
-    min-width: 65px;
-    padding: 8px 10px;
+.dishes[data-count="7"] .dish-item,
+.dishes[data-count="8"] .dish-item { 
+    min-width: 35px;
+    padding: 5px 7px;
 }
-.dishes[data-count="9"] .dish-name { 
-    font-size: 20px;
+.dishes[data-count="7"] .dish-name,
+.dishes[data-count="8"] .dish-name { 
+    font-size: 15px;
 }
-.dishes[data-count="9"] .dish-price { 
-    font-size: 24px;
+.dishes[data-count="7"] .dish-price,
+.dishes[data-count="8"] .dish-price { 
+    font-size: 17px;
 }
 
 .dish-item:hover {
@@ -183,7 +156,7 @@ body {
 }
 
 .dish-name {
-    font-size: 28px;
+    font-size: 18px;
     color: #333;
     font-weight: 600;
     text-align: center;
@@ -191,7 +164,7 @@ body {
 }
 
 .dish-price {
-    font-size: 32px;
+    font-size: 20px;
     color: #e74c3c;
     font-weight: bold;
     text-align: center;
@@ -205,9 +178,9 @@ body {
 }
 
 .dish-badge {
-    padding: 3px 10px;
-    border-radius: 10px;
-    font-size: 14px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 9px;
     font-weight: bold;
     text-transform: uppercase;
     animation: fadeIn 0.3s ease-in;
@@ -266,26 +239,3 @@ body {
 .menu-section:nth-child(3) { animation-delay: 0.3s; }
 .menu-section:nth-child(4) { animation-delay: 0.4s; }
 .menu-section:nth-child(5) { animation-delay: 0.5s; }
-
-/* 超宽屏幕额外字体优化 */
-@media screen and (min-width: 3000px) {
-    .dish-name {
-        font-size: 32px;
-        font-weight: 700;
-    }
-    .dish-price {
-        font-size: 36px;
-        font-weight: 700;
-    }
-    .dish-badge {
-        font-size: 16px;
-        padding: 4px 12px;
-    }
-    .section-header {
-        font-size: 32px;
-    }
-    .menu-section {
-        height: 220px;
-        padding: 20px 25px;
-    }
-}
