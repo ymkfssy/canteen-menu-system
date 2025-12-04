@@ -160,27 +160,13 @@ function renderMenu(menuData) {
     
     // 合并所有分类
     const sections = [...defaultSections, ...customSections];
-    
-    // 过滤出有菜品的分类
-    const sectionsWithData = sections
-        .map(section => ({
-            ...section,
-            items: menuData[section.key] || [],
-            itemCount: (menuData[section.key] || []).length
-        }))
-        .filter(section => section.itemCount > 0);
-    
-    // 计算每个分类的flex权重（基于菜品数量）
-    const totalItems = sectionsWithData.reduce((sum, s) => sum + s.itemCount, 0);
 
-    sectionsWithData.forEach(section => {
+    sections.forEach(section => {
+        const items = menuData[section.key] || [];
+        if (items.length === 0) return;
+
         const sectionDiv = document.createElement('div');
         sectionDiv.className = `menu-section ${section.class}`;
-        
-        // 根据菜品数量占比设置flex-grow，确保填满整个宽度
-        const flexGrow = section.itemCount;
-        sectionDiv.style.flexGrow = flexGrow;
-        sectionDiv.style.flexBasis = '0';
         
         const header = document.createElement('div');
         header.className = 'section-header';
@@ -189,9 +175,9 @@ function renderMenu(menuData) {
 
         const dishesDiv = document.createElement('div');
         dishesDiv.className = 'dishes';
-        dishesDiv.setAttribute('data-count', section.itemCount);
+        dishesDiv.setAttribute('data-count', items.length);
 
-        section.items.forEach(item => {
+        items.forEach(item => {
             const dishItem = document.createElement('div');
             dishItem.className = 'dish-item';
             
@@ -211,7 +197,7 @@ function renderMenu(menuData) {
             if (badges.includes('hot')) {
                 const hotBadge = document.createElement('span');
                 hotBadge.className = 'dish-badge hot-badge';
-                hotBadge.textContent = '热销';
+                hotBadge.textContent = '畅销';
                 badgesContainer.appendChild(hotBadge);
             }
             
@@ -222,11 +208,8 @@ function renderMenu(menuData) {
                 badgesContainer.appendChild(recommendBadge);
             }
             
-            // 按正确顺序添加元素：名称 -> 标签 -> 价格
             dishItem.appendChild(dishName);
-            if (badges.length > 0) {
-                dishItem.appendChild(badgesContainer);
-            }
+            dishItem.appendChild(badgesContainer);
             dishItem.appendChild(dishPrice);
             dishesDiv.appendChild(dishItem);
         });
