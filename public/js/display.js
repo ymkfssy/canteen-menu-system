@@ -46,7 +46,7 @@ function applyTheme(themeName) {
 
     // 生成默认分类样式 - 根据是否有背景图片调整透明度
     const hasBackgroundImage = currentBackgroundImage && currentBackgroundImage.trim() !== '';
-    const itemOpacity = hasBackgroundImage ? 'CC' : ''; // 有背景图时添加透明度
+    const itemOpacity = hasBackgroundImage ? '99' : ''; // 有背景图时添加更高透明度（约60%透明度）
     
     let categoryStyles = `
         .cold-dishes .section-header {

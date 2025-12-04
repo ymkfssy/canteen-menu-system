@@ -49,10 +49,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 40px;
-            background: rgba(0, 0, 0, 0.4); /* 增加透明度，让背景图透出 */
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.25); /* 进一步增加透明度 */
+            backdrop-filter: blur(8px); /* 减少模糊效果 */
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* 增加边框透明度 */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 减少阴影强度 */
         }
 
         .title {
@@ -76,13 +76,13 @@
         }
 
         .menu-section {
-            background: rgba(255, 255, 255, 0.85); /* 增加透明度，让背景图透出 */
+            background: rgba(255, 255, 255, 0.7); /* 进一步增加透明度 */
             border-radius: 8px;
             padding: 6px 10px;
             height: 132px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 减少阴影强度 */
         }
 
         .section-header {
@@ -127,10 +127,10 @@
 
         /* 测试区域透明度 */
         .cold-dishes .dish-item {
-            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)CC;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)99;
         }
         .hot-dishes .dish-item {
-            background: linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)CC;
+            background: linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)99;
         }
         .cold-dishes .section-header {
             border-bottom-color: #48dbfb;
