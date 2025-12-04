@@ -11,14 +11,22 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-spacer"></div>
-        <div class="title">今日食堂菜单</div>
-        <div class="datetime" id="datetime">加载中...</div>
+    <!-- 背景图片容器 -->
+    <div class="background-image-container" id="backgroundImageContainer">
+        <img class="background-image" id="backgroundImage" src="" alt="">
     </div>
     
-    <div class="menu-container" id="menuContainer">
-        <!-- 菜单将通过JavaScript动态加载 -->
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <div class="header">
+            <div class="header-spacer"></div>
+            <div class="title">今日食堂菜单</div>
+            <div class="datetime" id="datetime">加载中...</div>
+        </div>
+        
+        <div class="menu-container" id="menuContainer">
+            <!-- 菜单将通过JavaScript动态加载 -->
+        </div>
     </div>
 
     <script src="js/themes.js"></script>

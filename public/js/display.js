@@ -41,42 +41,43 @@ function applyTheme(themeName) {
         `;
     }
 
-    // 背景样式：优先使用背景图片，如果没有则使用主题背景
-    const backgroundStyle = currentBackgroundImage 
-        ? `background-image: url(${currentBackgroundImage}); background-size: cover; background-position: center; background-repeat: no-repeat;`
-        : `background: ${theme.colors.primary};`;
+    // 背景样式：始终使用主题背景色，背景图片由专门的元素处理
+    const backgroundStyle = `background: ${theme.colors.primary};`;
 
-    // 生成默认分类样式
+    // 生成默认分类样式 - 根据是否有背景图片调整透明度
+    const hasBackgroundImage = currentBackgroundImage && currentBackgroundImage.trim() !== '';
+    const itemOpacity = hasBackgroundImage ? 'CC' : ''; // 有背景图时添加透明度
+    
     let categoryStyles = `
         .cold-dishes .section-header {
             border-bottom-color: ${theme.colors.coldDishes.header};
         }
         .cold-dishes .dish-item {
-            background: ${theme.colors.coldDishes.item};
+            background: ${theme.colors.coldDishes.item}${itemOpacity};
         }
         .hot-dishes .section-header {
             border-bottom-color: ${theme.colors.hotDishes.header};
         }
         .hot-dishes .dish-item {
-            background: ${theme.colors.hotDishes.item};
+            background: ${theme.colors.hotDishes.item}${itemOpacity};
         }
         .staple-food .section-header {
             border-bottom-color: ${theme.colors.stapleFood.header};
         }
         .staple-food .dish-item {
-            background: ${theme.colors.stapleFood.item};
+            background: ${theme.colors.stapleFood.item}${itemOpacity};
         }
         .soup .section-header {
             border-bottom-color: ${theme.colors.soup.header};
         }
         .soup .dish-item {
-            background: ${theme.colors.soup.item};
+            background: ${theme.colors.soup.item}${itemOpacity};
         }
         .fruit .section-header {
             border-bottom-color: ${theme.colors.fruit.header};
         }
         .fruit .dish-item {
-            background: ${theme.colors.fruit.item};
+            background: ${theme.colors.fruit.item}${itemOpacity};
         }
     `;
     
@@ -122,6 +123,29 @@ function applyTheme(themeName) {
     `;
 
     document.getElementById('dynamic-styles').textContent = styles;
+}
+
+// 处理背景图片显示
+function applyBackgroundImage(imageUrl) {
+    const container = document.getElementById('backgroundImageContainer');
+    const image = document.getElementById('backgroundImage');
+    
+    if (imageUrl && imageUrl.trim() !== '') {
+        image.src = imageUrl;
+        container.style.display = 'block';
+        
+        // 确保图片加载完成
+        image.onload = function() {
+            console.log('背景图片加载成功');
+        };
+        
+        image.onerror = function() {
+            console.error('背景图片加载失败，隐藏背景');
+            container.style.display = 'none';
+        };
+    } else {
+        container.style.display = 'none';
+    }
 }
 
 // 更新日期时间
@@ -281,12 +305,16 @@ async function loadMenu() {
             currentTheme = data.theme;
         }
         
+        // 应用主题
+        applyTheme(currentTheme);
+        
         // 应用背景图片
         if (data.backgroundImage) {
             currentBackgroundImage = data.backgroundImage;
+            applyBackgroundImage(currentBackgroundImage);
+        } else {
+            applyBackgroundImage('');
         }
-        
-        applyTheme(currentTheme);
         
         // 渲染菜单
         if (data.menu) {
@@ -333,6 +361,7 @@ async function loadDefaultMenu() {
     };
 
     applyTheme(currentTheme);
+    applyBackgroundImage(''); // 默认无背景图片
     await renderMenu(defaultMenu);
 }
 
