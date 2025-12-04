@@ -129,6 +129,25 @@ function getCategoryRecommend(category) {
     return btn ? parseInt(btn.dataset.recommend) : 6;
 }
 
+// 获取所有分类（默认+自定义）
+function getAllCategories() {
+    const defaultCategories = [
+        { name: '凉菜', key: 'coldDishes', recommend: 2 },
+        { name: '热菜', key: 'hotDishes', recommend: 6 },
+        { name: '主食', key: 'stapleFood', recommend: 6 },
+        { name: '汤品', key: 'soup', recommend: 2 },
+        { name: '水果', key: 'fruit', recommend: 2 }
+    ];
+    
+    // 获取自定义分类名称（如果有的话）
+    const defaultCategoryNames = JSON.parse(localStorage.getItem('default_category_names') || '{}');
+    defaultCategories.forEach(cat => {
+        cat.name = defaultCategoryNames[cat.key] || cat.name;
+    });
+    
+    return [...defaultCategories, ...customCategories];
+}
+
 // 渲染所有编辑器
 function renderAllEditors() {
     // 获取所有分类（默认+自定义）
@@ -1109,8 +1128,100 @@ async function deleteCategory(index) {
     }
 }
 
+// 从数据库加载分类
+async function loadCategoriesFromDB() {
+    try {
+        const token = checkAuth();
+        if (!token) return [];
+        
+        const response = await fetch(`${API_BASE}/categories`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const dbCategories = await response.json();
+            const localCategories = getCategoriesFromStorage();
+            return [...dbCategories, ...localCategories];
+        }
+    } catch (error) {
+        console.error('从数据库加载分类失败:', error);
+    }
+    return getCategoriesFromStorage();
+}
+
+// 动态添加自定义分类的菜品编辑区域
+function addCustomCategoryEditors() {
+    const menuContainer = document.querySelector('.menu-editor');
+    if (!menuContainer) return;
+    
+    // 移除现有的自定义分类编辑器（避免重复添加）
+    document.querySelectorAll('.custom-category-section').forEach(section => section.remove());
+    
+    // 为每个自定义分类添加编辑器
+    customCategories.forEach((category, index) => {
+        // 跳过默认分类
+        const defaultKeys = ['coldDishes', 'hotDishes', 'stapleFood', 'soup', 'fruit'];
+        if (defaultKeys.includes(category.key)) return;
+        
+        const section = document.createElement('div');
+        section.className = 'editor-section custom-category-section';
+        section.innerHTML = `
+            <h3>${category.name} <span class="count-badge" id="${category.key}Count">0</span></h3>
+            <div id="${category.key}Editor" class="dishes-list"></div>
+            <button class="btn-add" data-category="${category.key}" data-recommend="6">+ 添加${category.name}</button>
+        `;
+        
+        // 在最后一个默认分类后插入
+        const fruitSection = document.querySelector('[data-category="fruit"]').parentElement;
+        if (fruitSection) {
+            fruitSection.parentNode.insertBefore(section, fruitSection.nextSibling);
+        }
+        
+        // 初始化该分类的菜单数据
+        if (!currentMenu[category.key]) {
+            currentMenu[category.key] = [];
+        }
+        
+        // 渲染该分类的菜品
+        renderDishEditor(category.key, currentMenu[category.key]);
+    });
+    
+    // 重新绑定添加按钮事件
+    document.querySelectorAll('.btn-add').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true)); // 移除旧的事件监听器
+    });
+    document.querySelectorAll('.btn-add').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.dataset.category;
+            const recommend = parseInt(btn.dataset.recommend);
+            const current = currentMenu[category] ? currentMenu[category].length : 0;
+            
+            // 超过推荐数量给予提示，但仍允许添加
+            if (current >= recommend) {
+                const confirmed = confirm(`当前已有${current}个菜品，推荐数量为${recommend}个。\n继续添加可能导致前台显示过于拥挤。\n\n是否继续添加？`);
+                if (!confirmed) return;
+            }
+            
+            openModal(category);
+        });
+    });
+}
+
+// 防止缓存的版本号
+const APP_VERSION = new Date().getTime();
+
 // 初始化
 document.addEventListener('DOMContentLoaded', async () => {
+    // 添加版本号到链接防止缓存
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    links.forEach(link => {
+        if (link.href.indexOf('?') === -1) {
+            link.href += '?v=' + APP_VERSION;
+        }
+    });
+    
     checkAuth();
     
     // 先加载分类（需要等待，因为其他功能依赖分类）

@@ -213,6 +213,11 @@ body {
 .soup { flex: 1; }
 .fruit { flex: 1; }
 
+/* 自定义分类默认样式 */
+.menu-section[class*="custom-"] {
+    flex: 1;
+}
+
 /* 颜色主题通过JavaScript动态设置 */
 
 /* 动画效果 */

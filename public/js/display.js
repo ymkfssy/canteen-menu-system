@@ -81,7 +81,14 @@ function applyTheme(themeName) {
     `;
     
     // 为自定义分类生成样式（使用循环颜色）
-    const customCategories = getCustomCategories();
+    // 注意：这里需要异步获取，但为了保持applyTheme函数的同步性，我们降级到localStorage
+    let customCategories = [];
+    try {
+        const stored = localStorage.getItem('custom_categories');
+        customCategories = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('获取自定义分类失败:', error);
+    }
     const colorPalette = [
         { header: '#48dbfb', item: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)' },
         { header: '#f093fb', item: 'linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)' },
@@ -135,12 +142,12 @@ function updateDateTime() {
 }
 
 // 渲染菜单
-function renderMenu(menuData) {
+async function renderMenu(menuData) {
     const container = document.getElementById('menuContainer');
     container.innerHTML = '';
 
     // 获取自定义分类
-    const customCategories = getCustomCategories();
+    const customCategories = await getCustomCategories();
     
     // 默认分类配置
     const defaultSections = [
@@ -219,8 +226,30 @@ function renderMenu(menuData) {
     });
 }
 
-// 获取自定义分类（从localStorage）
-function getCustomCategories() {
+// 获取自定义分类（优先从API获取，降级到localStorage）
+async function getCustomCategories() {
+    try {
+        // 先尝试从API获取
+        const response = await fetch(`${API_BASE}/categories`);
+        if (response.ok) {
+            const apiCategories = await response.json();
+            
+            // 同时获取localStorage中的分类（用于本地测试）
+            const localCategories = JSON.parse(localStorage.getItem('custom_categories') || '[]');
+            
+            // 合并API和本地分类，去重
+            const allCategories = [...apiCategories, ...localCategories];
+            const uniqueCategories = allCategories.filter((cat, index, arr) => 
+                arr.findIndex(c => c.key === cat.key) === index
+            );
+            
+            return uniqueCategories;
+        }
+    } catch (error) {
+        console.log('从API获取分类失败，使用本地数据:', error);
+    }
+    
+    // 降级到localStorage
     try {
         const stored = localStorage.getItem('custom_categories');
         return stored ? JSON.parse(stored) : [];
@@ -252,17 +281,17 @@ async function loadMenu() {
         
         // 渲染菜单
         if (data.menu) {
-            renderMenu(data.menu);
+            await renderMenu(data.menu);
         }
     } catch (error) {
         console.error('加载菜单出错:', error);
         // 使用默认菜单
-        loadDefaultMenu();
+        await loadDefaultMenu();
     }
 }
 
 // 加载默认菜单（离线模式）
-function loadDefaultMenu() {
+async function loadDefaultMenu() {
     const defaultMenu = {
         coldDishes: [
             { name: '拍黄瓜', price: 5 },
@@ -295,12 +324,24 @@ function loadDefaultMenu() {
     };
 
     applyTheme(currentTheme);
-    renderMenu(defaultMenu);
+    await renderMenu(defaultMenu);
 }
 
+// 防止缓存的版本号
+const APP_VERSION = new Date().getTime();
+
 // 初始化
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     updateDateTime();
     setInterval(updateDateTime, 1000);
-    loadMenu();
+    
+    // 添加版本号到链接防止缓存
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    links.forEach(link => {
+        if (link.href.indexOf('?') === -1) {
+            link.href += '?v=' + APP_VERSION;
+        }
+    });
+    
+    await loadMenu();
 });
