@@ -1235,4 +1235,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadCurrentMenu();
     loadPresets();
     loadBackgroundImage();
+    
+    // 初始化移动设备优化
+    initMobileOptimizations();
+    handleResize();
 });
+
+// 移动设备优化
+function initMobileOptimizations() {
+    // 检测移动设备
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // 为移动设备优化滚动行为
+        document.documentElement.style.scrollBehavior = 'smooth';
+        
+        // 添加触摸友好的交互
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            btn.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // 优化模态框显示
+        window.addEventListener('orientationchange', () => {
+            // 屏幕旋转时关闭模态框
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('show');
+            });
+        });
+        
+        // 防止双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    }
+}
+
+// 响应式处理
+function handleResize() {
+    const width = window.innerWidth;
+    const navMenu = document.querySelector('.nav-menu');
+    
+    // 在移动设备上优化导航菜单
+    if (width <= 1024) {
+        navMenu.style.overflowX = 'auto';
+        navMenu.style.flexWrap = 'nowrap';
+    } else {
+        navMenu.style.overflowX = 'hidden';
+        navMenu.style.flexWrap = 'wrap';
+    }
+}
+
+// 监听窗口大小变化
+window.addEventListener('resize', handleResize);

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>移动设备管理页面测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .device-frame {
+            max-width: 768px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .device-info {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .test-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .test-btn {
+            padding: 12px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            transition: all 0.3s;
+        }
+        
+        .test-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .test-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .test-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px; /* 防止iOS缩放 */
+            min-height: 44px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .test-header h1 {
+                font-size: 20px;
+            }
+            
+            .device-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .test-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="device-frame">
+        <div class="test-header">
+            <h1>📱 移动设备测试</h1>
+            <p>管理页面移动适配验证</p>
+        </div>
+        
+        <div class="device-info">
+            <div class="info-item">
+                <div class="info-label">屏幕宽度</div>
+                <div class="info-value" id="screenWidth">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">设备类型</div>
+                <div class="info-value" id="deviceType">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">触摸支持</div>
+                <div class="info-value" id="touchSupport">-</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="section-title">🎯 按钮测试</h2>
+            <div class="test-buttons">
+                <button class="test-btn" onclick="testClick('button1')">主要按钮</button>
+                <button class="test-btn" onclick="testClick('button2')">次要按钮</button>
+                <button class="test-btn" onclick="testClick('button3')">操作按钮</button>
+                <button class="test-btn" onclick="testClick('button4')">删除按钮</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="section-title">📝 表单测试</h2>
+            <div class="test-form">
+                <div class="form-group">
+                    <label class="form-label">菜品名称</label>
+                    <input type="text" class="form-input" placeholder="请输入菜品名称">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">菜品价格</label>
+                    <input type="number" class="form-input" placeholder="请输入价格">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">描述信息</label>
+                    <input type="text" class="form-input" placeholder="请输入描述">
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="section-title">📊 测试结果</h2>
+            <div id="testResults" style="font-size: 14px; color: #666; line-height: 1.6;">
+                点击上方按钮开始测试...
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 更新设备信息
+        function updateDeviceInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            document.getElementById('screenWidth').textContent = width + 'px';
+            
+            // 判断设备类型
+            let deviceType = '桌面';
+            if (width <= 480) {
+                deviceType = '小屏手机';
+            } else if (width <= 768) {
+                deviceType = '大屏手机';
+            } else if (width <= 1024) {
+                deviceType = '平板';
+            }
+            document.getElementById('deviceType').textContent = deviceType;
+            
+            // 检测触摸支持
+            const touchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            document.getElementById('touchSupport').textContent = touchSupport ? '是' : '否';
+        }
+        
+        // 测试点击
+        function testClick(buttonName) {
+            const timestamp = new Date().toLocaleTimeString();
+            const touchInfo = 'ontouchstart' in window ? '触摸' : '点击';
+            
+            const result = `[${timestamp}] ${buttonName} - ${touchInfo}成功`;
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = result + '<br>' + resultsDiv.innerHTML;
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDeviceInfo();
+            
+            // 监听屏幕旋转
+            window.addEventListener('orientationchange', updateDeviceInfo);
+            window.addEventListener('resize', updateDeviceInfo);
+            
+            // 添加触摸反馈
+            document.querySelectorAll('.test-btn').forEach(btn => {
+                btn.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                btn.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -681,3 +681,390 @@ body {
     gap: 10px;
     justify-content: flex-end;
 }
+
+/* ==================== 响应式设计 - 移动设备适配 ==================== */
+
+/* 平板设备 */
+@media screen and (max-width: 1024px) {
+    .admin-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .nav-menu {
+        display: flex;
+        padding: 10px 0;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .nav-item {
+        display: inline-block;
+        padding: 12px 20px;
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .nav-item.active {
+        border-left: none;
+        border-bottom-color: white;
+    }
+    
+    .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+    }
+    
+    .main-content {
+        padding: 20px;
+    }
+    
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* 手机设备 */
+@media screen and (max-width: 768px) {
+    .logo {
+        padding: 20px 15px;
+        text-align: center;
+    }
+    
+    .logo h2 {
+        font-size: 18px;
+    }
+    
+    .nav-menu {
+        padding: 5px 0;
+    }
+    
+    .nav-item {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .user-info p {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+    
+    .logout-btn {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .main-content {
+        padding: 15px;
+    }
+    
+    .content-header h1 {
+        font-size: 22px;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+        padding: 15px;
+    }
+    
+    .card h3 {
+        font-size: 16px;
+    }
+    
+    .menu-list {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .menu-item {
+        padding: 12px;
+    }
+    
+    .dish-name {
+        font-size: 14px;
+    }
+    
+    .dish-price {
+        font-size: 16px;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 600px;
+        font-size: 12px;
+    }
+    
+    th, td {
+        padding: 8px 6px;
+    }
+    
+    .checkbox-group {
+        gap: 10px;
+    }
+    
+    .checkbox-label {
+        font-size: 12px;
+    }
+    
+    .checkmark {
+        width: 16px;
+        height: 16px;
+        margin-right: 6px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .form-group input {
+        padding: 8px;
+        font-size: 14px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-buttons .btn {
+        margin-bottom: 10px;
+    }
+    
+    .category-card {
+        padding: 12px;
+    }
+    
+    .category-card h4 {
+        font-size: 14px;
+    }
+    
+    .category-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .category-actions .btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+    
+    /* 移动设备表格优化 */
+    .mobile-table {
+        display: none;
+    }
+    
+    /* 为移动设备创建卡片式表格显示 */
+    .table-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #667eea;
+    }
+    
+    .table-card-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 16px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+    
+    .table-card-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        padding: 5px 0;
+    }
+    
+    .table-card-label {
+        font-weight: 600;
+        color: #666;
+        min-width: 80px;
+    }
+    
+    .table-card-value {
+        color: #333;
+        text-align: right;
+        flex: 1;
+    }
+    
+    .table-card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 8px;
+        border-top: 1px solid #eee;
+    }
+    
+    .table-card-actions .btn {
+        flex: 1;
+        padding: 8px;
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+    
+    /* 触摸交互优化 */
+    .btn {
+        min-height: 44px; /* iOS推荐的最小触摸目标 */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .nav-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .checkbox-label {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    input[type="text"],
+    input[type="number"] {
+        min-height: 44px;
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+    
+    /* 滚动优化 */
+    .main-content {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    .nav-menu {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* 隐藏滚动条 */
+        -ms-overflow-style: none;
+    }
+    
+    .nav-menu::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* 防止文本选择干扰 */
+    .btn,
+    .nav-item,
+    .card {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* 响应式字体 */
+    @media screen and (max-width: 768px) {
+        html {
+            font-size: 14px;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        html {
+            font-size: 13px;
+        }
+    }
+}
+
+/* 小型手机 */
+@media screen and (max-width: 480px) {
+    .logo h2 {
+        font-size: 16px;
+    }
+    
+    .nav-item {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .main-content {
+        padding: 10px;
+    }
+    
+    .content-header h1 {
+        font-size: 20px;
+    }
+    
+    .btn {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+    
+    .card {
+        padding: 12px;
+    }
+    
+    .card h3 {
+        font-size: 15px;
+    }
+    
+    .modal-content {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .menu-item {
+        padding: 10px;
+    }
+    
+    .dish-name {
+        font-size: 13px;
+    }
+    
+    .dish-price {
+        font-size: 15px;
+    }
+}
