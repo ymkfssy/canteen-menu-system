@@ -349,6 +349,13 @@ document.getElementById('saveAsPresetBtn').addEventListener('click', async () =>
     const name = prompt('请输入预存菜单名称:');
     if (!name) return;
     
+    // 验证菜单数据是否有效
+    const hasData = Object.values(currentMenu).some(category => category && category.length > 0);
+    if (!hasData) {
+        alert('当前菜单为空，无法保存预存菜单！请先添加菜品。');
+        return;
+    }
+    
     try {
         const response = await fetch(`${API_BASE}/menu/presets`, {
             method: 'POST',
@@ -357,17 +364,20 @@ document.getElementById('saveAsPresetBtn').addEventListener('click', async () =>
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                name,
+                name: name.trim(),
                 menu: currentMenu,
                 theme: currentTheme
             })
         });
         
         if (response.ok) {
+            const result = await response.json();
             alert('保存成功！');
+            console.log('预存菜单创建结果:', result);
             loadPresets();
         } else {
-            throw new Error('保存失败');
+            const error = await response.json();
+            throw new Error(error.error || '保存失败');
         }
     } catch (error) {
         alert('保存失败: ' + error.message);
@@ -457,9 +467,14 @@ async function loadPresets() {
         if (response.ok) {
             const presets = await response.json();
             renderPresets(presets);
+        } else {
+            const error = await response.json();
+            console.error('加载预存菜单失败:', error.error);
+            alert('加载预存菜单失败: ' + (error.error || '未知错误'));
         }
     } catch (error) {
         console.error('加载预存菜单失败:', error);
+        alert('加载预存菜单失败: ' + error.message);
     }
 }
 
@@ -690,35 +705,8 @@ document.getElementById('exportExcelBtn').addEventListener('click', () => {
 
 // 创建新预存菜单
 document.getElementById('createPresetBtn').addEventListener('click', async () => {
-    const name = prompt('请输入预存菜单名称:');
-    if (!name) return;
-    
-    const token = checkAuth();
-    if (!token) return;
-    
-    try {
-        const response = await fetch(`${API_BASE}/menu/presets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                name,
-                menu: currentMenu,
-                theme: currentTheme
-            })
-        });
-        
-        if (response.ok) {
-            alert('预存菜单创建成功！');
-            loadPresets(); // 重新加载预存列表
-        } else {
-            throw new Error('创建失败');
-        }
-    } catch (error) {
-        alert('创建预存菜单失败: ' + error.message);
-    }
+    // 这个功能和 saveAsPresetBtn 重复，直接调用 saveAsPresetBtn 的点击事件
+    document.getElementById('saveAsPresetBtn').click();
 });
 
 // 应用预存菜单
@@ -734,13 +722,24 @@ async function applyPreset(presetId) {
             }
         });
         
-        if (!response.ok) throw new Error('获取预存菜单失败');
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error('获取预存菜单失败: ' + (error.error || '未知错误'));
+        }
         
         const presets = await response.json();
         const preset = presets.find(p => p.id == presetId);
         
         if (!preset) {
             throw new Error('预存菜单不存在');
+        }
+        
+        // 解析菜单数据
+        let menuData;
+        try {
+            menuData = JSON.parse(preset.menu_data);
+        } catch (parseError) {
+            throw new Error('预存菜单数据格式错误');
         }
         
         // 确认应用
@@ -755,15 +754,15 @@ async function applyPreset(presetId) {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                menu: JSON.parse(preset.menu_data),
-                theme: preset.theme
+                menu: menuData,
+                theme: preset.theme || 'winter'
             })
         });
         
         if (applyResponse.ok) {
             alert('预存菜单应用成功！');
-            currentMenu = JSON.parse(preset.menu_data);
-            currentTheme = preset.theme;
+            currentMenu = menuData;
+            currentTheme = preset.theme || 'winter';
             renderAllEditors();
             
             // 更新主题选择
@@ -774,9 +773,11 @@ async function applyPreset(presetId) {
             // 切换到当前菜单Tab
             document.querySelector('[data-tab="current"]').click();
         } else {
-            throw new Error('应用失败');
+            const error = await applyResponse.json();
+            throw new Error('应用失败: ' + (error.error || '未知错误'));
         }
     } catch (error) {
+        console.error('应用预存菜单错误:', error);
         alert('应用预存菜单失败: ' + error.message);
     }
 }
@@ -806,10 +807,12 @@ async function deletePreset(presetId) {
             alert('预存菜单删除成功！');
             loadPresets(); // 重新加载预存列表
         } else {
-            throw new Error('删除失败');
+            const error = await response.json();
+            throw new Error(error.error || '删除失败');
         }
     } catch (error) {
-        alert('删除预存菜单失败: ' + error.message);
+        console.error('删除预存菜单错误:', error);
+        alert('删除失败: ' + error.message);
     }
 }
 
