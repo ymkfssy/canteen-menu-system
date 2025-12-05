@@ -367,6 +367,14 @@ async function checkMenuUpdates() {
         // 检查版本是否有变化
         if (data.version > lastKnownVersion) {
             console.log('检测到菜单更新，版本：', data.version);
+            
+            // 立即更新本地版本号，防止重复触发
+            lastKnownVersion = data.version;
+            localStorage.setItem('lastKnownVersion', data.version);
+            
+            // 停止轮询，防止在等待刷新期间重复检查
+            stopPolling();
+            
             showUpdateNotification(data.latestUpdate);
             
             // 延迟3秒后自动刷新
@@ -458,7 +466,6 @@ document.addEventListener('visibilitychange', () => {
 
 // 页面获得焦点时也立即检查
 window.addEventListener('focus', () => {
-    lastKnownVersion = parseInt(localStorage.getItem('lastKnownVersion') || '0');
     checkMenuUpdates();
 });
 
