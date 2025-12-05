@@ -34,7 +34,17 @@ CREATE TABLE IF NOT EXISTS current_menu (
     menu_data TEXT NOT NULL,
     theme TEXT DEFAULT 'prosperity',
     background_image TEXT DEFAULT '',
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    version INTEGER DEFAULT 1
+);
+
+-- 版本更新记录表（用于前台检查更新）
+CREATE TABLE IF NOT EXISTS menu_updates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    update_type TEXT NOT NULL, -- 'menu', 'theme', 'preset', 'category'
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    version_number INTEGER NOT NULL,
+    description TEXT
 );
 
 -- 预存菜单表

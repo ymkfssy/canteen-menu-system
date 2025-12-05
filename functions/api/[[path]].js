@@ -89,6 +89,11 @@ export async function onRequest(context) {
       }
     }
 
+    // 获取更新信息
+    if (path === 'menu/updates' && method === 'GET') {
+      return await getMenuUpdates(env);
+    }
+
     if (path === 'menu/theme' && method === 'PUT') {
       const user = requireAuth(request);
       if (!user) return errorResponse('未授权', 401);
@@ -209,23 +214,48 @@ async function getCurrentMenu(env) {
 async function updateCurrentMenu(request, env) {
   const { menu, theme } = await request.json();
 
-  await env.DB.prepare(
-    `INSERT OR REPLACE INTO current_menu (id, menu_data, theme, updated_at)
-     VALUES (1, ?, ?, datetime('now'))`
-  ).bind(JSON.stringify(menu), theme).run();
+  // 获取当前版本号
+  const current = await env.DB.prepare(
+    'SELECT version FROM current_menu WHERE id = 1'
+  ).first();
+  const newVersion = (current?.version || 0) + 1;
 
-  return successResponse({ success: true });
+  // 更新菜单并增加版本号
+  await env.DB.prepare(
+    `INSERT OR REPLACE INTO current_menu (id, menu_data, theme, updated_at, version)
+     VALUES (1, ?, ?, datetime('now'), ?)`
+  ).bind(JSON.stringify(menu), theme, newVersion).run();
+
+  // 记录更新
+  await env.DB.prepare(
+    `INSERT INTO menu_updates (update_type, update_time, version_number, description)
+     VALUES ('menu', datetime('now'), ?, '菜单内容已更新')`
+  ).bind(newVersion).run();
+
+  return successResponse({ success: true, version: newVersion });
 }
 
 // 更新主题
 async function updateTheme(request, env) {
   const { theme } = await request.json();
 
-  await env.DB.prepare(
-    `UPDATE current_menu SET theme = ?, updated_at = datetime('now') WHERE id = 1`
-  ).bind(theme).run();
+  // 获取当前版本号
+  const current = await env.DB.prepare(
+    'SELECT version FROM current_menu WHERE id = 1'
+  ).first();
+  const newVersion = (current?.version || 0) + 1;
 
-  return successResponse({ success: true });
+  await env.DB.prepare(
+    `UPDATE current_menu SET theme = ?, updated_at = datetime('now'), version = ? WHERE id = 1`
+  ).bind(theme, newVersion).run();
+
+  // 记录更新
+  await env.DB.prepare(
+    `INSERT INTO menu_updates (update_type, update_time, version_number, description)
+     VALUES ('theme', datetime('now'), ?, '主题已更新为 ${theme}')`
+  ).bind(newVersion).run();
+
+  return successResponse({ success: true, version: newVersion });
 }
 
 // 获取预存菜单列表
@@ -269,15 +299,47 @@ async function getBackgroundImage(env) {
   });
 }
 
+// 获取菜单更新信息
+async function getMenuUpdates(env) {
+  // 获取当前菜单的最后更新时间
+  const menuResult = await env.DB.prepare(
+    'SELECT updated_at, version FROM current_menu WHERE id = 1'
+  ).first();
+
+  // 获取最近的更新记录
+  const updatesResult = await env.DB.prepare(
+    'SELECT update_type, update_time, version_number, description FROM menu_updates ORDER BY update_time DESC LIMIT 1'
+  ).first();
+
+  return successResponse({
+    lastUpdate: menuResult?.updated_at || null,
+    version: menuResult?.version || 1,
+    latestUpdate: updatesResult || null,
+    timestamp: Date.now()
+  });
+}
+
 // 更新背景图片设置
 async function updateBackgroundImage(request, env) {
   const { backgroundImage } = await request.json();
 
-  await env.DB.prepare(
-    `UPDATE current_menu SET background_image = ?, updated_at = datetime('now') WHERE id = 1`
-  ).bind(backgroundImage || '').run();
+  // 获取当前版本号
+  const current = await env.DB.prepare(
+    'SELECT version FROM current_menu WHERE id = 1'
+  ).first();
+  const newVersion = (current?.version || 0) + 1;
 
-  return successResponse({ success: true });
+  await env.DB.prepare(
+    `UPDATE current_menu SET background_image = ?, updated_at = datetime('now'), version = ? WHERE id = 1`
+  ).bind(backgroundImage || '', newVersion).run();
+
+  // 记录更新
+  await env.DB.prepare(
+    `INSERT INTO menu_updates (update_type, update_time, version_number, description)
+     VALUES ('background', datetime('now'), ?, ?)`
+  ).bind(newVersion, backgroundImage ? '背景图片已更新' : '背景图片已清除').run();
+
+  return successResponse({ success: true, version: newVersion });
 }
 
 // 获取所有分类

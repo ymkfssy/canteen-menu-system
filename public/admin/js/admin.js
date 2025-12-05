@@ -332,7 +332,9 @@ document.getElementById('saveCurrentBtn').addEventListener('click', async () => 
         });
         
         if (response.ok) {
-            alert('保存成功！');
+            const result = await response.json();
+            alert('保存成功！前台页面将在30秒内自动刷新。');
+            console.log('菜单已更新，版本：', result.version);
         } else {
             throw new Error('保存失败');
         }
@@ -409,7 +411,9 @@ document.getElementById('saveThemeBtn').addEventListener('click', async () => {
         });
         
         if (response.ok) {
-            alert('主题已应用！');
+            const result = await response.json();
+            alert('主题已应用！前台页面将在30秒内自动刷新。');
+            console.log('主题已更新，版本：', result.version);
         } else {
             throw new Error('应用失败');
         }
@@ -913,8 +917,10 @@ document.getElementById('saveBackgroundBtn').addEventListener('click', async () 
         });
         
         if (response.ok) {
+            const result = await response.json();
             currentBackgroundImage = backgroundImageUrl;
-            alert('背景图片设置已保存！');
+            alert('背景图片设置已保存！前台页面将在30秒内自动刷新。');
+            console.log('背景图片已更新，版本：', result.version);
         } else {
             throw new Error('保存失败');
         }

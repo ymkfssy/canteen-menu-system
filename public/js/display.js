@@ -339,6 +339,129 @@ async function loadDefaultMenu() {
 // 防止缓存的版本号
 const APP_VERSION = new Date().getTime();
 
+// 轮询刷新配置
+const POLL_INTERVAL = 30000; // 30秒检查一次
+let lastKnownVersion = null;
+let pollTimer = null;
+let isPageVisible = true;
+
+// 检查菜单更新
+async function checkMenuUpdates() {
+    try {
+        // 如果页面不可见，跳过检查
+        if (!isPageVisible) return;
+        
+        const response = await fetch(`${API_BASE}/menu/updates`);
+        if (!response.ok) throw new Error('检查更新失败');
+        
+        const data = await response.json();
+        
+        // 首次加载时记录版本
+        if (lastKnownVersion === null) {
+            lastKnownVersion = data.version;
+            localStorage.setItem('lastKnownVersion', data.version);
+            localStorage.setItem('lastUpdateCheck', Date.now());
+            return;
+        }
+        
+        // 检查版本是否有变化
+        if (data.version > lastKnownVersion) {
+            console.log('检测到菜单更新，版本：', data.version);
+            showUpdateNotification(data.latestUpdate);
+            
+            // 延迟3秒后自动刷新
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+        
+    } catch (error) {
+        console.error('检查菜单更新失败:', error);
+    }
+}
+
+// 显示更新通知
+function showUpdateNotification(updateInfo) {
+    if (!updateInfo) return;
+    
+    // 创建通知元素
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        font-size: 14px;
+        max-width: 300px;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="font-size: 20px;">🔄</div>
+            <div>
+                <div style="font-weight: bold; margin-bottom: 5px;">菜单已更新</div>
+                <div style="font-size: 12px; opacity: 0.9;">${updateInfo.description}</div>
+                <div style="font-size: 11px; opacity: 0.7; margin-top: 5px;">3秒后自动刷新...</div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // 添加CSS动画
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// 启动轮询
+function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    
+    // 立即检查一次
+    checkMenuUpdates();
+    
+    // 启动定时检查
+    pollTimer = setInterval(checkMenuUpdates, POLL_INTERVAL);
+}
+
+// 停止轮询
+function stopPolling() {
+    if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+    }
+}
+
+// 页面可见性检测
+document.addEventListener('visibilitychange', () => {
+    isPageVisible = !document.hidden;
+    
+    if (isPageVisible) {
+        // 页面重新可见时，立即检查一次
+        startPolling();
+    } else {
+        // 页面隐藏时，停止轮询节省资源
+        stopPolling();
+    }
+});
+
+// 页面获得焦点时也立即检查
+window.addEventListener('focus', () => {
+    lastKnownVersion = parseInt(localStorage.getItem('lastKnownVersion') || '0');
+    checkMenuUpdates();
+});
+
 // 初始化
 document.addEventListener('DOMContentLoaded', async () => {
     updateDateTime();
@@ -352,5 +475,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
     
+    // 从localStorage恢复版本信息
+    lastKnownVersion = parseInt(localStorage.getItem('lastKnownVersion') || '0');
+    
     await loadMenu();
+    
+    // 启动轮询检查更新
+    startPolling();
 });
