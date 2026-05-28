@@ -1,147 +1,147 @@
-// 四季主题配置 - Vivid & Bold (鲜明大胆)
+// 四季主题配置 - Modern Glassmorphism (现代玻璃拟态)
 const THEMES = {
   spring: {
     name: '春季',
     colors: {
-      primary: 'linear-gradient(135deg, #1B5E20 0%, #4A148C 100%)',
-      header: 'rgba(27, 94, 32, 0.88)',
-      titleGradient: 'linear-gradient(to right, #66BB6A, #E91E63, #66BB6A)',
-      titleShadow: 'rgba(0, 0, 0, 0.6)',
+      primary: 'linear-gradient(135deg, #E8F5E9 0%, #FCE4EC 100%)',
+      header: 'rgba(232, 245, 233, 0.85)',
+      titleGradient: 'linear-gradient(to right, #81C784, #F06292, #81C784)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#66BB6A',
-        item: 'rgba(102, 187, 106, 0.15)'
+        header: '#81C784',
+        item: 'rgba(129, 199, 132, 0.12)'
       },
       hotDishes: {
-        header: '#FF7043',
-        item: 'rgba(255, 112, 67, 0.15)'
+        header: '#FF8A65',
+        item: 'rgba(255, 138, 101, 0.12)'
       },
       stapleFood: {
-        header: '#FFCA28',
-        item: 'rgba(255, 202, 40, 0.15)'
+        header: '#FFD54F',
+        item: 'rgba(255, 213, 79, 0.12)'
       },
       soup: {
-        header: '#26C6DA',
-        item: 'rgba(38, 198, 218, 0.15)'
+        header: '#4DD0E1',
+        item: 'rgba(77, 208, 225, 0.12)'
       },
       fruit: {
-        header: '#EC407A',
-        item: 'rgba(236, 64, 122, 0.15)'
+        header: '#F06292',
+        item: 'rgba(240, 98, 146, 0.12)'
       }
     }
   },
   summer: {
     name: '夏季',
     colors: {
-      primary: 'linear-gradient(135deg, #0D47A1 0%, #006064 100%)',
-      header: 'rgba(13, 71, 161, 0.88)',
-      titleGradient: 'linear-gradient(to right, #42A5F5, #FF6F00, #42A5F5)',
-      titleShadow: 'rgba(0, 0, 0, 0.6)',
+      primary: 'linear-gradient(135deg, #E3F2FD 0%, #FFF3E0 100%)',
+      header: 'rgba(227, 242, 253, 0.85)',
+      titleGradient: 'linear-gradient(to right, #4FC3F7, #FF7043, #4FC3F7)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#42A5F5',
-        item: 'rgba(66, 165, 245, 0.15)'
+        header: '#4FC3F7',
+        item: 'rgba(79, 195, 247, 0.12)'
       },
       hotDishes: {
-        header: '#EF5350',
-        item: 'rgba(239, 83, 80, 0.15)'
+        header: '#FF7043',
+        item: 'rgba(255, 112, 67, 0.12)'
       },
       stapleFood: {
-        header: '#FFA726',
-        item: 'rgba(255, 167, 38, 0.15)'
+        header: '#FFCA28',
+        item: 'rgba(255, 202, 40, 0.12)'
       },
       soup: {
-        header: '#26A69A',
-        item: 'rgba(38, 166, 154, 0.15)'
+        header: '#26C6DA',
+        item: 'rgba(38, 198, 218, 0.12)'
       },
       fruit: {
-        header: '#AB47BC',
-        item: 'rgba(171, 71, 188, 0.15)'
+        header: '#EC407A',
+        item: 'rgba(236, 64, 122, 0.12)'
       }
     }
   },
   autumn: {
     name: '秋季',
     colors: {
-      primary: 'linear-gradient(135deg, #3E2723 0%, #E65100 100%)',
-      header: 'rgba(62, 39, 35, 0.88)',
-      titleGradient: 'linear-gradient(to right, #FF8A65, #FFB300, #FF8A65)',
-      titleShadow: 'rgba(0, 0, 0, 0.6)',
+      primary: 'linear-gradient(135deg, #FFF8E1 0%, #FBE9E7 100%)',
+      header: 'rgba(255, 248, 225, 0.85)',
+      titleGradient: 'linear-gradient(to right, #FFB74D, #E64A19, #FFB74D)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#A1887F',
-        item: 'rgba(161, 136, 127, 0.15)'
+        header: '#FFB74D',
+        item: 'rgba(255, 183, 77, 0.12)'
       },
       hotDishes: {
-        header: '#D84315',
-        item: 'rgba(216, 67, 21, 0.15)'
+        header: '#E64A19',
+        item: 'rgba(230, 74, 25, 0.12)'
       },
       stapleFood: {
-        header: '#FFB300',
-        item: 'rgba(255, 179, 0, 0.15)'
+        header: '#FFA726',
+        item: 'rgba(255, 167, 38, 0.12)'
       },
       soup: {
-        header: '#78909C',
-        item: 'rgba(120, 144, 156, 0.15)'
+        header: '#8D6E63',
+        item: 'rgba(141, 110, 99, 0.12)'
       },
       fruit: {
-        header: '#8D6E63',
-        item: 'rgba(141, 110, 99, 0.15)'
+        header: '#AB47BC',
+        item: 'rgba(171, 71, 188, 0.12)'
       }
     }
   },
   winter: {
     name: '冬季',
     colors: {
-      primary: 'linear-gradient(135deg, #1A237E 0%, #004D40 100%)',
-      header: 'rgba(26, 35, 126, 0.88)',
-      titleGradient: 'linear-gradient(to right, #5C6BC0, #00BCD4, #5C6BC0)',
-      titleShadow: 'rgba(0, 0, 0, 0.6)',
+      primary: 'linear-gradient(135deg, #EDE7F6 0%, #E0F2F1 100%)',
+      header: 'rgba(237, 231, 246, 0.85)',
+      titleGradient: 'linear-gradient(to right, #7986CB, #4DB6AC, #7986CB)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#5C6BC0',
-        item: 'rgba(92, 107, 192, 0.15)'
+        header: '#7986CB',
+        item: 'rgba(121, 134, 203, 0.12)'
       },
       hotDishes: {
-        header: '#E53935',
-        item: 'rgba(229, 57, 53, 0.15)'
+        header: '#EF5350',
+        item: 'rgba(239, 83, 80, 0.12)'
       },
       stapleFood: {
-        header: '#546E7A',
-        item: 'rgba(84, 110, 122, 0.15)'
+        header: '#78909C',
+        item: 'rgba(120, 144, 156, 0.12)'
       },
       soup: {
-        header: '#00897B',
-        item: 'rgba(0, 137, 123, 0.15)'
+        header: '#4DB6AC',
+        item: 'rgba(77, 182, 172, 0.12)'
       },
       fruit: {
-        header: '#7E57C2',
-        item: 'rgba(126, 87, 194, 0.15)'
+        header: '#CE93D8',
+        item: 'rgba(206, 147, 216, 0.12)'
       }
     }
   },
   prosperity: {
     name: '开门红',
     colors: {
-      primary: 'linear-gradient(135deg, #4A0000 0%, #E65100 100%)',
-      header: 'rgba(74, 0, 0, 0.90)',
-      titleGradient: 'linear-gradient(to right, #E53935, #FFD600, #E53935)',
-      titleShadow: 'rgba(0, 0, 0, 0.6)',
+      primary: 'linear-gradient(135deg, #FFF5F5 0%, #FFF8E1 100%)',
+      header: 'rgba(255, 245, 245, 0.90)',
+      titleGradient: 'linear-gradient(to right, #EF5350, #FFD54F, #EF5350)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#E53935',
-        item: 'rgba(229, 57, 53, 0.15)'
+        header: '#EF5350',
+        item: 'rgba(239, 83, 80, 0.12)'
       },
       hotDishes: {
-        header: '#C62828',
-        item: 'rgba(198, 40, 40, 0.15)'
+        header: '#E53935',
+        item: 'rgba(229, 57, 53, 0.12)'
       },
       stapleFood: {
-        header: '#F57C00',
-        item: 'rgba(245, 124, 0, 0.15)'
+        header: '#FB8C00',
+        item: 'rgba(251, 140, 0, 0.12)'
       },
       soup: {
-        header: '#EF5350',
-        item: 'rgba(239, 83, 80, 0.15)'
+        header: '#E57373',
+        item: 'rgba(229, 115, 115, 0.12)'
       },
       fruit: {
-        header: '#D81B60',
-        item: 'rgba(216, 27, 96, 0.15)'
+        header: '#F06292',
+        item: 'rgba(240, 98, 146, 0.12)'
       }
     },
     isProsperityTheme: true
