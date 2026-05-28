@@ -1,147 +1,147 @@
-// 四季主题配置
+// 四季主题配置 - Nature-Inspired Harmony (自然和谐)
 const THEMES = {
   spring: {
     name: '春季',
     colors: {
-      primary: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-      header: 'linear-gradient(135deg, rgba(168, 237, 234, 0.3) 0%, rgba(254, 214, 227, 0.3) 100%)',
-      titleGradient: 'linear-gradient(to right, #ff9a9e, #fecfef, #ff9a9e)',
-      titleShadow: 'rgba(255, 154, 158, 0.8)',
+      primary: 'linear-gradient(135deg, #F5F0E8 0%, #E8E0D0 100%)',
+      header: 'rgba(245, 240, 232, 0.85)',
+      titleGradient: 'linear-gradient(to right, #A5D6A7, #F48FB1, #A5D6A7)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#48dbfb',
-        item: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)'
+        header: '#A5D6A7',
+        item: 'rgba(165, 214, 167, 0.12)'
       },
       hotDishes: {
-        header: '#f093fb',
-        item: 'linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 100%)'
+        header: '#EF9A9A',
+        item: 'rgba(239, 154, 154, 0.12)'
       },
       stapleFood: {
-        header: '#a8e063',
-        item: 'linear-gradient(135deg, #f0f9e8 0%, #d4edbd 100%)'
+        header: '#FFF59D',
+        item: 'rgba(255, 245, 157, 0.12)'
       },
       soup: {
-        header: '#7ee8fa',
-        item: 'linear-gradient(135deg, #e8f8f5 0%, #d0ece7 100%)'
+        header: '#80CBC4',
+        item: 'rgba(128, 203, 196, 0.12)'
       },
       fruit: {
-        header: '#ff9a9e',
-        item: 'linear-gradient(135deg, #ffe8ea 0%, #ffd4d7 100%)'
+        header: '#F48FB1',
+        item: 'rgba(244, 143, 177, 0.12)'
       }
     }
   },
   summer: {
     name: '夏季',
     colors: {
-      primary: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      header: 'linear-gradient(135deg, rgba(79, 172, 254, 0.3) 0%, rgba(0, 242, 254, 0.3) 100%)',
-      titleGradient: 'linear-gradient(to right, #00f2fe, #4facfe, #00f2fe)',
-      titleShadow: 'rgba(0, 242, 254, 0.8)',
+      primary: 'linear-gradient(135deg, #E8EDF2 0%, #F0E8D8 100%)',
+      header: 'rgba(232, 237, 242, 0.85)',
+      titleGradient: 'linear-gradient(to right, #90CAF9, #FFAB91, #90CAF9)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#00d2ff',
-        item: 'linear-gradient(135deg, #dff6ff 0%, #b3e5fc 100%)'
+        header: '#90CAF9',
+        item: 'rgba(144, 202, 249, 0.12)'
       },
       hotDishes: {
-        header: '#ff6b6b',
-        item: 'linear-gradient(135deg, #ffe5e5 0%, #ffcccc 100%)'
+        header: '#FFAB91',
+        item: 'rgba(255, 171, 145, 0.12)'
       },
       stapleFood: {
-        header: '#feca57',
-        item: 'linear-gradient(135deg, #fff4d9 0%, #ffe4a3 100%)'
+        header: '#FFE082',
+        item: 'rgba(255, 224, 130, 0.12)'
       },
       soup: {
-        header: '#48dbfb',
-        item: 'linear-gradient(135deg, #e1f5fe 0%, #b3e0f2 100%)'
+        header: '#80DEEA',
+        item: 'rgba(128, 222, 234, 0.12)'
       },
       fruit: {
-        header: '#ff9ff3',
-        item: 'linear-gradient(135deg, #ffe9fc 0%, #ffd4f7 100%)'
+        header: '#CE93D8',
+        item: 'rgba(206, 147, 216, 0.12)'
       }
     }
   },
   autumn: {
     name: '秋季',
     colors: {
-      primary: 'linear-gradient(135deg, #fa8c16 0%, #faad14 100%)',
-      header: 'linear-gradient(135deg, rgba(250, 140, 22, 0.3) 0%, rgba(250, 173, 20, 0.3) 100%)',
-      titleGradient: 'linear-gradient(to right, #ffd89b, #ff9a56, #ffd89b)',
-      titleShadow: 'rgba(255, 154, 86, 0.8)',
+      primary: 'linear-gradient(135deg, #F5EDE0 0%, #F0E0D0 100%)',
+      header: 'rgba(245, 237, 224, 0.85)',
+      titleGradient: 'linear-gradient(to right, #FFCC80, #BCAAA4, #FFCC80)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#ff9f43',
-        item: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)'
+        header: '#FFCC80',
+        item: 'rgba(255, 204, 128, 0.12)'
       },
       hotDishes: {
-        header: '#ee5a24',
-        item: 'linear-gradient(135deg, #ffe6db 0%, #ffcab8 100%)'
+        header: '#BCAAA4',
+        item: 'rgba(188, 170, 164, 0.12)'
       },
       stapleFood: {
-        header: '#f39c12',
-        item: 'linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%)'
+        header: '#E6C280',
+        item: 'rgba(230, 194, 128, 0.12)'
       },
       soup: {
-        header: '#d35400',
-        item: 'linear-gradient(135deg, #ffeee6 0%, #ffd9c7 100%)'
+        header: '#A1887F',
+        item: 'rgba(161, 136, 127, 0.12)'
       },
       fruit: {
-        header: '#e67e22',
-        item: 'linear-gradient(135deg, #ffe9db 0%, #ffd4b8 100%)'
+        header: '#B39DDB',
+        item: 'rgba(179, 157, 219, 0.12)'
       }
     }
   },
   winter: {
     name: '冬季',
     colors: {
-      primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      header: 'linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%)',
-      titleGradient: 'linear-gradient(to right, #e0e7ff, #c7d2fe, #e0e7ff)',
-      titleShadow: 'rgba(199, 210, 254, 0.8)',
+      primary: 'linear-gradient(135deg, #E8ECF0 0%, #DCE0E8 100%)',
+      header: 'rgba(232, 236, 240, 0.85)',
+      titleGradient: 'linear-gradient(to right, #9FA8DA, #80CBC4, #9FA8DA)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#5f27cd',
-        item: 'linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%)'
+        header: '#9FA8DA',
+        item: 'rgba(159, 168, 218, 0.12)'
       },
       hotDishes: {
-        header: '#ee5a6f',
-        item: 'linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%)'
+        header: '#EF9A9A',
+        item: 'rgba(239, 154, 154, 0.12)'
       },
       stapleFood: {
-        header: '#8e44ad',
-        item: 'linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)'
+        header: '#90A4AE',
+        item: 'rgba(144, 164, 174, 0.12)'
       },
       soup: {
-        header: '#3742fa',
-        item: 'linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%)'
+        header: '#80CBC4',
+        item: 'rgba(128, 203, 196, 0.12)'
       },
       fruit: {
-        header: '#5f27cd',
-        item: 'linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%)'
+        header: '#B39DDB',
+        item: 'rgba(179, 157, 219, 0.12)'
       }
     }
   },
   prosperity: {
     name: '开门红',
     colors: {
-      primary: 'linear-gradient(135deg, #ff4757 0%, #ff6348 20%, #ffa502 50%, #ff4757 80%, #c44569 100%)',
-      header: 'linear-gradient(135deg, rgba(255, 71, 87, 0.9) 0%, rgba(255, 165, 2, 0.8) 50%, rgba(196, 69, 105, 0.9) 100%)',
-      titleGradient: 'linear-gradient(to right, #ffffff, #f8f9fa, #ffffff)',
-      titleShadow: 'rgba(255, 255, 255, 0.8)',
+      primary: 'linear-gradient(135deg, #F5E8E0 0%, #EDE0D0 100%)',
+      header: 'rgba(245, 232, 224, 0.88)',
+      titleGradient: 'linear-gradient(to right, #E57373, #FFD54F, #E57373)',
+      titleShadow: 'rgba(0, 0, 0, 0.25)',
       coldDishes: {
-        header: '#ff4757',
-        item: 'linear-gradient(135deg, #fff5f5 0%, #ffe8e8 50%, #ffd3d3 100%)'
+        header: '#EF9A9A',
+        item: 'rgba(239, 154, 154, 0.12)'
       },
       hotDishes: {
-        header: '#ff6348',
-        item: 'linear-gradient(135deg, #fff9f0 0%, #ffe8d6 50%, #ffd4b3 100%)'
+        header: '#E57373',
+        item: 'rgba(229, 115, 115, 0.12)'
       },
       stapleFood: {
-        header: '#ffa502',
-        item: 'linear-gradient(135deg, #fffbf0 0%, #fff9e6 50%, #fff4cc 100%)'
+        header: '#FFD54F',
+        item: 'rgba(255, 213, 79, 0.12)'
       },
       soup: {
-        header: '#ff7675',
-        item: 'linear-gradient(135deg, #fff5f7 0%, #ffe8ec 50%, #ffd6d9 100%)'
+        header: '#FFAB91',
+        item: 'rgba(255, 171, 145, 0.12)'
       },
       fruit: {
-        header: '#fd79a8',
-        item: 'linear-gradient(135deg, #fff0f5 0%, #ffe8f1 50%, #ffd1dc 100%)'
+        header: '#F48FB1',
+        item: 'rgba(244, 143, 177, 0.12)'
       }
     },
     isProsperityTheme: true
