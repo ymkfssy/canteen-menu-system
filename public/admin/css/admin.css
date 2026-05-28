@@ -447,23 +447,23 @@ body {
 }
 
 .spring-preview {
-    background: linear-gradient(135deg, #F5F0E8 0%, #E8E0D0 50%, #A5D6A7 100%);
+    background: linear-gradient(135deg, #1B5E20 0%, #4A148C 100%);
 }
 
 .summer-preview {
-    background: linear-gradient(135deg, #E8EDF2 0%, #F0E8D8 50%, #90CAF9 100%);
+    background: linear-gradient(135deg, #0D47A1 0%, #006064 100%);
 }
 
 .autumn-preview {
-    background: linear-gradient(135deg, #F5EDE0 0%, #F0E0D0 50%, #FFCC80 100%);
+    background: linear-gradient(135deg, #3E2723 0%, #E65100 100%);
 }
 
 .winter-preview {
-    background: linear-gradient(135deg, #E8ECF0 0%, #DCE0E8 50%, #9FA8DA 100%);
+    background: linear-gradient(135deg, #1A237E 0%, #004D40 100%);
 }
 
 .prosperity-preview {
-    background: linear-gradient(135deg, #F5E8E0 0%, #EDE0D0 50%, #E57373 100%);
+    background: linear-gradient(135deg, #4A0000 0%, #E65100 100%);
 }
 
 .theme-card h4 {

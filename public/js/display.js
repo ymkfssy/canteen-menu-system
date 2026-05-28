@@ -90,11 +90,11 @@ function applyTheme(themeName) {
         console.error('获取自定义分类失败:', error);
     }
     const colorPalette = [
-        { header: '#A5D6A7', item: 'rgba(165, 214, 167, 0.12)' },
-        { header: '#EF9A9A', item: 'rgba(239, 154, 154, 0.12)' },
-        { header: '#FFF59D', item: 'rgba(255, 245, 157, 0.12)' },
-        { header: '#80CBC4', item: 'rgba(128, 203, 196, 0.12)' },
-        { header: '#F48FB1', item: 'rgba(244, 143, 177, 0.12)' }
+        { header: '#66BB6A', item: 'rgba(102, 187, 106, 0.15)' },
+        { header: '#FF7043', item: 'rgba(255, 112, 67, 0.15)' },
+        { header: '#FFCA28', item: 'rgba(255, 202, 40, 0.15)' },
+        { header: '#26C6DA', item: 'rgba(38, 198, 218, 0.15)' },
+        { header: '#EC407A', item: 'rgba(236, 64, 122, 0.15)' }
     ];
     
     customCategories.forEach((cat, index) => {
